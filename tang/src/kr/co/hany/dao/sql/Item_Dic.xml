@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.DicDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select_group" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT seqno
+		      ,b_code
+		      ,b_name	   
+		  FROM b_dictionary
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  WHERE b_name like '%${param.search_value}%'
+		  </if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_group_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(seqno) 	   
+		 FROM b_dictionary
+		<if test="param.search_value != '' and param.search_value != null " >
+		  WHERE b_name like '%${param.search_value}%'
+		 </if>
+	</select>
+	
+	<select id="flag_group" parameterType="kr.co.hany.util.CommonMap" resultType="int">
+		SELECT count(seqno) 	   
+		  FROM b_dictionary
+	     WHERE b_name = #{param.b_name}
+	</select>
+	
+	
+	<select id="select_max_groupcode" parameterType="kr.co.hany.util.CommonMap" resultType="String">
+		SELECT max(b_code) + 1 	   
+		  FROM b_dictionary
+	</select>
+	
+ 	<insert id="group_add" parameterType="kr.co.hany.util.CommonMap">
+ 		INSERT INTO b_dictionary(
+ 			 b_code
+ 			,b_name
+ 			,wdate
+ 		) VALUES (
+ 			 #{param.b_code}
+ 		    ,#{param.b_name}
+ 		    ,now()
+ 		)
+ 	</insert>
+	
+		
+	
+	<select id="select_name" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		         
+		  FROM s_dictionary 		 		 
+		 WHERE b_code = #{param.b_code}
+		 <if test="param.search_value != '' and param.search_value != null " >
+		   AND s_name like '%${param.search_value}%'
+		 </if>
+		 ORDER by b_name asc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_name_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(seqno) 	   	   
+		 FROM s_dictionary 			 
+		WHERE b_code = #{param.b_code}
+		<if test="param.search_value != '' and param.search_value != null " >
+		   AND s_name like '%${param.search_value}%'
+		 </if>
+	</select>
+	
+	<select id="select_name_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		      
+		  FROM s_dictionary 		 		 
+		 WHERE seqno = #{param.seqno}		 
+	</select>
+	
+	
+	<select id="select_name_max" parameterType="kr.co.hany.util.CommonMap" resultType="String">
+		SELECT MAX(seqno) + 1 	   	   
+		  FROM s_dictionary 	
+	</select>
+	
+	<insert id="name_add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into s_dictionary(
+			 b_name
+			,b_code
+			,s_code
+			,s_name
+			,s_jomun
+			,s_jukeung
+			,s_chamgo
+			,wdate
+		) values(
+			 #{param.b_name}
+			,#{param.b_code}
+			,#{param.s_code}
+			,#{param.s_name}
+			,#{param.s_jomun}
+			,#{param.s_jukeung}
+			,#{param.s_chamgo}
+			,now()
+		)
+	</insert>
+	
+	<update id="name_mod" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE s_dictionary
+		   SET s_name     = #{param.s_name}
+			  ,s_jomun    = #{param.s_jomun}
+			  ,s_jukeung  = #{param.s_jukeung}
+ 			  ,s_chamgo   = #{param.s_chamgo}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	
+	<select id="select_all" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		      
+		  FROM s_dictionary 		 		 
+		 WHERE 1 = 1
+		 <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		 </if>
+		 ORDER by b_name asc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_all_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(seqno) 	   	   	    
+		 FROM s_dictionary 			
+		WHERE 1 = 1
+		<if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		 </if>
+	</select>
+	
+	
+	
+	<update id="update_payment" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order
+		   SET payment = #{param.payment}
+		 WHERE seqno   = #{param.seqno}
+	</update>
+	
+	
+	<update id="update_order" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order
+		   SET order_ing = #{param.order_ing}
+		 WHERE seqno in ( ${param.seqno} )
+	</update>
+	
+	<select id="select_detail_price" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT dy.*
+		      ,yj.yak_name
+		      ,yj.yak_danga
+		      ,TRUNCATE(dy.dy_standard * yj.yak_danga, 1)  as danga
+		      ,yj.yak_from
+		      ,yj.yak_code
+		      ,yj.group_code
+		 FROM dic_yakjae dy
+		INNER join yakjae yj on dy.dy_code = yj.yak_code
+		WHERE dy.b_code = #{param.b_code}
+		  AND dy.s_code = #{param.s_code}
+		<!-- ORDER by dy_name asc -->
+		ORDER by dy.seqno asc
+	</select>
+	
+	<select id="select_detail_price_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(dy.seqno)		      
+		 FROM dic_yakjae dy
+		INNER join yakjae yj on dy.dy_code = yj.yak_code
+		WHERE dy.b_code = #{param.b_code}
+		  AND dy.s_code = #{param.s_code}
+		ORDER by dy_name asc
+	</select>
+
+	<update id="price_update_stan" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE dic_yakjae
+		   SET dy_standard = ${param.dy_standard}
+		 WHERE seqno       = ${param.seqno}
+	</update>
+	
+	<select id="select_price_group"  parameterType="kr.co.hany.util.CommonMap"  resultMap="boardMap">
+		SELECT * 
+		      ,(CASE 
+		      	 WHEN yak_status = 'y' THEN '처방가능' 
+		      	 WHEN yak_status = 'c' THEN '처방불가'
+		      	 ELSE '약재품절' END) as 	yak_status_nm
+		  FROM yakjae
+		 WHERE group_code = #{param.group_code}
+		   AND yak_code  != #{param.yak_code}
+	</select>
+	
+	<select id="select_price_group_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(seqno) 	   
+		 FROM yakjae
+		 WHERE group_code = #{param.group_code}
+		   AND yak_code  != #{param.yak_code}
+	</select>
+	
+	<select id="flag_price_dic_yakjae" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(seqno) 	   
+		 FROM dic_yakjae
+		 WHERE s_code  = #{param.s_code}
+		   AND dy_code = #{param.new_yak_code}
+	</select>
+	
+	<update id="price_item_update" parameterType="kr.co.hany.util.CommonMap" >
+		UPDATE dic_yakjae
+		   SET dy_standard = '0'
+		      ,dy_code     = #{param.new_yak_code}
+		 WHERE seqno       = ${param.seqno}
+	</update>
+	
+	<delete id="price_item_delete" parameterType="kr.co.hany.util.CommonMap">
+		DELETE from dic_yakjae 
+		 WHERE seqno in ( ${param.seqno} )
+	</delete>
+	
+	<insert id="price_item_add"  parameterType="kr.co.hany.util.CommonMap">
+		INSERT into dic_yakjae(
+			 dy_name
+			,dy_from
+			,dy_standard
+			,dy_code
+			,b_code
+			,complete
+			,wdate
+			,s_code
+		) VALUES(
+			 #{param.dy_name}
+			,#{param.dy_from}
+			,'0'
+			,#{param.dy_code}
+			,#{param.b_code}
+			,'n'
+			,now()
+			,#{param.s_code}
+		)
+	</insert>
+
+</mapper>

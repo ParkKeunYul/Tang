@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.base.LoginhisDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select_login_his" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM log_info
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	WHERE ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM log_info
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	WHERE ${param.search_title} like '%${param.search_value}%'
+		  </if>		 
+	</select>
+	
+	
+</mapper>

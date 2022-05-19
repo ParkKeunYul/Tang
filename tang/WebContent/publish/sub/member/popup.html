@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko">
+<head>	
+	<title>북경한의원 원외탕전실</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta name="title" content="북경한의원 원외탕전실">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script>
+	<script type="text/javascript" src="../../js/jquery.bpopup.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../css/style.css" />
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#popupButton1").click(function() {
+				goPopUp1();
+			});
+			$("#popupButton2").click(function() {
+				goPopUp2();
+			});
+			$("#popupButton3").click(function() {
+				goPopUp3();
+			});
+			$("#popupButton4").click(function() {
+				goPopUp4();
+			});
+			$("#popupButton5").click(function() {
+				goPopUp5();
+			});
+			$("#popupButton6").click(function() {
+				goPopUp6();
+			});
+			$("#popupButton7").click(function() {
+				goPopUp7();
+			});
+			$("#popupButton8").click(function() {
+				goPopUp8();
+			});
+		})
+		var goPopUp1 = function() {
+			$('#popup1').bPopup();
+		}
+		var goPopUp2 = function() {
+			$('#popup2').bPopup();
+		}
+		var goPopUp3 = function() {
+			$('#popup3').bPopup();
+		}
+		var goPopUp4 = function() {
+			$('#popup4').bPopup();
+		}
+		var goPopUp5 = function() {
+			$('#popup5').bPopup();
+		}
+		var goPopUp6 = function() {
+			$('#popup6').bPopup();
+		}
+		var goPopUp7 = function() {
+			$('#popup7').bPopup();
+		}
+		var goPopUp8 = function() {
+			$('#popup8').bPopup();
+		}
+	</script>
+	<style type="text/css">
+		.nlist {margin:20px 0 0 20px}
+		.nlist li {margin:0 0 4px 0;}
+	</style>
+</head>
+<body>
+
+<ul class="nlist">
+	<li style="font-weight:bold; padding-bottom:10px;">레이어 팝업 모음(샘플)</li>
+	<li><a href="#" id="popupButton1">1. member > 로그인</a></li>
+	<li><a href="#" id="popupButton2">2. member > 회원가입 완료(member/join0301.html, member/join0302.html)</a></li>
+	<li><a href="#" id="popupButton3">3. mypage > 환자관리 > 환자신규등록(mypage/patient_list.html)</a></li>
+	<li><a href="#" id="popupButton4">4. mypage > 환자관리 > 환자정보수정(mypage/patient_view.html)</a></li>
+	<li><a href="#" id="popupButton5">5. order > 탕전처방 > 옵션 > 복용법 및 주의사항 불러오기(order/order02.html)</a></li>
+	<li><a href="#" id="popupButton6">6. order > 탕전처방 > 옵션 > 조제지시사항 불러오기(order/order02.html)</a></li>
+	<li><a href="#" id="popupButton7">7. order > 환경설정 > 복용법 및 주의사항 수정 및 추가(order/setup.html)</a></li>
+	<li><a href="#" id="popupButton8">8. order > 환경설정 > 조제지시사항  수정 및 추가(order/setup.html)</a></li>
+</ul>
+
+
+
+<!-- layer_popup 로그인-->
+<div id="popup1" class="Pstyle">
+	<span class="b-close"><img src="../../images/sub/btn_close01.png" alt="닫기" /></span>
+	<div class="content loginbox">
+		<p class="tit">북경한의원 원외탕전실 로그인</p>
+		<div class="loginA">
+			<ul>
+				<li>
+					<input type="text" placeholder="ID를 입력해주세요" style="width:280px;" />
+					<input type="password" placeholder="비밀번호를 입력해주세요" style="width:280px;" />
+					<input type="checkbox" class="ab"/> 아이디 저장
+				</li>
+				<li><a href="#" class="loginB">로그인</a></li>
+			</ul>
+		</div>
+
+		<div class="conbox">
+			아이디 / 비밀번호 찾기 / 회원탈퇴는 고객센터로 연락주시기 바랍니다. <br/>
+			<span>고객센터 TEL. 043.731.5075</span>
+		</div>
+
+		<ul class="bottom">
+			<li>아직 회원이 아니세요?</li>
+			<li><a href="#" class="cw h40">회원가입</a></li>
+		</ul>
+
+	</div>
+</div>
+<!-- //layer_popup 로그인-->
+
+<!-- layer_popup 회원가입-->
+<div id="popup2" class="Pstyle">
+	<span class="b-close"><img src="../../images/sub/btn_close01.png" alt="닫기" /></span>
+	<div class="content joinend">
+		<p class="tit">회원가입이 완료되었습니다.</p>
+		<p class="txtbox">가입하신 유형에 따라 아래 안내를 참고하신 후 인증서류를 보내주시면<br/>정회원으로 전환이 되며, 정성탕전의 모든 메뉴를 사용하실 수 있습니다.</p>
+
+		<ul class="listLDotted">
+			<li><strong>의료기관 :</strong> 사업자등록증, 한의사 면허증</li>
+			<li><strong>한의사 :</strong> 한의사 면허증</li>
+		</ul>
+
+		<!-- btnarea -->
+		<div class="btn_area01 pt0">
+			<a href="#"><span class="cw h60">메인화면</span></a>
+			<a href="#" id="popupButton1"><span class="cg h60">로그인</span></a>
+		</div>
+		<!-- //btnarea -->
+	</div>
+</div>
+<!-- //layer_popup 회원가입-->
+
+<!-- layer_popup 환자 신규등록 -->
+<div id="popup3" class="Pstyle2">
+	<span class="b-close"><img src="../../images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">신규등록</p>
+	<div class="content pformT">
+		<table>			
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>차트번호</th>
+					<td><input type="text" name="" id="" placeholder="차트번호 입력" style="width:220px;"></td>
+				</tr>
+				<tr>
+					<th>환자명 <span class="fc04">*</span></th>
+					<td><input type="text" name="" id="" placeholder="환자명 입력" style="width:220px;"></td>
+				</tr>
+				<tr>
+					<th>성별 <span class="fc04">*</span></th>
+					<td>
+						<select name="birth_year" id="birth1"  style="width:70px;">
+							<option value="남자">남자</option>
+							<option value="여자">여자</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>생년월일 <span class="fc04">*</span></th>
+					<td>
+						<select name="birth_year" id="birth1"  style="width:70px;">
+							<option value="1940">1940</option>
+							<option value="1941">1941</option>
+						</select>
+						년
+						<select name="birth_month" id=""  style="width:60px;">
+							<option value="01">01</option>
+							<option value="02">02</option>
+						</select>
+						월
+						<select name="birth_day" id=""  style="width:60px;">
+							<option value="01">01</option>
+							<option value="02">02</option>
+						</select>
+						일
+					</td>
+				</tr>
+				<tr>
+					<th>연락처</th>
+					<td>
+						<input type="text" id="" name="phone01" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="phone02" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="phone03" style="width:65px;" maxlength="4">
+					</td>
+				</tr>
+				<tr>
+					<th>휴대전화 <span class="fc04">*</span></th>
+					<td>
+						<input type="text" id="" name="handphone01" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="handphone02" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="handphone03" style="width:65px;" maxlength="4">
+					</td>
+				</tr>
+				<tr>
+					<th>주소 <span class="fc04">*</span></th>
+					<td>
+						<span class="dI H40">
+							<input type="text" name="zipcode01" id="zip_cd" style="width:180px;" readonly><a href="#"><span id="addrBtn1" class="h34 cB">주소찾기</span></a>
+						</span>
+						<span class="dI">
+							<input type="text" name="address01" style="width:350px;" readonly id="addr1">
+							<input type="text" name="address02" placeholder="상세주소" style="width:350px;" id="addr2"> 
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th>체격/체형</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:20px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>진단</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:40px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>증상</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>기타1</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>기타2</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- btnarea -->
+		<div class="btn_area02 pt0 mb0">
+			<a href="#" id="popupButton1"><span class="cg h35">등록하기</span></a>
+		</div>
+		<!-- //btnarea -->
+	</div>
+</div>
+<!-- //layer_popup 환자 신규등록 -->
+
+<!-- layer_popup 환자 정보수정 -->
+<div id="popup4" class="Pstyle2">
+	<span class="b-close"><img src="../../images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">환자정보 수정</p>
+	<div class="content pformT">
+		<table>			
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>차트번호</th>
+					<td><input type="text" name="" id="" style="width:220px;"></td>
+				</tr>
+				<tr>
+					<th>환자명 <span class="fc04">*</span></th>
+					<td><input type="text" name="" id="" style="width:220px;"></td>
+				</tr>
+				<tr>
+					<th>성별 <span class="fc04">*</span></th>
+					<td>
+						<select name="birth_year" id="birth1"  style="width:70px;">
+							<option value="남자">남자</option>
+							<option value="여자">여자</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>생년월일 <span class="fc04">*</span></th>
+					<td>
+						<select name="birth_year" id="birth1"  style="width:70px;">
+							<option value="1940">1940</option>
+							<option value="1941">1941</option>
+						</select>
+						년
+						<select name="birth_month" id=""  style="width:60px;">
+							<option value="01">01</option>
+							<option value="02">02</option>
+						</select>
+						월
+						<select name="birth_day" id=""  style="width:60px;">
+							<option value="01">01</option>
+							<option value="02">02</option>
+						</select>
+						일
+					</td>
+				</tr>
+				<tr>
+					<th>연락처</th>
+					<td>
+						<input type="text" id="" name="phone01" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="phone02" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="phone03" style="width:65px;" maxlength="4">
+					</td>
+				</tr>
+				<tr>
+					<th>휴대전화 <span class="fc04">*</span></th>
+					<td>
+						<input type="text" id="" name="handphone01" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="handphone02" style="width:65px;" maxlength="4"> -
+						<input type="text" id="" name="handphone03" style="width:65px;" maxlength="4">
+					</td>
+				</tr>
+				<tr>
+					<th>주소 <span class="fc04">*</span></th>
+					<td>
+						<span class="dI H40">
+							<input type="text" name="zipcode01" id="zip_cd" style="width:180px;" readonly><a href="#"><span id="addrBtn1" class="h34 cB">주소찾기</span></a>
+						</span>
+						<span class="dI">
+							<input type="text" name="address01" style="width:350px;" readonly id="addr1">
+							<input type="text" name="address02" style="width:350px;" id="addr2"> 
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th>체격/체형</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:20px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>진단</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:40px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>증상</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>기타1</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>기타2</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:30px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- btnarea -->
+		<div class="btn_area02 pt0 mb0">
+			<a href="#" id="popupButton1"><span class="cg h35">수정</span></a>
+		</div>
+		<!-- //btnarea -->
+	</div>
+</div>
+<!-- //layer_popup 환자 정보수정 -->
+
+<!-- layer_popup 복용법 및 주의사항 불러오기 -->
+<div id="popup5" class="Pstyle2">
+	<span class="b-close"><img src="../../images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">복용법 및 주의사항</p>	
+	<div class="content pformT">
+		<table>			
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>복용법 명</th>
+					<td>
+						<select name="" id=""  style="width:295px;">
+							<option value="복용법 01">복용법 01</option>
+						</select>
+						<a href="#"><span id="addrBtn1" class="h34 cB">적용</span></a>
+					</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:150px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<p class="pcomment01">
+			* 환자에게 지시할 복용법을 미리 정리해 놓으면 편리합니다.<br/>
+			* <span class="fc10">[적용]</span>버튼을 클릭하면 해당내용이 입력됩니다.
+		</p>
+	</div>
+</div>
+<!-- //layer_popup 조제지시사항 불러오기 -->
+
+<!-- layer_popup 조제지시사항 불러오기 -->
+<div id="popup6" class="Pstyle2">
+	<span class="b-close"><img src="../../images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">조제지시사항</p>
+	<div class="content pformT">
+		<table>
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>조제지시명</th>
+					<td>
+						<select name="" id=""  style="width:295px;">
+							<option value="조제지시서 01">조제지시서 01</option>
+						</select>
+						<a href="#"><span id="addrBtn1" class="h34 cB">적용</span></a>
+					</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:150px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="pcomment01">
+			* 탕전실에 지시할 내용을 미리 정리해 놓으면 편리합니다.<br/>
+			* <span class="fc10">[적용]</span>버튼을 클릭하면 해당내용이 입력됩니다.
+		</p>
+	</div>
+</div>
+<!-- //layer_popup 조제지시사항 불러오기 -->
+
+<!-- layer_popup 복용법 및 주의사항 수정, 입력 -->
+<div id="popup7" class="Pstyle2">
+	<span class="b-close"><img src="../../images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">복용법 및 주의사항</p>	
+	<div class="content pformT">
+		<p class="pcomment02">* 환자에게 지시할 복용법을 미리 정리해 놓으면 편리합니다.</p>
+		<table>			
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>복용법 명</th>
+					<td>
+						<select name="" id=""  style="width:355px;">
+							<option value="복용법 01">복용법 01</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:150px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- btnarea -->
+		<div class="btn_area01 pt15 mb0">
+			<a href="#"><span id="addrBtn1" class="h34 cg">확인</span></a>
+			<a href="#"><span id="addrBtn1" class="h34 cglay">취소</span></a>
+		</div>
+		<!-- //btnarea -->
+	</div>
+</div>
+<!-- //layer_popup 조제지시사항 불러오기 -->
+
+<!-- layer_popup 조제지시사항  수정, 입력 -->
+<div id="popup8" class="Pstyle2">
+	<span class="b-close"><img src="/assets/user/images/sub/btn_close02.png" alt="닫기" /></span>
+	<p class="ptit">조제지시사항</p>
+	<div class="content pformT">
+		<p class="pcomment02">* 탕전실에 지시할 내용을 미리 정리해 놓으면 편리합니다.</p>
+		<table>			
+			<colgroup>
+				<col width="120px" />
+				<col width="*" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>조제지시명</th>
+					<td>
+						<select name="" id=""  style="width:355px;">
+							<option value="조제지시서 01">조제지시서 01</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea name="" id="" style="width:350px; height:150px;resize:none;"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- btnarea -->
+		<div class="btn_area01 pt15 mb0">
+			<a href="#"><span id="addrBtn1" class="h34 cg">확인</span></a>
+			<a href="#"><span id="addrBtn1" class="h34 cglay">취소</span></a>
+		</div>
+		<!-- //btnarea -->		
+	</div>
+</div>
+<!-- //layer_popup 조제지시사항 불러오기 -->
+
+</body>
+</html>

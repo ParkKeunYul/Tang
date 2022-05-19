@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.base.PopupDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM popup_data
+		 WHERE 1 = 1
+		   AND pop_type = #{param.pop_type}
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM popup_data
+		 WHERE 1 = 1
+		   AND pop_type = #{param.pop_type}
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>		 
+	</select>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE popup_data
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	
+	<select id="select_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		     
+		  FROM popup_data
+		 WHERE seqno = ${param.seqno} 
+	</select>
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM popup_data		 
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into popup_data(
+			 upfile
+			,w_size
+			,h_size
+			,start_date
+			,end_date
+			,top_size
+			,left_size
+			,title
+			,view_yn
+			,yn_link
+			,yn_win
+			,part
+			,pop_type
+			,wdate
+			,id
+			,name
+			,han_name
+			,content
+		) VALUES (
+			 #{param.upfile}
+			,#{param.w_size}
+			,#{param.h_size}
+			,#{param.start_date}
+			,#{param.end_date}
+			,#{param.top_size}
+			,#{param.left_size}
+			,#{param.title}
+			,#{param.view_yn}
+			,#{param.yn_link}
+			,#{param.yn_win}
+			,#{param.part}
+			,#{param.pop_type}
+			,now()
+			,#{param.id}
+			,#{param.name}
+			,#{param.han_name}
+			,#{param.content}
+		)
+	</insert>
+	
+	<insert id="mod" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE popup_data
+		  set w_size     = #{param.w_size}
+			 ,h_size     = #{param.h_size}
+			 ,start_date = #{param.start_date}
+			 ,end_date   = #{param.end_date}
+			 ,top_size   = #{param.top_size}
+			 ,left_size  = #{param.left_size}
+			 ,title      = #{param.title}
+			 ,view_yn    = #{param.view_yn}
+			 ,yn_link    = #{param.yn_link}
+			 ,yn_win     = #{param.yn_win}
+			 ,part       = #{param.part}
+			 <if test="param.upfile != '' and param.upfile != null " >
+			  	,upfile   = #{param.upfile}
+			 </if>
+			,id           = #{param.id}
+			,name  		  = #{param.name}
+			,han_name     = #{param.han_name}
+			,content      = #{param.content}
+	    WHERE seqno = ${param.seqno}
+	</insert>
+	
+	<select id="del_select" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM popup_data
+		 WHERE seqno in ( ${param.seqno} )
+	</select>
+	
+	<delete id="del" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM popup_data
+		 WHERE seqno in ( ${param.seqno} )
+	</delete>
+	
+</mapper>

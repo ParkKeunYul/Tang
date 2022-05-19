@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.GoodsGroupDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2	     
+		  FROM shop_group 
+		 WHERE del_yn != 'y'
+		 ORDER by seqno asc limit 0 , 1000
+	</select>
+	
+	<select id="select_total" resultType="Integer" parameterType="kr.co.hany.util.CommonMap">
+		SELECT count(seqno)		     
+		  FROM shop_group 
+		 WHERE del_yn != 'y'
+	</select>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE shop_group
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	<select id="max_sort_seq" resultType="Integer"> 
+		SELECT max(sort_seq) + 1
+		  FROM shop_group
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO shop_group(
+			 group_name
+			,group_code
+			,use_yn
+			,del_yn
+			,sort_seq
+			,wdate
+		)
+		SELECT #{param.group_name}
+		      ,LPAD(MAX(group_code)+ 1, 5, '0')
+		      ,#{param.use_yn} 
+		      ,'n'
+		      ,#{param.sort_seq}
+		      ,now()
+		  FROM shop_group
+	</insert>
+	
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE shop_group
+		   SET group_name = #{param.group_name}
+		      ,sort_seq   = #{param.sort_seq}
+		      ,use_yn     = #{param.use_yn}
+		 WHERE seqno      = ${param.seqno}
+	</update>
+	
+	<delete id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE shop_group
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</delete>
+	
+	
+</mapper>

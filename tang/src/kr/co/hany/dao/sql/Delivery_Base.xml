@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.delivery.BaseDAO">
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM manage_delivery
+		WHERE 1 =1 		  
+		 ORDER by seqno asc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM manage_delivery
+		 WHERE 1 = 1		 		
+	</select>
+	
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE manage_delivery
+		   SET ${param.cellName} = #{param.cellValue}
+		      ,udate             = now()
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	
+	<update id="update_sel_yn_all" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE manage_delivery
+		   SET sel_yn = 'n'
+		      ,udate  = now()
+	</update>
+	
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO manage_delivery(
+			 delivery_nm
+			,price
+			,use_yn
+			,wdate		
+			,udate	
+		) VALUES (
+			#{param.delivery_nm}
+		   ,#{param.price}
+		   ,#{param.use_yn}
+		   ,now()
+		   ,now()
+		)
+	</insert>
+	
+	<select id="select_base" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT seqno
+		  FROM manage_delivery
+		 WHERE sel_yn = 'y'
+		 ORDER by seqno desc limit 0 , 1
+	</select>	
+</mapper>

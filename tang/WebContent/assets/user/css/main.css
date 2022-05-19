@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+#Mcontainer {width:100%; min-height:800px; background:url('../images/main/bg_main.jpg') no-repeat center 0;}
+#Mcontainer #Mcontents {position:relative; width:1200px; margin:0 auto;}
+#Mcontainer #Mcontents .tit {position:absolute; top:300px; left:445px;}
+#Mcontainer #Mcontents ul {position:absolute; top:170px; right:0;}
+#Mcontainer #Mcontents .icon01 {background:url('../images/main/bg_icon01.png') no-repeat center 0;}
+#Mcontainer #Mcontents .icon01:hover {background:url('../images/main/bg_icon01_ov.png') no-repeat center 0;}
+#Mcontainer #Mcontents .icon02 {background:url('../images/main/bg_icon02.png') no-repeat center 0;}
+#Mcontainer #Mcontents .icon02:hover {background:url('../images/main/bg_icon02_ov.png') no-repeat center 0;}
+#Mcontainer #Mcontents .icon03 {background:url('../images/main/bg_icon03.png') no-repeat center 0;}
+#Mcontainer #Mcontents .icon03:hover {background:url('../images/main/bg_icon03_ov.png') no-repeat center 0;}

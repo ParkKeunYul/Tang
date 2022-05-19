@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MyCartDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.* 
+		 	   ,date_format(T1.wdate, '%Y-%m-%d') as wdate2
+		 	   ,concat(T1.d_to_address01,' ',T1.d_to_address02)  as full_d_to_addr
+		 	   ,(SELECT count(seqno) FROM view_p_order_cart WHERE T1.id = id AND d_to_address01 = T1.d_to_address01 AND d_to_address02 = T1.d_to_address02   AND c_tang_type != 1) as d_cnt
+		 	   ,(SELECT count(seqno) FROM view_p_order_cart WHERE T1.id = id AND bunch = T1.id  AND cart_complete = 'n' AND c_tang_type != 1 ) as bunch_cnt
+		 	   ,(SELECT concat(d_to_address01,' ',d_to_address02) FROM view_p_order_cart WHERE T1.id = id AND bunch = T1.id  AND cart_complete = 'n' AND c_tang_type != 1  ORDER by seqno limit 0 ,1 ) as bunch_addr
+		 	   ,(SELECT sum(c_pack_ea) FROM view_p_order_cart WHERE T1.id = id AND bunch = T1.id  AND cart_complete = 'n' ) as bunch_pack_ea
+		  FROM view_p_order_cart T1
+		 WHERE T1.id = #{id}
+		   AND T1.cart_complete = 'n' 
+		   AND T1.bunch         = 'n'
+		   AND T1.mem_sub_seqno = ${search_sub_seqno}
+		 ORDER by T1.seqno desc
+	</select>
+	
+
+	<select id="bundle_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.* 
+		 	   ,date_format(T1.wdate, '%Y-%m-%d') as wdate2
+		 	   ,concat(T1.d_to_address01,' ',T1.d_to_address02)  as full_d_to_addr
+		 	   ,(SELECT count(seqno) FROM view_p_order_cart WHERE T1.id = id AND concat(d_to_address01,' ',d_to_address02) = concat(T1.d_to_address01,' ',T1.d_to_address02)  ) as d_cnt
+		  FROM view_p_order_cart T1
+		 WHERE T1.id         = #{id}
+		   AND cart_complete = 'n'
+		   AND bunch         = #{id}
+		   AND T1.mem_sub_seqno = ${search_sub_seqno}
+		 ORDER by T1.seqno desc
+	</select>
+	
+	
+	<update id="cancel_bunch" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order_cart
+		   SET bunch = 'n'
+		WHERE seqno in( ${seqno} )	
+	</update>
+
+	<update id="add_bunch" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order_cart
+		   SET bunch = #{id}
+		WHERE seqno = ${seqno}	
+	</update>
+	
+	<delete id="del_cart" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM p_order_cart
+		 WHERE seqno in( ${seqno} )
+	</delete>
+	
+	
+	<delete id="del_cart_yak" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM p_order_yakjae_cart
+		 WHERE p_seqno in( ${seqno} )
+	</delete>
+
+	<select id="select_ordering_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * 
+			  ,date_format(wdate, '%Y-%m-%d') as wdate2
+		  FROM p_order_cart
+		 WHERE seqno in ( ${all_seqno} )
+	</select>
+	
+	<select id="select_order_price_sum" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT sum(order_total_price) 
+		  FROM view_p_order_cart
+		 WHERE seqno in ( ${pay_seqno} )
+	</select>
+	
+	<select id="getOrderMaxSeqno" resultType="Integer" >
+		SELECT ifnull(max(seqno), 0) +1 as cnt FROM p_order
+	</select>
+	
+	<insert id="add_order" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO p_order(
+			 id                  , wdate              , mem_seqno              , name                         ,han_name
+	        ,wp_seqno            , w_jindan           , w_name                 , w_age                        ,w_birthyear
+	        ,w_etc01             , w_etc02            , w_contents             , s_name                       , b_name
+	        ,c_chup_ea_price     , c_chup_ea          , c_chup_price           , c_chup_ea_g                  , c_chup_ea_1
+	        ,c_chup_g            , c_pack_ml          , c_pack_ea              , c_box_type                   , c_box_text
+	        ,c_pouch_type        , c_pouch_text       , c_joje_contents        , c_joje_file                  , c_joje_folder
+	        ,c_bokyong_contents  , c_bokyong_file     , c_bokyong_folder       , d_type                       , d_from_name
+	        ,d_from_zipcode      , d_from_address01   , d_from_address02       , d_from_handphone             , d_to_zipcode
+	        ,d_to_address01      , d_to_address02     , d_to_handphone         , d_to_contents                , order_yakjae_price 
+	        ,order_tang_price    , order_suju_price   , order_delivery_price   , order_delivery_price_check   , order_pojang_price
+	        ,order_total_price   , c_tang_type        , c_tang_check13         , cart_complete                , w_sex 
+	        ,w_size              , order_date         , member_sale            , view_yn                      , bunch 
+		    ,c_stpom_type        , c_stpom_text       , payment_kind           , order_ing                    , cart_seqno
+		    ,payment             , seqno              , order_no               , d_to_name                    , d_to_tel
+		    ,d_from_tel          , bunch_num          , bill_part              , bill_name                    , bill_email
+		    ,bill_handphone      , card_gu_no         , card_ju_no             , card_su_no                   , card_nm
+		    ,card_code           , card_quota         , card_amt               , order_sale_per               , mem_sub_seqno
+		    ,order_handphone     , c_tang_check14     , c_tang_check15         , c_tang_check16
+		)
+		SELECT id                  , wdate              , mem_seqno              , name                         ,han_name
+		      ,wp_seqno            , w_jindan           , w_name                 , w_age                        ,w_birthyear
+		      ,w_etc01             , w_etc02            , w_contents             , s_name                       , b_name
+		      ,c_chup_ea_price     , c_chup_ea          , c_chup_price           , c_chup_ea_g                  , c_chup_ea_1
+		      ,c_chup_g            , c_pack_ml          , c_pack_ea              , c_box_type                   , c_box_text
+		      ,c_pouch_type        , c_pouch_text       , c_joje_contents        , c_joje_file                  , c_joje_folder
+		      ,c_bokyong_contents  , c_bokyong_file     , c_bokyong_folder       , d_type                       , d_from_name
+		      ,d_from_zipcode      , d_from_address01   , d_from_address02       , d_from_handphone             , d_to_zipcode
+		      ,d_to_address01      , d_to_address02     , d_to_handphone         , d_to_contents                , order_yakjae_price 
+		      ,order_tang_price    , order_suju_price   , order_delivery_price -${order_delivery_price}   , order_delivery_price_check   , order_pojang_price
+		      ,order_total_price - ${order_total_price}   , c_tang_type        , c_tang_check13         , cart_complete                , w_sex 
+		      ,w_size              , now()              , member_sale -${member_sale}           , view_yn                      , #{bunch} 
+			  ,c_stpom_type        , c_stpom_text       , #{payment_kind}    	 , ${order_ing}                 , ${cart_seqno} as cart_seqno
+			  ,${payment}          , ${p_order_seqno}   , #{order_no}            , d_to_name                    , d_to_tel
+			  ,d_from_tel          , ${bunch_num}       , #{bill_part}           , #{bill_name}                 , #{bill_email}
+			  ,#{bill_handphone}   , #{card_gu_no}      , #{card_ju_no}          , #{card_su_no}                , #{card_nm}
+			  ,#{card_code}        , #{card_quota}      , #{card_amt}            , order_sale_per               , mem_sub_seqno
+			  ,#{order_handphone}  , c_tang_check14     , c_tang_check15         , c_tang_check16
+		 FROM p_order_cart
+		WHERE seqno = ${cart_seqno}	
+	</insert>
+
+
+	<insert id="add_order_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO p_order_yakjae(
+			   mem_seqno
+	          ,p_joje
+	          ,yak_code
+	          ,id
+	          ,wdate
+	          ,total_yakjae
+	          ,yak_price
+	          ,p_danga
+	          ,p_from
+	          ,p_seqno
+		)SELECT mem_seqno
+		       ,p_joje
+		       ,yak_code
+		       ,id
+		       ,now() as wdate
+		       ,total_yakjae
+		       ,yak_price
+		       ,p_danga
+		       ,p_from
+		       ,${p_order_seqno}
+		  FROM p_order_yakjae_cart
+		 WHERE p_seqno = #{cart_seqno}
+	</insert>
+	
+	<select id="select_pay_result_list" parameterType="java.util.Map" resultMap="boardMap">
+		SELECT * 
+		      ,date_format(wdate, '%Y-%m-%d') as wdate2
+		  FROM p_order 
+		 WHERE cart_seqno in ( ${all_cart_seqno} )
+		 ORDER by seqno asc 
+	</select>
+	
+	<select id="sub_id_list" parameterType="java.util.Map" resultMap="boardMap">
+		SELECT * FROM member_sub
+		 WHERE mem_seqno = ${mem_seqno}
+		   AND del_yn    = 'n' 
+		 ORDER by seqno
+		
+	</select>
+
+</mapper>

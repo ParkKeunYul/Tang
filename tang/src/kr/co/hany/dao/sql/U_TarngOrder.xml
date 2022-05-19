@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="TangOrderDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<select id="pre_yajkae_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.p_joje
+		      ,T2.*
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		  FROM p_order_yakjae T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.p_seqno  = ${p_seqno}
+		 ORDER by T2.yak_name asc
+	</select>
+	
+	
+	<select id="getMaxSeqno" resultType="Integer" >
+		SELECT ifnull(max(seqno), 0) +1 as cnt FROM p_order_cart
+	</select>
+	
+	<insert id="save_cart" parameterType="kr.co.hany.util.CommonMap" >
+		INSERT into p_order_cart(
+			 seqno                , id                   , wdate                 , order_no                 , name 
+			,han_name             , wp_seqno             , w_jindan              , w_name                   , w_age
+			,w_birthyear          , w_etc01              , w_etc02               , w_contents               , s_name
+			,b_name               , c_chup_ea_price      , c_chup_ea             , c_chup_price             , c_chup_ea_g
+			,c_chup_ea_1          , c_chup_g             , c_pack_ml             , c_pack_ea                , c_box_type
+			,c_box_price          , c_box_text           , c_pouch_type          , c_pouch_text             , c_pouch_price
+			,c_joje_contents      , c_joje_file          , c_bokyong_contents    , c_bokyong_file           , d_type
+			,d_from_name          , d_from_zipcode       , d_from_address01      , d_from_address02         , d_to_handphone
+			,d_to_name            , d_to_zipcode         , d_to_address01        , d_to_address02           , d_to_contents
+			,order_yakjae_price   , order_tang_price     , order_suju_price      , order_delivery_price     , order_delivery_price_check
+			,order_pojang_price   , order_total_price    , c_tang_type           , c_tang_check13           , cart_complete
+			,w_sex                , w_size               , member_sale           , view_yn                  , c_stpom_type
+			,c_stpom_text         , mem_seqno            , d_from_handphone      , bunch                    , c_joje_folder
+			,c_bokyong_folder     , order_sale_per       , mem_sub_seqno         , c_tang_check14           , c_tang_check15
+			,c_tang_check16
+		) VALUES (
+			 #{seqno}              , #{id}               , now()                 , #{order_no}              , #{name} 
+			,#{han_name}           , #{wp_seqno}         , #{w_jindan}           , #{w_name}                , #{w_age}
+			,#{w_birthyear}        , #{w_etc01}          , #{w_etc02}            , #{w_contents}            , #{s_name}
+			,#{b_name}             , #{c_chup_ea_price}  , #{c_chup_ea}          , #{c_chup_price}          , #{c_chup_ea_g}
+			,#{c_chup_ea_1}        , #{c_chup_g}         , #{c_pack_ml}          , #{c_pack_ea}             , #{c_box_type}
+			,#{c_box_price}        , #{c_box_text}       , #{c_pouch_type}       , #{c_pouch_text}          , #{c_pouch_price}
+			,#{c_joje_contents}    , #{c_joje_file}      , #{c_bokyong_contents} , #{c_bokyong_file}        , #{d_type}
+			,#{d_from_name}        , #{d_from_zipcode}   , #{d_from_address01}   , #{d_from_address02}      , #{d_to_handphone}
+			,#{d_to_name}          , #{d_to_zipcode}     , #{d_to_address01}     , #{d_to_address02}        , #{d_to_contents}
+			,#{order_yakjae_price} , #{order_tang_price} , #{order_suju_price}   , #{order_delivery_price}  , #{order_delivery_price_check}
+			,#{order_pojang_price} , #{order_total_price}, #{c_tang_type}        , #{c_tang_check13}        , #{cart_complete}
+			,#{w_sex}              , #{w_size}           , #{member_sale}        , #{view_yn}               , #{c_stpom_type}
+			,#{c_stpom_text}       , ${mem_seqno}        , #{d_from_handphone}   , #{bunch}                 , #{c_joje_folder}
+			,#{c_bokyong_folder}   , ${order_sale_per}   , ${mem_sub_seqno}      , #{c_tang_check14}        , #{c_tang_check15}
+			,#{c_tang_check16}
+		)
+	</insert>
+	
+	
+	<update id="update_cart" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order_cart 
+		   SET wp_seqno = #{wp_seqno}
+		      ,w_jindan = #{w_jindan}
+		      ,w_name = #{w_name}
+		      ,w_age = #{w_age}
+		      ,w_etc01 = #{w_etc01}
+		      ,w_etc02 = #{w_etc02}
+		      ,s_name = #{s_name}
+		      ,b_name = #{b_name}
+		      ,c_chup_ea_price = #{c_chup_ea_price}
+		      ,c_chup_ea = #{c_chup_ea}
+		      ,c_pack_ea  = #{c_pack_ea}
+		      ,c_chup_price = #{c_chup_price}
+		      ,c_chup_ea_g = #{c_chup_ea_g}
+		      ,c_pack_ml    = #{c_pack_ml}
+		      ,c_box_price = #{c_box_price}
+		      ,c_box_text = #{c_box_text}
+		      ,c_box_type = #{c_box_type}
+		      ,c_pouch_type = #{c_pouch_type}
+		      ,c_pouch_text = #{c_pouch_text}
+		      ,c_pouch_price = #{c_pouch_price}
+		      ,c_joje_contents = #{c_joje_contents}		      
+		      ,c_bokyong_contents = #{c_bokyong_contents}		      
+		      ,d_type = #{d_type}
+		      ,d_from_name = #{d_from_name}
+		      ,d_from_zipcode = #{d_from_zipcode}
+		      ,d_from_address01 = #{d_from_address01}
+		      ,d_from_address02 = #{d_from_address02}
+		      ,d_to_handphone = #{d_to_handphone}
+		      ,d_to_name = #{d_to_name}
+		      ,d_to_zipcode = #{d_to_zipcode}
+		      ,d_to_address01 = #{d_to_address01}
+		      ,d_to_address02 = #{d_to_address02}
+		      ,d_to_handphone = #{d_to_handphone}
+		      ,order_yakjae_price = #{order_yakjae_price}
+		      ,order_tang_price = #{order_tang_price}
+		      ,order_suju_price = #{order_suju_price}
+		      ,order_delivery_price = #{order_delivery_price}
+		      ,order_delivery_price_check = #{order_delivery_price_check}
+		      ,order_pojang_price = #{order_pojang_price}
+		      ,order_total_price = #{order_total_price}
+		      ,c_tang_type = #{c_tang_type}
+		      ,c_tang_check13 = #{c_tang_check13}
+		      ,c_tang_check14 = #{c_tang_check14}
+		      ,c_tang_check15 = #{c_tang_check15}
+		      ,c_tang_check16 = #{c_tang_check16}
+		      ,w_sex = #{w_sex}
+		      ,w_size = #{w_size}
+		      ,member_sale = #{member_sale}
+		      ,view_yn = #{view_yn}
+		      ,c_stpom_type = #{c_stpom_type}
+		      ,c_stpom_text = #{c_stpom_text}
+		      ,d_from_handphone = #{d_from_handphone}
+		      <if test="c_joje_file != '' and c_joje_file != null " >
+		      ,c_joje_file = #{c_joje_file}
+		      ,c_joje_folder = #{c_joje_folder}
+		      </if>
+		      <if test="c_bokyong_file != '' and c_bokyong_file != null " >
+		      ,c_bokyong_folder = #{c_bokyong_folder}
+		      ,c_bokyong_file = #{c_bokyong_file}
+		      </if>
+		      ,order_sale_per  = ${order_sale_per}
+		 WHERE seqno = ${cart_seqno}
+		   AND id    = #{id} 
+	</update>
+	
+	<insert id="save_cart_yakjae" parameterType="java.util.Map">
+		INSERT INTO p_order_yakjae_cart(
+			 p_seqno    ,p_joje          , yak_code    ,id         , wdate
+			,ea         ,total_yakjae    , yak_price   ,p_danga    , p_from
+			,mem_seqno
+		) VALUES (
+			 #{p_seqno} ,#{p_joje}       ,#{yak_code}  ,#{id}      ,#{wdate}
+			,#{ea}      ,#{total_yakjae} ,#{yak_price} ,#{p_danga} ,#{p_from}
+			,#{mem_seqno}
+		)
+	</insert>
+	
+	<delete id="del_cart_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM p_order_yakjae_cart
+		 WHERE p_seqno = ${cart_seqno}
+		   AND id      = #{id}
+	</delete>
+	
+	
+	<select id="cart_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * 
+			  ,date_format(wdate, '%Y년%m월%d일') as wdate2
+		      ,seqno as cart_seqno
+		  FROM p_order_cart
+		 WHERE seqno = ${cart_seqno} 
+		   AND id    = #{id}
+	</select>
+	
+	<select id="cart_yajkae_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.p_joje as my_joje
+		      ,T2.*
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		  FROM p_order_yakjae_cart T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.p_seqno  = ${cart_seqno}
+		 ORDER by T1.seqno asc
+	</select>
+
+	<update id="update_cart_price" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE p_order_cart
+		   SET order_yakjae_price  = ${order_yakjae_price}
+		      ,member_sale         = ${member_sale}
+		      ,order_total_price   = ${order_total_price}
+		 WHERE seqno = ${cart_seqno} 
+		   AND id    = #{id}		      
+	</update>
+	
+	<select id="select_yakjae_change_danga" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.p_joje
+		      ,T1.yak_price
+		      ,T1.seqno as yc_seqno
+		      ,T2.*
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		  FROM p_order_yakjae_cart T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.p_seqno    = ${cart_seqno}
+		   AND T1.id    	 = #{id}	
+		   AND T1.yak_price != T2.yak_danga
+		 ORDER by T2.yak_name asc
+	</select>
+	
+	<update id="update_cart_yakjae_danga" parameterType="java.util.Map">
+		UPDATE p_order_yakjae_cart
+		   SET yak_price = ${yak_danga}
+		      ,p_danga   = ${p_danga}
+		 WHERE seqno     = ${yc_seqno}
+		   AND p_seqno   = ${cart_seqno}
+	</update>
+	
+	
+	
+	<select id="dic_yajkae_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.seqno
+		      ,T1.yak_name
+		      ,T1.yak_status
+		      ,T1.yak_from
+		      ,T1.yak_danga
+		      ,T1.group_code
+		      ,T1.yak_code
+		      ,T2.dy_standard  as my_joje
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt
+		  FROM yakjae T1
+		 INNER JOIN dic_yakjae T2 
+		    on T1.yak_code = T2.dy_code
+		 WHERE T2.s_code = #{s_code}
+		   AND T2.b_code = #{b_code}
+		ORDER by T1.yak_name
+	</select>
+	
+	<select id="order_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * 
+			  ,date_format(order_date, '%Y년%m월%d일') as order_date2
+		  FROM p_order
+		 WHERE seqno      = ${tang_seqno} 
+		   AND mem_seqno  = #{mem_seqno}
+	</select>
+	
+	
+	<select id="preorder_yajkae_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.p_joje as my_joje
+		      ,T2.seqno
+		      ,T2.yak_name
+		      ,T2.yak_status
+		      ,T2.yak_from
+		      ,T2.yak_danga
+		      ,T2.group_code
+		      ,T2.yak_code
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		  FROM p_order_yakjae T1
+		INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.p_seqno = ${tang_seqno}
+		 ORDER by T1.seqno asc
+	</select>
+	
+	<delete id="del_temp" parameterType="kr.co.hany.util.CommonMap" >
+		DELETE FROM p_order_yakjae_temp
+		 WHERE mem_seqno = ${mem_seqno}
+	</delete>
+	
+	<insert id="add_temp" parameterType="java.util.Map">
+		INSERT INTO p_order_yakjae_temp(
+			 mem_seqno
+			,yak_seqno
+			,yak_name
+			,yak_status
+			,yak_from
+			,my_joje
+			,yak_danga
+			,danga
+			,group_cnt
+			,group_code
+			,yak_code
+		) VALUES (
+			 ${mem_seqno}
+			,${seqno}
+			,#{yak_name}
+			,#{yak_status}
+			,#{yak_from}
+			,#{my_joje}
+			,#{yak_danga}
+			,#{danga}
+			,#{group_cnt}
+			,#{group_code}
+			,#{yak_code}
+		)
+	</insert>
+	
+	<select id="check_temp" parameterType="kr.co.hany.util.CommonMap" resultType="Integer" >
+		SELECT count(seqno)
+		  FROM p_order_yakjae_temp
+		 WHERE mem_seqno = ${mem_seqno}
+	</select>
+	
+	
+	<select id="select_temp" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.my_joje
+		      ,T2.seqno
+		      ,T2.yak_name
+		      ,T2.yak_status
+		      ,T2.yak_from
+		      ,T2.yak_danga
+		      ,T2.group_code
+		      ,T2.yak_code
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		  FROM p_order_yakjae_temp T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.mem_seqno = ${mem_seqno}
+		 ORDER by T1.seqno asc
+ </select>
+ 
+ 
+ <delete id="del_cart_temp" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM p_order_yakjae_cart
+		 WHERE p_seqno = ${seqno}
+	</delete>
+
+</mapper>

@@ -1,0 +1,171 @@
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
+
+
+<META http-equiv="Expires" content="-1"> 
+<META http-equiv="Pragma" content="no-cache"> 
+<META http-equiv="Cache-Control" content="No-Cache">
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		
+		  	$("#jqGrid").jqGrid({
+		  		//caption : '최근 로그인 정보',
+		  		//dataType : 'local', // 로딩시 최초 조회 		  		
+		  		datatype: "local", 
+		  		url : 'select.do',
+		  		datatype: 'local',
+		  		hidegrid: false,
+		  		width: "100%",
+		  		height: "100%",
+		  		rowNum: 100000,
+		  		//rowList: [20,50,100,500],
+		  		//rowList: [3],
+		  		colNames:[
+		  			'번호' , '약재명'      , '그룹명'   , '원산지' , 'g당단가', 
+		  			'사용량', '기간별 입고량' , '총 입고량'
+		  		],
+		  		colModel:[
+		  			{name:'num_txt',		index:'num_txt',		width:48,	align:"center"  ,sortable : false},
+		  			{name:'yak_name',		index:'yak_name',		width:220,	align:"left"    ,sortable : false},
+		  			{name:'group_name',		index:'group_name',		width:120,	align:"left"  ,sortable : false},
+		  			{name:'yak_from',		index:'yak_from',		width:100,	align:"center"    ,sortable : false},
+		  			{name:'yak_danga',		index:'yak_danga',		width:100,	align:"right"  ,sortable : false
+		  				,formatter: 'integer',formatoptions:{thousandsSeparator:","},
+		  			},
+		  			{name:'use_cnt',		index:'use_cnt',		width:100,	align:"right"  ,sortable : false
+		  				,formatter: 'integer',formatoptions:{thousandsSeparator:","},
+		  			},
+		  			{name:'part_cnt',		index:'part_cnt',		width:100,	align:"right"  ,sortable : false
+		  				,formatter: 'integer',formatoptions:{thousandsSeparator:","},
+		  			},
+		  			{name:'all_cnt',		index:'all_cnt',		width:100,	align:"right"  ,sortable : false
+		  				,formatter: 'integer',formatoptions:{thousandsSeparator:","},
+		  			}
+		  		],
+				viewrecords: true,
+				autowidth: true,				
+				//sortname: 'seqno',
+				//sortorder: "desc",
+				viewrecords: true,
+				loadtext  : '데이터를 불러오는중입니다.',
+				emptyrecords  : '검색된 데이터가 없습니다',
+				//multiselect: true,
+				// cellEdit : true,
+				loadComplete: function(data) {
+					
+					var rows = $("#jqGrid").getDataIDs();
+					for (var i = 0; i < rows.length; i++){
+						$("#jqGrid").setCell(rows[i] , 'num_txt', i+1); // 특정 cell 색상변경
+					}// for
+				}							
+			});
+		  	
+		  	//페이지 넘 
+		  	jQuery("#jqGrid").jqGrid('navGrid','#jqGridControl',
+		  		{add:false,del:false,edit:false,search:false,refreshtext:"새로고침",position:'left'}	  				  	
+		  	);
+		  	
+		  	
+		  	$('#search_btn').click(function() {
+		  		var search_sday    = $('#search_sday').val();
+				var search_eday    = $('#search_eday').val();
+				var search_yaknm   = $('#search_yaknm').val();
+				var search_groupnm = $('#search_groupnm').val();
+				var search_from    = $('#search_from').val();
+				
+					
+				var param = { 
+					 search_sday    : search_sday
+					,search_eday    : search_eday
+					,search_yaknm   : search_yaknm
+					,search_groupnm : search_groupnm
+					,search_from    : search_from
+					,pageSearch     : 1
+				};
+				
+				$("#jqGrid").setGridParam({"postData": param ,datatype: "json"}).trigger("reloadGrid",[{page : 1}]);
+				
+				return false;
+			});
+		  	
+		  	$.datepicker.setDefaults({
+				changeMonth: true,
+				changeYear: true,
+				dateFormat: 'yy-mm-dd'
+				//inline: true
+			});
+		  	
+			$(".date").datepicker({});
+			
+			var today = getDay();
+			
+			//$('#search_sday').val( '2019-06-01' );
+			$('#search_sday').val( today.substr(0,8)+'01' );
+			$('#search_eday').val( today );
+	});
+	
+	function getDay(){
+		var d = new Date();
+		
+		var year  = d.getFullYear();
+		var month = (d.getMonth() + 1);
+		var day   = d.getDate();
+		var hh =  d.getHours();
+		var mm =  d.getMinutes();
+		var ss =  d.getSeconds();
+		
+		if(month<10){
+			month = '0'+ month;
+		}
+		if(day<10){
+			day = '0'+ day;
+		}
+		if(hh<10){
+			hh = '0'+ hh;
+		}
+		if(mm<10){
+			mm = '0'+ mm;
+		}
+		if(ss<10){
+			ss = '0'+ ss;
+		}
+
+		return year +'-'+month+'-'+day;
+	}
+	
+</script>
+	
+	
+	<div class="con_tit">통계 &gt; 약재사용통계</div>
+	
+	<div class="conBox">
+		<div class="inputArea disB">
+			기간 : <input type="text" class="date" style="width: 80px;" id="search_sday" readonly="readonly"   /> 
+			~ <input type="text" class="date"  style="width: 80px;" id="search_eday" readonly="readonly" />
+			
+			약재명 : <input type="text" name="search_yaknm" id="search_yaknm" style="width: 80px;" />
+			그룹명 : <input type="text" name="search_groupnm" id="search_groupnm" style="width: 80px;" />
+			원산지 : <input type="text" name="search_from" id="search_from" style="width: 80px;" />
+			
+			<a href="#" id="search_btn" class="btn01">검색</a>
+			
+		</div>
+		
+		<ul>
+			<li style="float: left;width: 60%;">
+				<table id="jqGrid"></table>
+			</li>
+			<li style="float: left;width: 40%;">
+				<p>선택된  약재 사용량</p>
+				<p>선택된  약재 입고량</p>
+			</li>
+		</ul>
+		
+		
+	</div>
+
+
+</html>

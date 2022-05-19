@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="ItemDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+
+	<select id="select_pouch" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,(CASE 
+		      		WHEN pouch_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as pouch_status_nm   
+		  FROM pouch_table 
+		  WHERE del_yn     != 'y'
+		    AND private_yn  = 'n'
+		  <if test="V_USE_ABLE != '' and V_USE_ABLE != null " >
+		  AND pouch_status = 'y'
+		  </if>
+		 ORDER by pouch_name asc 
+	</select>
+	
+	<select id="select_box" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		 
+		 	  ,(CASE 
+		      		WHEN box_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as box_status_nm       
+		  FROM box_table 
+		 WHERE del_yn     != 'y'
+		   AND private_yn  = 'n'
+		  <if test="V_USE_ABLE != '' and V_USE_ABLE != null " >
+		  AND box_status = 'y'
+		  </if>
+		 ORDER by box_name asc
+	</select>
+	
+	
+	<select id="select_p_pouch" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,(CASE 
+		      		WHEN pouch_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as pouch_status_nm   
+		  FROM pouch_table 
+		  WHERE del_yn != 'y'
+		    AND private_yn = 'y' 
+		  <if test="V_USE_ABLE != '' and V_USE_ABLE != null " >
+		  AND pouch_status = 'y'
+		  </if>
+		 ORDER by pouch_name asc 
+	</select>
+	
+	<select id="select_p_box" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		 
+		 	  ,(CASE 
+		      		WHEN box_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as box_status_nm       
+		  FROM box_table 
+		 WHERE del_yn     != 'y'
+		   AND private_yn  = 'y'
+		  <if test="V_USE_ABLE != '' and V_USE_ABLE != null " >
+		  AND box_status = 'y'
+		  </if>
+		 ORDER by box_name asc
+	</select>
+	
+	
+	
+	<select id="select_sty" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		 		 	      
+		  FROM sty_table 
+		  WHERE del_yn != 'y'
+		  <if test="V_USE_ABLE != '' and V_USE_ABLE != null " >
+		  AND status = 'y'		  
+		  </if>
+		 ORDER by sty_name asc
+	</select>
+	
+	<select id="select_joje" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * 
+		  FROM joje_table
+		 WHERE mem_seqno  = #{mem_seqno}
+	</select>
+	
+	<select id="select_bokyong" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * 
+		  FROM bokyong_table
+		 WHERE mem_seqno  = #{mem_seqno}
+	</select>
+	
+	<select id="select_setting" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.* 
+		      ,(SELECT box_name FROM box_table WHERE T1.p_c_box_type  = seqno) p_box_nm
+		      ,(SELECT pouch_name FROM pouch_table WHERE T1.p_c_pouch_type  = seqno) p_pouch_nm
+		  FROM common_setup T1
+		 WHERE T1.mem_seqno  = #{mem_seqno} limit 0,1
+	</select>
+	
+	
+	
+	<select id="exist_setting"  parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM common_setup
+		 WHERE mem_seqno  = #{mem_seqno}
+	</select>
+	
+	<update id="updateSetting" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE common_setup
+		   SET c_tang_type   = #{c_tang_type}
+			  ,c_chup_ea     = #{c_chup_ea}
+			  ,c_pack_ml     = #{c_pack_ml}
+			  ,c_pack_ea     = #{c_pack_ea}
+			  ,c_box_type    = #{c_box_type}
+			  ,c_pouch_type  = #{c_pouch_type}
+			  ,c_stpom_type  = #{c_stpom_type}
+			  ,temp_save     = #{temp_save}
+		 WHERE mem_seqno     = #{mem_seqno}
+	</update>
+	
+	
+	<update id="updateBaseN" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE joje_table
+		   SET base_yn    = 'n'
+		 WHERE mem_seqno  = #{mem_seqno}
+	</update>
+	
+	<update id="updateBaseY" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE joje_table
+		   SET base_yn    = 'y'
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno}
+	</update>
+	
+	
+	<select id="select_joje_view" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * 
+		  FROM joje_table
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno} 
+	</select>
+	
+	<update id="update_joje" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE joje_table
+		   SET name       = #{name}
+		      ,contents   = #{contents}
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno} 
+	</update>
+	
+	<insert id="add_joje" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into joje_table(
+			 mem_seqno
+			,wdate
+			,contents
+			,base_yn
+			,id
+			,name
+		) VALUES(
+			 ${mem_seqno}
+			,now()
+			,#{contents}
+			,'n'
+			,#{id}
+			,#{name}
+		)
+	</insert>
+	
+	<delete id="del_joje" parameterType="kr.co.hany.util.CommonMap">
+		DELETE from joje_table
+		 WHERE mem_seqno  = #{mem_seqno} 
+		   AND seqno      = ${seqno}       
+	</delete>
+	
+	
+	
+	<update id="updateBokBaseN" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE bokyong_table
+		   SET base_yn    = 'n'
+		 WHERE mem_seqno  = #{mem_seqno}
+	</update>
+	
+	<update id="updateBokBaseY" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE bokyong_table
+		   SET base_yn    = 'y'
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno}
+	</update>
+	
+	<select id="select_bok_view" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * 
+		  FROM bokyong_table
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno} 
+	</select>
+	
+	
+	<update id="update_bok" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE bokyong_table
+		   SET name       = #{name}
+		      ,contents   = #{contents}
+		 WHERE mem_seqno  = #{mem_seqno}
+		   AND seqno      = ${seqno} 
+	</update>
+	
+	<insert id="add_bok" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into bokyong_table(
+			 mem_seqno
+			,wdate
+			,contents
+			,base_yn
+			,id
+			,name
+		) VALUES(
+			 ${mem_seqno}
+			,now()
+			,#{contents}
+			,'n'
+			,#{id}
+			,#{name}
+		)
+	</insert>
+	
+	<delete id="del_bok" parameterType="kr.co.hany.util.CommonMap">
+		DELETE from bokyong_table
+		 WHERE mem_seqno  = #{mem_seqno} 
+		   AND seqno      = ${seqno}       
+	</delete>
+	
+	
+	<select id="private_box" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		 
+		 	  ,(CASE 
+		      		WHEN box_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as box_status_nm       
+		  FROM box_table 
+		 WHERE del_yn     != 'y'
+		   AND seqno       = #{p_c_box_type}
+	</select>
+	
+	
+	<select id="private_pouch" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,(CASE 
+		      		WHEN pouch_status = 'y' THEN '재고충분'
+		      		ELSE '재고부족'
+		      	 END )	as pouch_status_nm   
+		  FROM pouch_table 
+		  WHERE del_yn     != 'y'
+		    AND seqno       = #{p_c_pouch_type}		  
+		 ORDER by pouch_name asc 
+	</select>
+	
+	
+</mapper>

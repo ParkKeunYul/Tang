@@ -1,0 +1,184 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!-- container -->
+
+<div id="container">
+	<!-- submenuArea -->
+	<%
+		String fir_nm = "마이페이지";
+		String sec_nm = "마이페이지";
+		String thr_nm = "장바구니";
+		int fir_n = 5;
+		int sub_n = 2;
+	%>
+	<%@include file="../layout/submenu.jsp"%>
+	<!-- //submenuArea -->
+	
+	<style>
+		.cart_list tfoot .totalBoxfoot .Bt01,
+		.cart_list tfoot .totalBoxfoot .Bt02{
+			background: none;
+		}
+		
+		.cblue1 {background:#436782; color:#ffffff;border:1px solid #444444;}
+		.cblue1:hover {background:#345b79;}
+	</style>
+	
+	
+	<!-- contents -->
+	<div id="contents">
+		<c:if test="${fn:length(list) eq 0}">
+			<script>alert('결재할 처방이 없습니다.');location.href='/m05/02.do';</script>
+		</c:if>
+		<!-- 서브타이틀 -->
+		<div class="titArea">
+			<p class="Ltit">장바구니</p>
+			<p>주문하고자 하는 처방명을 클릭 후 <strong>배송정보 및 미기입 사항을 입력하셔야만 선택버튼이 활성화 되어 주문</strong> 할 수 있습니다.<br/><strong>복수 선택을 하여 한번에 주문</strong> 할 수도 있습니다.</p>
+		</div>
+		<!-- // 서브타이틀 -->
+		<!-- 내용 -->
+		<div class="conArea">
+			<form action="/m05/02_cart_order_com.do" name="frm" id="frm" method="post">
+				<!-- cartview -->
+				<table class="cart_list">
+					<colgroup>
+						<col width="120px" />
+						<col width="120px" />
+						<col width="140px" />
+						<col width="*" />
+						<col width="130px" />
+						<col width="180px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>처방일자</th>
+							<th>담당한의사</th>
+							<th>환자명</th>
+							<th>처방명</th>
+							<th>합계금액</th>
+							<th>배송지</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:set var = "sum1" value = "0" />
+						<c:forEach var="list" items="${list}">
+							<c:set var="q" value="${q+1}"></c:set>
+							<tr>
+								<td>${list.wdate2}</td>
+								<td>${list.w_name }</td>
+								<td>대박한의원</td>
+								<td class="L">${list.s_name}</td>
+								<td class="R fc01"><fmt:formatNumber value="${list.order_total_price}" pattern="#,###원" /></td>
+								<td>
+									<c:choose>
+										<c:when test="${list.d_type eq 1 }">원외탕전 → 한의원</c:when>
+										<c:when test="${list.d_type eq 4 }">원외탕전 → 환자</c:when>
+										<c:when test="${list.d_type eq 3 }">한의원 → 환자</c:when>
+										<c:when test="${list.d_type eq 6 }">방문수령</c:when>
+									</c:choose>
+									
+								</td>
+							</tr>
+							<c:set var="sum1" value = "${sum1 + list.order_total_price}" />
+							<input type="hidden" name="cart_seqno" id="cart_seqno${q}" value="${list.seqno}" />
+							<input type="hidden" name="s_name" id="s_name${q}" value="${list.s_name}" />
+						</c:forEach>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="6" class="totalBoxfoot">
+								<ul class="fr">
+									<li class="Bt01">&nbsp;<span class="won">&nbsp;</span></li>
+									<li class="Bt02">&nbsp;<span class="won">&nbsp;</span></li>
+									<li class="total">합계<span class="won"><fmt:formatNumber value="${sum1}" pattern="#,###원" /></span></li>
+								</ul>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				
+				<script>
+					$(document).ready(function() {
+						
+						$(".pay_type_select a span").click(function() {
+							$('.pay_type_select a span').removeClass('cblue1');							
+							$('.pay_type_select a span').addClass('cBB');
+							
+							$(this).removeClass('cBB');
+							$(this).addClass('cblue1');
+							
+							var type = $(this).html();
+							if(type == '신용카드'){
+								$('#tax_bill_area').hide();
+								$('#payment_kind').val('Card');
+							}else{
+								$('#tax_bill_area').show();
+								$('#payment_kind').val('Bank');
+							}
+							
+							return false;
+						});
+						
+						$("#orderBtn").click(function() {
+							var payment_kind = objToStr($('#payment_kind').val() , '');
+							
+							if(payment_kind == ''){
+								alert('결제 방법을 선택하세요.');
+								return false;
+							}
+							
+							$('#frm').submit();
+							
+							return false;
+						});
+					});
+				
+				</script>
+				
+				<!-- //cartlist -->
+				<div class="totalend">
+					<ul>
+						<li class="tit">결제수단</li>
+						<li class="pay_type_select">
+							<a href="#"><span class="cBB h30">신용카드</span></a>
+							<a href="#"><span class="cBB h30">무통장 입금</span></a>
+						</li>
+						<li>
+							<div id="tax_bill_area" style="display: none;">
+								<label for="bill_part1"><input type="radio" name="bill_part" id="bill_part1" value="1" />세금계산서</label>
+								<label for="bill_part2"><input type="radio" name="bill_part" id="bill_part2" value="2" />현금영수증</label>
+								<label for="bill_part3"><input type="radio" name="bill_part" id="bill_part3" value="3" checked="checked" />미신청</label>
+							</div>
+							<div style="display: none;">
+								<p>
+									이메일<input type="text"  name="bill_email" id="bill_email" />
+								</p>
+								<p>
+									이름 <input type="text" id="bill_name" name="bill_name" />
+									<input type="text" id="bill_handphone01" name="bill_handphone01" /> -
+									<input type="text" id="bill_handphone02" name="bill_handphone02" /> -
+									<input type="text" id="bill_handphone03" name="bill_handphone03" />  
+								</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- btnarea -->
+				<div class="btn_area01">
+					<a href="/m05/02.do"><span class="cw h60">취소</span></a>
+					<a href="02_cart_order_end.do" id="orderBtn" ><span class="cg h60">주문하기</span></a>
+				</div>
+				<!-- //btnarea -->
+				<input type="hidden" name="payment_kind" id="payment_kind" value=""/>
+				<input type="hidden" id="pay_total_order_price" name="pay_total_order_price" value="${sum1}" />
+			</form>
+		</div>
+		<!-- //내용 -->
+	</div>
+	<!-- //contents -->
+	
+</div>
+<!-- //container -->	

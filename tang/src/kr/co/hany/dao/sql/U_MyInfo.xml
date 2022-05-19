@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MyInfoDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<update id="updateInfo" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET jumin           = #{jumin}
+			  ,tel  	       = #{tel}
+			  ,handphone       = #{handphone}
+			  ,zipcode         = #{zipcode}
+			  ,address01       = #{address01}
+			  ,address02       = #{address02}
+			  ,email		   = #{email}						 
+			  ,license_no      = #{license_no}
+			  ,from_school     = #{from_school}
+			  ,school_no       = #{school_no}
+			  ,biz_no          = #{biz_no}			  
+			  ,han_zipcode     = #{han_zipcode}
+			  ,han_address01   = #{han_address01}
+			  ,han_address02   = #{han_address02}
+			  ,han_tel         = #{han_tel}
+			  ,han_fax		   = #{han_fax}	  
+			  ,mailing         = #{mailing}
+			  ,sex             = #{sex}
+			  <if test="member_file != '' and member_file != null  ">
+			  	,member_file     = #{member_file}
+			    ,member_file_re  = #{member_file_re}
+			  </if>
+			  <if test="member_file2 != '' and member_file2 != null  ">
+			  	,member_file2    = #{member_file2}
+			  	,member_file2_re = #{member_file2_re}
+			  </if>
+			  <if test="password != '' and password != null  ">
+			  	,password        = #{password}
+			  </if>
+		 WHERE seqno = ${seqno}
+	</update>
+	
+	
+	<select id="duple_sub_id" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap" >
+		SELECT * 
+		  FROM member_sub
+		 WHERE id = #{id}
+	</select>
+	
+	
+	<insert id="add_sub_member"  parameterType="kr.co.hany.util.CommonMap" >
+		INSERT INTO member_sub(
+			 id							
+			,password
+			,name
+			,reg_date
+			,mem_seqno
+		) VALUES (
+			 #{id}
+			,#{password}
+			,#{name}
+			,now()
+			,${mem_seqno}
+		)
+	</insert>
+	
+	
+	<select id="sub_listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno) 
+		  FROM member_sub		   
+		 WHERE del_yn = 'n'
+		   AND mem_seqno = ${mem_seqno}
+	</select>
+	
+	<select id="sub_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *  
+		      ,date_format(reg_date, '%Y-%m-%d %T') as reg_date2
+		  FROM member_sub
+		 WHERE del_yn = 'n'
+		   AND mem_seqno = ${mem_seqno}
+		 ORDER by seqno asc 
+	</select>
+	
+	<update id="sub_update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member_sub
+		   SET ${cellName} = #{cellValue}		   
+		 WHERE seqno = ${seqno}
+		   AND mem_seqno = ${mem_seqno}
+	</update>
+	
+	<update id="del_sub_id" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member_sub
+		   SET del_yn    = 'y'		   
+		 WHERE seqno     = ${seqno}
+		   AND mem_seqno = ${mem_seqno}
+	</update>
+	
+	<update id="private_save" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE common_setup
+		   SET private_yn     = #{private_yn}
+		      ,p_c_pouch_type = #{p_c_pouch_type}
+		      ,p_c_box_type   = #{p_c_box_type}
+		 WHERE mem_seqno      = ${mem_seqno}
+	</update>
+	
+	
+
+
+</mapper>

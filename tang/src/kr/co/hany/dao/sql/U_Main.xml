@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MainDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *
+		      ,concat('tangPop', seqno) as pop_id
+		  FROM popup_data
+		 WHERE pop_type = #{pop_type}
+		   AND view_yn  = 'y'
+		   AND DATE_FORMAT(now(),'%Y%m%d') between DATE_FORMAT(start_date,'%Y%m%d') and DATE_FORMAT(end_date,'%Y%m%d')
+		   <if test="pop_id != '' and pop_id != null " >
+		   AND id = #{pop_id}
+		   </if>
+	</select>
+
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MemberJoinDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+
+	<select id="duple_id" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap" >
+		SELECT * 
+		  FROM member
+		 WHERE id = #{id}
+	</select>
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM member		 
+	</select>
+	
+	<insert id="add_member"  parameterType="kr.co.hany.util.CommonMap" >
+		INSERT INTO member(
+			 id
+			,password
+			,jumin
+			,tel
+			,handphone
+			,zipcode
+			,address01
+			,address02
+			,email
+			,wdate
+			,member_level
+			,nickname
+			,part
+			,license_no
+			,from_school
+			,school_no
+			,biz_no
+			,han_name
+			,han_zipcode
+			,han_address01
+			,han_address02
+			,han_tel
+			,han_fax
+			,sub_id
+			,sub_password
+			,sub_id_confirm
+			,name
+			,han_level
+			,mailing
+			,point
+			,sex
+			,member_file
+			,member_file_re
+			,member_file2
+			,member_file2_re
+		) VALUES (
+			 #{id}
+			,#{password}
+			,#{jumin}
+			,#{tel}
+			,#{handphone}
+			,#{zipcode}
+			,#{address01}
+			,#{address02}
+			,#{email}
+			,now()
+			,0
+			,#{nickname ,jdbcType=VARCHAR}
+			,#{part}
+			,#{license_no}
+			,#{from_school ,jdbcType=VARCHAR}
+			,#{school_no}
+			,#{biz_no}
+			,#{han_name}
+			,#{han_zipcode}
+			,#{han_address01}
+			,#{han_address02}
+			,#{han_tel}
+			,#{han_fax}
+			,#{sub_id ,jdbcType=VARCHAR}
+			,#{sub_password ,jdbcType=VARCHAR}
+			,#{sub_id_confirm ,jdbcType=VARCHAR}
+			,#{name}
+			,#{han_level ,jdbcType=VARCHAR}
+			,#{mailing}
+			,0
+			,#{sex}
+			,#{member_file}
+			,#{member_file}
+			,#{member_file2}
+			,#{member_file2}
+		)
+	</insert>
+	
+	
+</mapper>

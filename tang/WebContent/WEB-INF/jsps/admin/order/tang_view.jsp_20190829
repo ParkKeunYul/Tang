@@ -1,0 +1,293 @@
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<% pageContext.setAttribute("newLineChar", "\n"); %>
+
+<style>
+.tbv tbody td{
+	text-align: left;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+	
+	$('#order_detail').click(function(){
+  		var seqno = $('#a_seqno').val();
+  		
+  		var width  = 820;
+ 	    var height = 700;
+		var left2  = window.pageXOffset + parseInt( ( $(window).width()/2 )  - (width/2)  );
+ 	    var top2   = window.pageYOffset + parseInt( ( $(window).height()/2 ) - (height/2) );
+  		
+  		window.open ("/admin/order/tang/detail_view.do?seqno=" + seqno,"over_view_","toolbar=no, location=no, directories=no,resizable=no,left="+left2+",top="+top2+", width="+width+", height="+height+",scrollbars=yes")
+  		return;
+  	});
+	
+	
+	$('#order_detai2').click(function(){
+  		var seqno = $('#a_seqno').val();
+  		
+  		var width  = 820;
+ 	    var height = 700;
+		var left2  = window.pageXOffset + parseInt( ( $(window).width()/2 )  - (width/2)  );
+ 	    var top2   = window.pageYOffset + parseInt( ( $(window).height()/2 ) - (height/2) );
+  		
+  		window.open ("/admin/order/tang/detail_view2.do?seqno=" + seqno,"over_view2_","toolbar=no, location=no, directories=no,resizable=no,left="+left2+",top="+top2+", width="+width+", height="+height+",scrollbars=yes")
+  		return;
+  	});
+	
+	
+});
+</script>
+<%-- ${info} --%>
+	<input type="hidden" id="a_seqno" value="${info.seqno}" />
+	<table class="tbv">										
+		<colgroup>
+			<col width="15%">
+			<col width="35%">
+			<col width="15%">
+			<col width="35%">
+		</colgroup>
+		
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 회원명 </td>
+			<td  width=230>${info.name}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 한의원명 </td>
+			<td  width=230>${info.han_name }</td>		
+		</tr>
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 연락처 </td>
+			<td  width=230>${info.d_to_tel} / ${info.d_to_handphone}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 이메일 </td>
+			<td  width=230>${info.email}</td>		
+		</tr>
+
+	   <tr><td  width=100 align=center bgcolor=D8E5F0> 환자명</td>
+			<td  width=230>${info.w_name}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 성별/나이 </td>
+			<td  width=230>${info.w_sex_nm}/${info.w_age}</td>		
+		</tr>
+
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> <b>처방명</b> </td>
+			<td  width=230>${info.s_name} <a href="#" id="order_detail" class="btn03"><b>탕전주문내역서</b></a></td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 주문날짜</td>
+			<td  width=230>${info.order_date}</td>		
+		</tr>
+		
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> <b>처방번호</b> </td>
+			 <td  width=230>${info.order_no} <a href="#" id="order_detai2" class="btn03"><b>조제지시서</b></a></td>
+		     <td  width=100 align=center bgcolor=D8E5F0> 결제방법 </td>
+			 <td  width=230>${info.payment_kind_nm}</td>		
+		</tr>
+		
+		
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 결제금액</td>
+			<td  width=230><fmt:formatNumber value="${info.order_total_price}" pattern="#,###" /></td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 입금 </td>
+			<td  width=230>
+				<%-- ${info.payment} --%>
+				<select name="payment" onchange="payment_change();">
+					<option value="1" <c:if test="${info.payment eq 1}">selected</c:if>>입금</option>
+					<option value="2" <c:if test="${info.payment eq 2}">selected</c:if>>미입금</option>
+					<option value="3" <c:if test="${info.payment eq 3}">selected</c:if>>방문결제</option>
+					<option value="4" <c:if test="${info.payment eq 4}">selected</c:if>>증정</option>
+				</select>
+				
+			</td>		
+		</tr>
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 영수증신청</td>
+			<td  width=230>
+				<c:if test="${info.bill_part eq '1' }">
+					<c:set var="bill_part" value="세금계산서 선청"  />						
+				</c:if>
+				<c:if test="${info.bill_part eq 2 }">
+					<c:set var="bill_part" value="현금영수증 신청"  />						
+				</c:if>
+				<c:if test="${info.bill_part eq 3 }">
+					<c:set var="bill_part" value="미신청"  />
+				</c:if>
+			
+				<c:if test="${info.payment_kind == 'Bank' }">
+					<c:if test="${info.bill_part eq '1' }">
+						<font color="blue" >${bill_part}</font>
+						${info.bill_email}
+					</c:if>
+					<c:if test="${info.bill_part eq '2' }">
+						<font color="red" >${bill_part}</font>
+						${info.bill_name } / ${info.bill_handphone}
+					</c:if>						
+					<c:if test="${info.bill_part eq '3' }">
+						${bill_part}
+					</c:if>
+				</c:if>					
+			</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 계산서/영수증 </td>
+			<td  width=230>
+				<c:if test="${info.payment_kind == 'Bank' }">
+					<select name="cash_bill" id="" onchange="cash_bill_change();">
+						<option value="0" <c:if test="${info.cash_bill eq 0}">selected</c:if>>미발행</option>
+						<option value="1" <c:if test="${info.cash_bill eq 1}">selected</c:if>>발행</option>
+					</select>
+				</c:if>
+			</td>		
+		</tr>
+
+	
+
+		<tr><td  height=20 colspan=4><b>카드결제 정보 (이니시스)</b> - 상점관리자 조회시 참고하세요</td></tr>
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 거래번호 </td>
+			<td  width=230>${info.card_gu_no}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 주문번호 </td>
+			<td  width=230>${info.card_ju_no}</td>		
+		</tr>
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 승인번호 </td>
+			<td  width=230>${info.card_su_no}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0>  </td>
+			<td  width=230></td>		
+		</tr>
+
+	
+		<tr><td  colspan=4>&nbsp;</td></tr>
+
+		
+
+	   <tr><td  width=100 align=center bgcolor=D8E5F0> 약재비</td>
+			<td  width=230><fmt:formatNumber value="${info.order_yakjae_price}" pattern="#,###" /></td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 탕전비 </td>
+			<td  width=230><fmt:formatNumber value="${info.order_tang_price}" pattern="#,###" /></td>		
+		</tr>
+		
+	
+
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 주수상반 </td>				
+			 <td  width=230><fmt:formatNumber value="${info.order_suju_price}" pattern="#,###" /></td>
+			 <td  width=100 align=center bgcolor=D8E5F0> 증류(사용안함)</td>
+			 <td  width=230><fmt:formatNumber value="${info.order_jeunglyu_price}" pattern="#,###" /></td>		
+		</tr>
+		
+	
+                     
+
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 배송비 </td>
+			 <td  width=230><fmt:formatNumber value="${info.order_delivery_price}" pattern="#,###" /></td>
+		
+		
+		
+			 <td  width=100 align=center bgcolor=D8E5F0> 총비용 </td>
+			 <td  width=230>
+			 	<fmt:formatNumber value="${info.order_yakjae_price+info.order_tang_price+info.order_suju_price+info.order_jeunglyu_price+info.order_delivery_price}" pattern="#,###" />
+			 </td>		
+		</tr>
+	
+
+
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 할인금액 </td>
+			 <td  width=230><fmt:formatNumber value="${info.member_sale}" pattern="#,###" /></td>
+		     <td  width=100 align=center bgcolor=D8E5F0> 총결제비용 </td>
+			 <td  width=230><font color=red><b><fmt:formatNumber value="${info.order_total_price}" pattern="#,###" /></b></font></td>		
+		</tr>
+
+	
+		<tr><td  colspan=4>&nbsp;</td></tr>
+		
+
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 진행상태 </td>
+			<td  width=230>
+				<select name="order_ing" onchange="order_change();">
+					 <option value="1" <c:if test="${info.order_ing eq 1}">selected</c:if> >접수대기</option>
+					 <option value="2" <c:if test="${info.order_ing eq 2}">selected</c:if> >입금대기</option>
+					 <option value="3" <c:if test="${info.order_ing eq 3}">selected</c:if> >조제중</option>
+					 <option value="4" <c:if test="${info.order_ing eq 4}">selected</c:if> >탕전중</option>
+					 <option value="5" <c:if test="${info.order_ing eq 5}">selected</c:if> >발송</option>
+					 <option value="8" <c:if test="${info.order_ing eq 8}">selected</c:if> >예약발송</option>
+					 <option value="6" <c:if test="${info.order_ing eq 6}">selected</c:if> >완료</option>
+					 <option value="7" <c:if test="${info.order_ing eq 7}">selected</c:if> >환불취소</option>
+				</select>
+			</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 송장번호 </td>
+			<td  width=230>
+				<select name="tak_sel" id="tak_sel" style="width: 100px;">
+				<c:forEach var="list" items="${deli_list}">
+	   				<option value="${list.seqno}"  <c:if test="${info.tak_sel eq list.seqno }">selected="selected"</c:if> >${list.delivery_nm}</option>
+	   			</c:forEach>
+	   			</select>
+				<input type=text name="delivery_no" style="width: 120px;" value="${info.delivery_no}" size=14 > <a href="javascript:delivery_insert()">[입력]</a></td>		
+		</tr>
+		
+		
+		<tr><td  width=100 align=center bgcolor=D8E5F0>  </td>
+			<td  width=230>&nbsp;</td>
+		    <td  width=100 align=center bgcolor=D8E5F0>알림톡</td>
+			<td  width=230>
+				<input type="checkbox" name="c_more_tang" value="y" <c:if test="${info.c_more_tang eq 'y'}">checked disabled</c:if>   onchange="c_more_change();">
+				*송장번호 입력후에 체크해 주세요
+			</td>		
+		</tr>
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 취소요청 </td>
+			<td  width=230>
+				<c:if test="${info.cancel_ing eq 'i' && info.cancel_ing eq 'y' }"><font color=red>주문자에 의해 취소 요청된 주문건</font></c:if>
+				<c:if test="${info.cancel_ing eq 'i'}">
+					<a href="javascript:cancel_re()">[정상주문으로 변경]</a>
+				</c:if>
+			</td>
+		    <td  width=100 align=center bgcolor=D8E5F0>배송</td>
+			<td  width=230>
+				<c:choose>
+			       <c:when test="${info.d_type == '1'}">직배송</c:when>
+			       <c:when test="${info.d_type == '2'}">한의원으로 택배</c:when>
+			       <c:when test="${info.d_type == '3'}">환자(한의원발송)</c:when>
+			       <c:when test="${info.d_type == '4'}">환자(따뜻할온원외탕전 발송)</c:when>
+			       <c:when test="${info.d_type == '6'}">방문수령</c:when>
+			       <c:otherwise>기타</c:otherwise>
+			   </c:choose>
+			</td>		
+		</tr>
+
+		 <tr><td  width=100 align=center bgcolor=D8E5F0> 관리자메모 </td>
+			 <td  colspan=3>
+			 	<textarea rows=3 cols=70 name="realprice_memo">${fn:replace(info.realprice_memo, newLineChar, "<br/>")}<%-- ${info.realprice_memo} --%></textarea> 
+			 	<a href="javascript:realprice_memo()">[입력]</a>
+		 	</td>		
+		</tr>
+	
+		<tr><td height=20 colspan=4>&nbsp;</td></tr>
+		
+		
+		<tr><td height=20 colspan=4 ><b>보내시는분</b></td></tr>
+
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 이름 </td>
+			<td  width=230>${info.d_from_name}</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 연락처 </td>
+			<td  width=230>${info.d_from_tel } / ${info.d_from_handphone }</td>		
+		</tr>
+		
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 주소 </td>
+			<td  colspan=3>${info.d_from_zipcode}<br>${info.d_from_address01}&nbsp; ${info.d_from_address02}</td>		
+		</tr>
+		
+
+		<tr><td height=20 colspan=4>&nbsp;</td></tr>
+		<tr><td  height=20 colspan=4><b>받으시는분</b></td></tr>
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 이름 </td>
+			<td  width=230>${info.d_to_name }</td>
+		    <td  width=100 align=center bgcolor=D8E5F0> 연락처 </td>
+			<td  width=230>${info.d_to_tel} / ${info.d_to_handphone}</td>		
+		</tr>
+		
+	
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 주소 </td>
+			<td  colspan=3>${info.d_to_zipcode}<br>${info.d_to_address01}&nbsp; ${info.d_to_address02}</td>		
+		</tr>
+		
+
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 배송시메모 </td>
+			<td  colspan=3>${fn:replace(info.d_to_contents, newLineChar, "<br/>")}</td>		
+		</tr>
+		<tr><td  width=100 align=center bgcolor=D8E5F0> 주문시 요청사항 </td>
+			<td  colspan=3>${fn:replace(info.d_to_contents2, newLineChar, "<br/>")}</td>		
+		</tr>
+		
+	</table>
+	
+

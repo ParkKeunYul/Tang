@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.common.CommonCodeDAO">
+	
+	<select id="member_grade" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT * 
+		  FROM manage_member_grade
+		 ORDER by seqno asc
+	</select>
+	
+	
+	<select id="shop_group" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT * 
+		  FROM shop_group
+		 WHERE del_yn != 'y'
+		   AND use_yn != 'n'
+		 ORDER by sort_seq asc
+	</select>
+	
+	<select id="delivery_group" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT * 
+		  FROM manage_delivery
+		 WHERE use_yn = 'Y'
+		   AND DEL_YN!= 'Y'
+		 ORDER by seqno asc
+	</select>
+	
+		
+</mapper>

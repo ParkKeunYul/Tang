@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.PouchDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		     
+		  FROM pouch_table 
+		 WHERE del_yn != 'y'
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" resultType="Integer">
+		SELECT count(seqno)		     
+		  FROM pouch_table 	
+		 WHERE del_yn != 'y'	 
+	</select>
+	
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM pouch_table		 
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into pouch_table(
+			 pouch_name
+			,pouch_size
+			,pouch_price
+			,pouch_contents
+			,pouch_status
+			,wdate
+			,pouch_image
+			,pouch_image2
+			,pouch_image3
+		) VALUE (
+			 #{param.pouch_name}
+			,#{param.pouch_size}
+			,#{param.pouch_price}
+			,#{param.pouch_contents}
+			,#{param.pouch_status}
+			,now()
+			,#{param.pouch_image}
+			,#{param.pouch_image2}
+			,#{param.pouch_image3}
+		)
+	</insert>
+	
+	<select id="select_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		     
+		  FROM pouch_table
+		 WHERE seqno = ${param.seqno} 
+	</select>
+	
+	
+	<update id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pouch_table
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+	
+	
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pouch_table
+		   SET pouch_name     = #{param.pouch_name}
+			  ,pouch_size     = #{param.pouch_size}
+			  ,pouch_price    = #{param.pouch_price}
+			  ,pouch_contents = #{param.pouch_contents}
+			  ,pouch_status   = #{param.pouch_status}
+			  <if test="param.pouch_image != '' and param.pouch_image != null " >
+			  	,pouch_image    = #{param.pouch_image}
+			  </if>
+			  <if test="param.pouch_image2 != '' and param.pouch_image2 != null " >
+			  	,pouch_image2   = #{param.pouch_image2}
+			  </if>
+			  <if test="param.pouch_image3 != '' and param.pouch_image3 != null " >
+			  	,pouch_image3   = #{param.pouch_image3}
+			  </if>
+		WHERE seqno = ${param.seqno}
+	</update>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pouch_table
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+</mapper>

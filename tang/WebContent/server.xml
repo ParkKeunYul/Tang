@@ -1,0 +1,44 @@
+<Server port="8921" shutdown="SHUTDOWN">
+
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JasperListener" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+<!--  <Listener className="org.apache.catalina.mbeans.ServerLifecycleListener" />
+-->
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+
+  <GlobalNamingResources>
+
+    <Environment name="simpleValue" type="java.lang.Integer" value="30"/>
+
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+
+  </GlobalNamingResources>
+
+  <Service name="bukkyung">
+
+    <Connector port="8922" 
+			enableLookups="false" protocol="AJP/1.3" URIEncoding="UTF-8"/>
+    
+   <Engine name="bukkyung" defaultHost="jsherb.com">
+
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+
+	 <Host name="jsherb.com" appBase="/www/jsherb_com" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false">
+       		<Context path="" docBase="www" debug="0" />
+			<Alias>www.jsherb.com</Alias>
+			<Alias>m.jsherb.com</Alias>
+			<Alias>bukkyung.linux.gabiauser.com</Alias>
+
+        </Host>
+
+</Engine>
+
+  </Service>
+
+</Server>

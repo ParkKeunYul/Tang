@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="YakCartDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,T2.p_ea
+		      ,T2.p_price
+		      ,T2.p_name
+		      ,convert(round(T1.ea * T2.p_price), signed integer) as goods_tot
+		      ,T2.image
+		      ,T2.p_seq
+		      ,T2.p_code
+		  FROM view_pp_order_cart T1
+		INNER JOIN goods T2 on T1.goods_seq = T2.p_seq
+		WHERE mem_seqno = ${mem_seqno}
+		<if test="all_seqno != '' and all_seqno != null " >
+			AND T1.seqno in ( ${all_seqno} )
+		</if>
+		ORDER by seqno desc
+	</select>
+	
+	
+	<select id="unuse_goods_cart" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T2.p_seq)
+		  FROM view_pp_order_cart T1
+		INNER JOIN goods T2 on T1.goods_seq = T2.p_seq
+		WHERE mem_seqno = ${mem_seqno}
+		  AND T2.p_ea = '처방불가'
+		<if test="all_seqno != '' and all_seqno != null " >
+			AND T1.seqno in ( ${all_seqno} )
+		</if>		
+	</select>
+		
+	
+	<delete id="del_cart" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM pp_order_cart
+		 WHERE seqno in( ${seqno} )
+		   AND mem_seqno = ${mem_seqno}
+	</delete>
+	
+	<update id="mod_cart" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pp_order_cart
+		   SET ea         = ${ea}
+		      ,order_date = now()
+		 WHERE seqno      =  ${seqno} 
+		   AND mem_seqno  = ${mem_seqno}
+	</update>
+	
+	
+	<insert id="add_card" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO pp_order(
+			cart_seqno   , mem_seqno          , goods_seq       , goods_code   , goods_name       ,
+			order_no     , order_id           , o_handphone     , o_email      , o_name           ,
+			o_zipcode    , o_address          , o_tel           , o_memo       , order_num        ,
+			ea           , pay_ing            , order_ing       , r_name       , r_email          ,
+			r_tel        , r_zipcode          , r_address       , payment      , ship_type_from   , 
+			member_sale  , delivery_price     , c_email         , c_biz_no     , c_han_name       ,
+			order_name   , order_handphone    , bill_part       , bill_name    , bill_handphone   ,
+			bill_email   , han_name           , ship_type_to    , order_date   , realprice        ,
+			price        , goods_price        , card_gu_no      , card_ju_no   , card_su_no       ,
+			card_nm      , card_code          , card_quota      , card_amt
+		) VALUES (
+			#{cart_seqno}   , #{mem_seqno}          , #{goods_seq}       , #{goods_code}   , #{goods_name}       ,
+			#{order_no}     , #{order_id}           , #{o_handphone}     , #{o_email}      , #{o_name}           ,
+			#{o_zipcode}    , #{o_address}          , #{o_tel}           , #{o_memo}       , #{order_num}        ,
+			#{ea}           , #{pay_ing}            , #{order_ing}       , #{r_name}       , #{r_email}          ,
+			#{r_tel}        , #{r_zipcode}          , #{r_address}       , #{payment_kind} , #{ship_type_from}   , 
+			#{member_sale}  , #{delivery_price}     , #{c_email}         , #{c_biz_no}     , #{c_han_name}       ,
+			#{order_name}   , #{order_handphone}    , #{bill_part}       , #{bill_name}    , #{bill_handphone}   ,
+			#{bill_email}   , #{han_name}           , #{ship_type_to}    , now()           , ${tot_price}        ,
+			${price}        , ${goods_price}        , #{card_gu_no}      , #{card_ju_no}   , #{card_su_no}       ,
+			#{card_nm}      , #{card_code}          , #{card_quota}      , #{card_amt}
+		)
+	</insert>
+	
+	<select id="select_pay_result_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,date_format(T1.order_date, '%Y-%m-%d') as order_date2
+		      ,T2.p_ea
+		      ,T2.p_price
+		      ,T2.p_name
+		      ,round(T1.ea * T2.p_price) as goods_tot
+		      ,T2.image		      
+		  FROM pp_order T1
+		 INNER JOIN goods T2 on T1.goods_seq = T2.p_seq
+		 WHERE T1.cart_seqno in ( ${all_cart_seqno} )
+		 ORDER by T1.seqno asc 
+	 </select>
+	 
+	 
+	 <select id="select_immedi_pay_result_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,date_format(T1.order_date, '%Y-%m-%d') as order_date2
+		      ,T2.p_ea
+		      ,T2.p_price
+		      ,T2.p_name
+		      ,round(T1.ea * T2.p_price) as goods_tot
+		      ,T2.image		      
+		  FROM pp_order T1
+		 INNER JOIN goods T2 on T1.goods_seq = T2.p_seq
+		 WHERE T1.cart_seqno  = -9999
+		   AND T1.mem_seqno   = ${mem_seqno}
+		 ORDER by T1.seqno desc limit 0 , 1 
+	 </select>
+	 
+	
+</mapper>
+

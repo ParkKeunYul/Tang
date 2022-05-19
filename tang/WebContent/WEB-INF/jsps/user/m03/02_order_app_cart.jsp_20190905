@@ -1,0 +1,296 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="t" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<!-- container -->
+<div id="container">
+	<!-- submenuArea -->
+	<%
+		String fir_nm = "약속처방";
+		String sec_nm = "약속처방";
+		String thr_nm = "약속처방 보관함";
+		int fir_n = 3;
+		int sub_n = 2;
+	%>
+	<%@include file="../layout/submenu.jsp"%>
+	<!-- //submenuArea -->
+	<style>
+		.cblue1 {background:#436782; color:#ffffff;border:1px solid #444444;}
+		.cblue1:hover {background:#345b79;}
+	</style>
+	<!-- contents -->
+	<div id="layerFindAddr" class="find_addr_layer_pop" style="display:none;position:fixed;overflow:hidden;z-index:3;-webkit-overflow-scrolling:touch;"><img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" onclick="closeDaumPostcode()" alt="닫기 버튼"></div>
+	<div id="contents">
+		<!-- 내용 -->
+		<div class="conArea">
+		
+			<!-- orderview -->
+			<table class="order_view">
+				<colgroup>
+					<col width="*" />
+					<col width="160px" />
+					<col width="120px" />
+					<col width="140px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>상품정보</th>
+						<th>상품단가</th>
+						<th>수량</th>
+						<th>합계</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:set var="sum_goods_tot"    value = "0" />
+					<c:set var="sum_delivery_tot" value = "${bean.sum_delivery_tot}" />
+				
+					<c:forEach var="list" items="${list}">
+						<c:set var="sum_goods_tot" value = "${sum_goods_tot + list.goods_tot}" />
+						<tr>
+							<td class="L"><img src="/upload/goods/${list.image}" style="width: 60px;height: 60px;"  class="am" alt="${list.p_name }" /> ${list.goods_name }</td>	
+							<td class="R"><strong><fmt:formatNumber value="${list.p_price}" pattern="#,###" /></strong>원</td>
+							<td>${list.ea}</td>
+							<td class="R"><strong><fmt:formatNumber value="${list.goods_tot}" pattern="#,###" /></strong>원</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<c:if test="${sum_goods_tot > 100000 }"><c:set var="sum_delivery_tot" value = "0" /></c:if>
+			
+			<div class="totalBox" style="margin-top:-1px;">
+				<ul>
+					<li class="Bt03">처방비용합계<span class="won"><fmt:formatNumber value="${sum_goods_tot}" pattern="#,###" />원</span></li>
+					<li class="Bt02">배송비<span class="won"><fmt:formatNumber value="${sum_delivery_tot}" pattern="#,###" />원</span></li>
+					<li class="total">총 결제금액<span class="won"><fmt:formatNumber value="${sum_goods_tot + sum_delivery_tot}" pattern="#,###" /></span>원</li>
+				</ul>
+			</div>
+
+			<div class="topinfo mt60">
+				<div>
+					<p>보내는 사람</p>
+					<p class="inputA">
+						<label id="ship_type_from1"><input type="radio" name="ship_type_from" id="ship_type_from1" value="1" /> 북경한의원 원외탕전실</label>
+						<label id="ship_type_from2"><input type="radio" name="ship_type_from" id="ship_type_from2" value="2" /> 한의원</label>
+						<label id="ship_type_from3"><input type="radio" name="ship_type_from" id="ship_type_from3" value="3" /> 새로입력</label>
+					</p>
+					<ul>
+						<li>
+							<span class="tit">발신인</span>
+							<input type="text" name="o_name" id="o_name" style="width:220px;">
+						</li>
+						<li>
+							<span class="tit">연락처</span>
+							<input type="text" id="o_tel01" name="o_tel01" style="width:65px;" maxlength="4"> -
+							<input type="text" id="o_tel02" name="o_tel02" style="width:65px;" maxlength="4"> -
+							<input type="text" id="o_tel03" name="o_tel03" style="width:65px;" maxlength="4">
+						</li>
+						<li>
+							<span class="tit">휴대전화</span>
+							<input type="text" id="o_handphone01" name="o_handphone01" style="width:65px;" maxlength="4"> -
+							<input type="text" id="o_handphone02" name="o_handphone02" style="width:65px;" maxlength="4"> -
+							<input type="text" id="o_handphone03" name="o_handphone03" style="width:65px;" maxlength="4">
+						</li>
+						<li>
+							<span class="tit">주소</span>
+							<span class="dI H40">
+								<input type="text" name="o_zipcode01" id="o_zipcode01" style="width:180px;" readonly><a href="#" id="findAddrBtn1" ><span id="addrBtn1" class="h34 cB">주소찾기</span></a>
+							</span>
+							<span class="dI">
+								<input type="text" name="o_address01"  style="width:350px;" readonly id="o_address01">
+								<input type="text" name="o_address01" placeholder="상세주소" style="width:350px;" id="o_address02"> 
+							</span>
+						</li>
+					</ul>
+				</div>
+				<div class="ml60">
+					<p>받는 사람</p>
+					<p class="inputA">
+						<label id="ship_type_to1"><input type="radio" name="ship_type_to" id="ship_type_to1" value="1"/> 북경한의원 원외탕전실</label>
+						<label id="ship_type_to2"><input type="radio" name="ship_type_to" id="ship_type_to2" value="2" /> 한의원</label>
+						<label id="ship_type_to3"><input type="radio" name="ship_type_to" id="ship_type_to3" value="3" /> 새로입력</label>
+					</p>
+					<ul>
+						<li>
+							<span class="tit">수신인</span>
+							<input type="text" name="r_name" id="r_name" style="width:220px;">
+						</li>
+						<li>
+							<span class="tit">연락처</span>
+							<input type="text" id="r_tel01" name="r_tel01" style="width:65px;" maxlength="4"> -
+							<input type="text" id="r_tel02" name="r_tel02" style="width:65px;" maxlength="4"> -
+							<input type="text" id="r_tel03" name="r_tel03" style="width:65px;" maxlength="4">
+						</li>
+						<li>
+							<span class="tit">휴대전화</span>
+							<input type="text" id="r_handphone01" name="r_handphone01" style="width:65px;" maxlength="4"> -
+							<input type="text" id="r_handphone02" name="r_handphone02" style="width:65px;" maxlength="4"> -
+							<input type="text" id="r_handphone03" name="r_handphone03" style="width:65px;" maxlength="4">
+						</li>
+						<li>
+							<span class="tit">주소</span>
+							<span class="dI H40">
+								<input type="text" name="r_zipcode01" id="r_zipcode01" style="width:180px;" readonly><a href="#" id="findAddrBtn2"><span id="addrBtn1" class="h34 cB">주소찾기</span></a>
+							</span>
+							<span class="dI">
+								<input type="text" name="r_address01" style="width:350px;" readonly id="r_address01">
+								<input type="text" name="r_address02" placeholder="상세주소" style="width:350px;" id="r_address02"> 
+							</span>
+						</li>
+						<li>
+							<span class="tit">배송메모</span>
+							<span>
+								<textarea name="o_memo" id="o_memo" style="width:350px; height:40px;resize:none;"></textarea>
+							</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- // orderview -->
+
+			<div class="totalend">
+				<ul>
+					<li class="tit">결제수단</li>
+					<li class="pay_type_select">
+						<a href="#"><span class="cBB h30">신용카드</span></a>
+						<a href="#"><span class="cBB h30">무통장 입금</span></a>
+					</li>
+					<li>
+						<div id="tax_bill_area" style="display: none;">
+							<label for="bill_part1"><input type="radio" name="bill_part" id="bill_part1" value="1" />세금계산서</label>
+							<label for="bill_part2"><input type="radio" name="bill_part" id="bill_part2" value="2" />현금영수증</label>
+							<label for="bill_part3"><input type="radio" name="bill_part" id="bill_part3" value="3" checked="checked" />미신청</label>
+						</div>
+						<div style="display: none;">
+							<p>
+								이메일<input type="text"  name="bill_email" id="bill_email" />
+							</p>
+							<p>
+								이름 <input type="text" id="bill_name" name="bill_name" />
+								<input type="text" id="bill_handphone01" name="bill_handphone01" /> -
+								<input type="text" id="bill_handphone02" name="bill_handphone02" /> -
+								<input type="text" id="bill_handphone03" name="bill_handphone03" />  
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- btnarea -->
+			<form action="#" name="frm" id="frm" method="POST">
+				<div class="btn_area01">
+					<a href="#"><span class="cw h60">취소</span></a>
+					<a href="/m05/02_end.do"><span class="cg h60">주문하기</span></a>
+				</div>
+				<input type="text" name="payment_kind" id="payment_kind" value=""/>
+				<input type="text" name="all_seqno" value="${bean.all_seqno}" />
+				<input type="text" name="delivery_price" value="${sum_delivery_tot}" />
+				<input type="text" name="tot_price" value="${sum_goods_tot}" /> <!-- 체크용 -->
+				
+				<c:set var="han_handphone" value="${fn:split(userInfo.handphone,'-')}" />
+				<c:set var="tel" value="${fn:split(userInfo.tel,'-')}" />
+				<input type="text" id="han_addr1" 		value="${userInfo.address01}" />
+				<input type="text" id="han_addr2" 		value="${userInfo.address02}" />
+				<input type="text" id="han_zip"   		value="${userInfo.zipcode}" />
+				<input type="text" id="han_handphone01"   value="${han_handphone[0]}">
+				<input type="text" id="han_handphone02"   value="${han_handphone[1]}"> 
+				<input type="text" id="han_handphone03"   value="${han_handphone[2]}"> 
+				<input type="text" id="han_han_name"   	value="${userInfo.han_name}">
+				
+				
+				<input type="text" id="han_tel01"   value="${tel[0]}">
+				<input type="text" id="han_tel02"   value="${tel[1]}"> 
+				<input type="text" id="han_tel03"   value="${tel[2]}"> 
+				
+				
+			</form>
+			<!-- //btnarea -->
+			
+			<script>
+				$(document).ready(function() {
+					a_sale_per = parseInt( $('#sale_per').val() );
+					
+					$(".pay_type_select a span").click(function() {
+						$('.pay_type_select a span').removeClass('cblue1');							
+						$('.pay_type_select a span').addClass('cBB');
+						
+						$(this).removeClass('cBB');
+						$(this).addClass('cblue1');
+						
+						var type = $(this).html();
+						if(type == '신용카드'){
+							$('#tax_bill_area').hide();
+							$('#payment_kind').val('Card');
+						}else{
+							$('#tax_bill_area').show();
+							$('#payment_kind').val('Bank');
+						}
+						return false;
+					});
+					
+					$("#findAddrBtn1").click(function() {
+						find_addr('o_zipcode01','o_address01', 'o_address02');
+						return false;
+					});
+					
+					$("#findAddrBtn2").click(function() {
+						find_addr('r_zipcode01','r_address01', 'r_address02');
+						return false;
+					});
+					
+					$("input:radio[name=ship_type_to]").click(function(){
+						settingOrderAddr('r', $(this).val())
+					});
+					
+					$("input:radio[name=ship_type_from]").click(function(){
+						settingOrderAddr('o', $(this).val())
+					});
+					
+				});
+				
+				function settingOrderAddr(type , val){
+					
+					if(val == 1){
+						$('#'+type+'_name').val(a_tang_name);
+						$('#'+type+'_tel01').val(a_tel1);
+						$('#'+type+'_tel02').val(a_tel2);
+						$('#'+type+'_tel03').val(a_tel3);
+						$('#'+type+'_handphone01').val('');
+						$('#'+type+'_handphone02').val('');
+						$('#'+type+'_handphone03').val('');
+						$('#'+type+'_zipcode01').val(a_zip);
+						$('#'+type+'_address01').val(a_addr1);
+						$('#'+type+'_address02').val(a_addr2);
+					}else if(val == 2){
+						$('#'+type+'_name').val($('#han_han_name').val());
+						$('#'+type+'_tel01').val($('#han_tel01').val());
+						$('#'+type+'_tel02').val($('#han_tel02').val());
+						$('#'+type+'_tel03').val($('#han_tel03').val());
+						$('#'+type+'_handphone01').val($('#han_handphone01').val());
+						$('#'+type+'_handphone02').val($('#han_handphone02').val());
+						$('#'+type+'_handphone03').val($('#han_handphone03').val());
+						$('#'+type+'_zipcode01').val($('#han_zip').val());
+						$('#'+type+'_address01').val($('#han_addr1').val());
+						$('#'+type+'_address02').val($('#han_addr2').val());
+					}else{
+						$('#'+type+'_name').val('');
+						$('#'+type+'_tel01').val('');
+						$('#'+type+'_tel02').val('');
+						$('#'+type+'_tel03').val('');
+						$('#'+type+'_handphone01').val('');
+						$('#'+type+'_handphone02').val('');
+						$('#'+type+'_handphone03').val('');
+						$('#'+type+'_zipcode01').val('');
+						$('#'+type+'_address01').val('');
+						$('#'+type+'_address02').val('');
+						$('#'+type+'_name').focus();
+					}
+					
+				}
+			</script>
+		</div>
+		<!-- //내용 -->
+	</div>
+	<!-- //contents -->
+</div>
+<!-- //container -->	
