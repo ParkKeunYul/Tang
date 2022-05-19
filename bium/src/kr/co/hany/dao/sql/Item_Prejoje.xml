@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.PreJojeDAO">
+	<resultMap id="boardMap" type="java.util.Map">
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	
+	<select id="month_member_list" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT mb.name
+		      ,mb.id
+		      ,mb.han_name
+		      ,#{param.search_month} as search_month
+		      ,po.mem_seqno
+		  FROM pp_order po
+		 INNER JOIN member mb on  po.mem_seqno =  mb.seqno
+		 WHERE order_ing in (2,3,4,5)
+		   AND date_format(po.order_date, '%Y/%m') = #{param.search_month}
+		GROUP by mb.name		 
+				,mb.id
+				,mb.han_name  
+				,po.mem_seqno     
+	</select>
+	
+	<select id="month_ea_list" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+	    SELECT sum(ea) ea
+		      ,mem_seqno
+		      ,goods_name
+		      ,order_date
+		      ,name
+		      ,search_month
+		      ,sum(print_ea) as print_ea
+		      ,goods_seq
+		   FROM (
+				SELECT sum(po.ea) as ea
+				      ,po.mem_seqno
+					   ,po.goods_name 
+					   ,date_format(po.order_date, '%Y/%m') as order_date
+					   ,mb.name
+					   ,#{param.search_month} as search_month
+					   ,0 as print_ea
+					   ,po.goods_seq
+				  FROM pp_order po
+				 INNER JOIN member mb on  po.mem_seqno =  mb.seqno
+				 WHERE order_ing in (2,3,4,5)
+				   AND date_format(po.order_date, '%Y/%m') = #{param.search_month}
+				   AND po.mem_seqno = ${param.search_seqno}
+				GROUP by po.mem_seqno
+				        ,po.goods_name
+				        ,date_format(po.order_date, '%Y/%m')
+				        ,mb.name
+				        ,po.goods_seq
+				UNION ALL 
+				SELECT 0 as ea
+				      ,gp.mem_seqno
+				      ,gp.goods_name
+				      ,gp.month as order_date
+				      ,mb.name
+				      ,gp.month
+				      ,gp.print_ea as print_ea
+				      ,ifnull(gp.goods_seq , gp.seqno -(2*gp.seqno) ) as goods_seq
+				  FROM goods_pre_order_print gp
+				 INNER JOIN member mb on  gp.mem_seqno =  mb.seqno
+				 WHERE gp.month     = #{param.search_month}
+				   AND gp.mem_seqno = ${param.search_seqno}
+		) T1
+		GROUP by mem_seqno
+		        ,goods_name
+		        ,order_date
+		        ,name
+		        ,search_month        
+		        ,goods_seq
+	</select>
+	
+	<update id="update_print_ea" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE goods_pre_order_print
+		   SET print_ea   = ${param.print_ea}
+		 WHERE mem_seqno  = ${param.mem_seqno}
+		   AND goods_name = #{param.goods_name}	
+		   AND month      = #{param.search_month}		   
+	</update>
+	
+	<insert id="add_print_ea" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO goods_pre_order_print(
+			 mem_seqno
+			,goods_name
+			,month
+			,print_ea
+			,goods_seq
+		) VALUES (
+			 ${param.mem_seqno}
+			,#{param.goods_name}
+			,#{param.search_month}
+			,${param.print_ea}
+			,${param.goods_seq}
+		)
+	</insert>
+	
+	<select id="duple_cnt" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno) 
+		  FROM goods_pre_order_print
+		 WHERE mem_seqno  = ${param.mem_seqno}
+		   AND goods_name = #{param.goods_name}	
+		   AND month      = #{param.search_month}
+	</select>
+	
+	<select id="select_sign" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * FROM goods_pre_order
+		 WHERE mem_seqno = ${param.search_seqno}
+		ORDER by seqno asc limit 0 , 1 		     
+	</select>
+	
+</mapper>

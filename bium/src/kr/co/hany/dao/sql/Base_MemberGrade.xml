@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.base.MemberGradeDao">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * 
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM manage_member_grade
+		 WHERE del_yn != 'y'
+		 ORDER by sort_seq asc
+	</select>
+
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM manage_member_grade
+		 WHERE del_yn != 'y'
+		 ORDER by seqno asc		   		     	 
+	</select>
+	
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE manage_member_grade
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+</mapper>

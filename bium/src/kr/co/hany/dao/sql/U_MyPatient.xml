@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MyPatientDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 		
+		      ,date_format(T1.wdate, '%Y-%m-%d') as wdate2
+		      ,(SELECT date_format(wdate, '%Y-%m-%d')
+				  FROM p_order
+				WHERE seqno = (
+					SELECT MAX(seqno) 
+						FROM p_order 
+					 WHERE wp_seqno = T1.seqno
+				)
+			  ) as  last_order      
+		  FROM patient T1 
+		 WHERE id = #{id}
+		 <if test="search_value != '' and search_value != null " >
+		 	<if test="search_type == 'name' " >
+		 		AND T1.name like '%${search_value}%'
+		 	</if>
+		 	<if test="search_type == 'all' " >
+		 		AND (
+		 			T1.name       like '%${search_value}%' or
+		 			T1.address01  like '%${search_value}%' or
+		 			T1.address02  like '%${search_value}%' or
+		 			T1.zipcode    like '%${search_value}%' or
+		 			T1.tel        like '%${search_value}%' or
+		 			T1.handphone  like '%${search_value}%' or
+		 			T1.chart_num  like '%${search_value}%' or
+		 			T1.jindan     like '%${search_value}%' or
+		 			T1.etc1       like '%${search_value}%' or
+		 			T1.etc2       like '%${search_value}%' or
+		 			T1.birth_year like '%${search_value}%'
+		 		)
+		 	</if>
+		 </if>		
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if> 
+		 ORDER by T1.seqno desc limit ${start} , ${pageing}
+	</select>
+
+
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)
+		  FROM patient T1
+		 WHERE 1 = 1  
+		   AND T1.id = #{id}
+		 <if test="search_value != '' and search_value != null " >
+		 	<if test="search_type == 'name' " >
+		 		AND T1.name like '%${search_value}%'
+		 	</if>
+		 	<if test="search_type == 'all' " >
+		 		AND (
+		 			T1.name       like '%${search_value}%' or
+		 			T1.address01  like '%${search_value}%' or
+		 			T1.address02  like '%${search_value}%' or
+		 			T1.zipcode    like '%${search_value}%' or
+		 			T1.tel        like '%${search_value}%' or
+		 			T1.handphone  like '%${search_value}%' or
+		 			T1.chart_num  like '%${search_value}%' or
+		 			T1.jindan     like '%${search_value}%' or
+		 			T1.etc1       like '%${search_value}%' or
+		 			T1.etc2       like '%${search_value}%' or
+		 			T1.birth_year like '%${search_value}%'
+		 		)
+		 	</if>
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>			 
+	</select>
+	
+	
+	<insert id="add_patient" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into patient(
+			 name
+			,sex
+			,birth_year
+			,jindan
+			,size
+			,contents
+			,zipcode
+			,address01
+			,address02
+			,handphone
+			,tel
+			,id
+			,mem_seq
+			,chart_num
+			,wdate
+			,edate
+		) VALUES (
+			 '${name}'
+			,'${sex}'
+			,'${birth_year}'
+			,'${jindan}'
+			,'${size}'
+			,'${contents}'
+			,'${zipcode}'
+			,'${address01}'
+			,'${address02}'
+			,'${handphone}'
+			,'${tel}'
+			,'${id}'
+			,'${mem_seq}'
+			,'${chart_num}'
+			,now()
+			,now()
+		)
+	</insert>
+	
+	<update id="mod_patient" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE patient
+		   SET name       = #{name}
+			  ,sex        = #{sex}
+			  ,age        = #{age}
+			  ,birth_year = #{birth_year}
+			  ,jindan     = #{jindan}
+			  ,size       = '${size}'
+			  ,contents   = #{contents}
+			  ,zipcode    = #{zipcode}
+			  ,address01  = #{address01}
+			  ,address02  = #{address02}
+			  ,tel        = #{tel}
+			  ,handphone  = #{handphone}		 
+			  ,chart_num  = #{chart_num}
+		 WHERE seqno      = ${seqno}
+	</update>
+	
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 	
+			 ,(CASE
+				 WHEN sex = '남자' THEN 'm'
+				 WHEN sex = '여자' THEN 'w'
+			   END) as sex_code
+		  FROM patient
+		 WHERE seqno = ${seqno}
+		   AND id    = #{id}
+	</select>
+	
+	<select id="orderlist" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		      ,date_format(wdate, '%Y-%m-%d' ) as wdate2
+		  FROM p_order
+		 WHERE id       = #{id}
+ 		   AND wp_seqno = #{wp_seqno}
+ 		 ORDER by seqno desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="orderlistCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno) 
+		  FROM p_order
+		 WHERE id       = #{id}
+ 		   AND wp_seqno = #{wp_seqno}
+	</select>
+	
+	<select id="duple_patient" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM patient
+		 WHERE id   = #{id}
+		   AND name = #{name}		
+	</select>
+	
+	
+	<insert id="addCartInfo" parameterType="kr.co.hany.util.CommonMap" useGeneratedKeys="true" keyProperty="seqno">
+		INSERT into patient(
+			 name
+			,contents
+			,zipcode
+			,address01
+			,address02
+			,handphone
+			,id
+			,mem_seq
+			,wdate
+			,edate
+		) VALUES (
+			 #{w_name}
+			,#{w_contents}
+			,#{d_to_zipcode}
+			,#{d_to_address01}
+			,#{d_to_address02}
+			,#{d_to_handphone}
+			,#{id}
+			,#{mem_seqno}
+			,now()
+			,now()
+		)
+	</insert> 
+	
+	<select id="getMaxSeqno" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT max(seqno) FROM patient
+	</select>
+	
+	
+	<select id="duple_chart" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *
+		  FROM patient				 
+		 WHERE mem_seq   = #{mem_seq}	
+		   AND chart_num = #{chart_num}	 
+	</select>
+
+
+</mapper>

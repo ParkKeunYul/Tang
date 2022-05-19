@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.order.ShopDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select_shop" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.* 
+		      ,vss.*
+		      ,(CASE WHEN po.o_paypart = '0' THEN '발행' ELSE '' END) as 	o_paypart_nm      		
+				      ,(CASE 
+				      		WHEN po.payment = 'Card' THEN '카드결제' 
+				      		WHEN po.payment = 'Bank' THEN '무통장입금'
+				      		WHEN po.payment = 'Cms' THEN '계좌간편결제'
+				      		ELSE '' END
+		       ) as payment_kind_nm		      
+		      ,mb.member_level
+		      ,mb.name as mem_name
+		      ,vss.tot_price + po.delivery_price - ifnull(po.member_sale,0) - tot_sale_price as all_price
+		      ,date_format(po.order_date, '%Y-%m-%d %T' ) as order_date2
+		      ,date_format(po.order_date, '%Y-%m-%d') as order_date3
+		      ,(SELECT id FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_id
+		      ,(SELECT delivery_nm FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_nm
+		      ,mb.handphone mb_handphone
+		      ,(SELECT temple_no FROM manage_delivery WHERE seqno = po.tak_sel) as temple_no
+		      ,date_format(po.delivery_date, '%Y-%m-%d') as delivery_date2		    
+		      ,go.sale_type
+		      ,mb.member_level
+		      ,po.goods_name as goods_name_new
+		 FROM pp_order po
+		 INNER JOIN view_shop_sum2 vss 
+		    ON po.order_num = vss.m_oder_num AND  po.seqno = vss.tot_seqno		 
+		 INNER JOIN member mb ON po.order_id = mb.id
+		 LEFT join goods go on p_seq = po.goods_seq
+		 WHERE po.goods_code != ''
+		   <if test="param.search_pay != '' and param.search_pay != null " >
+		   	AND payment = #{param.search_pay}
+		   </if>
+		  <if test="param.search_sday != '' and param.search_sday != null and param.search_eday != '' and param.search_eday != null" >
+		  	 AND DATE(order_date) BETWEEN #{param.search_sday} and #{param.search_eday}
+		  </if>
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	<choose>
+		  		<when test="param.search_title == 'number_re'">
+		  			AND (
+		  				   po.r_tel like '%${param.search_value}%'
+		  				or po.r_handphone like '%${param.search_value}%'
+		  			)
+		  		</when>
+		  		<when test="param.search_title == 'order_phone'">
+		  			AND (
+		  				   mb.han_tel like '%${param.search_value}%'
+		  				or mb.handphone like '%${param.search_value}%'
+		  			)
+		  		</when>
+		  		<otherwise>
+		  			AND po.${param.search_title} like '%${param.search_value}%'	
+		  		</otherwise>
+		  	</choose>
+		  	
+		  </if>
+		  <if test="param.search_level != '' and param.search_level != null " >
+		    AND mb.member_level = ${param.search_level}
+		  </if>
+		  <if test="param.user_mem_seqno != '' and param.user_mem_seqno != null " >
+		  	AND po.mem_seqno = ${param.user_mem_seqno}
+		  </if>
+		  <if test="param.search_order != '' and param.search_order != null " >
+		  	AND po.order_ing = #{param.search_order}
+		  </if>
+		  <if test="param.search_member != '' and param.search_member != null " >
+		  	AND mb.member_level = #{param.search_member}
+		  </if>
+		  <if test="param.search_sale != '' and param.search_sale != null " >
+		  	AND go.sale_type = #{param.search_sale}
+		  </if>
+		 ORDER by po.seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(po.seqno)
+		 FROM pp_order po
+		INNER JOIN view_shop_sum2 vss 
+		   ON po.order_num = vss.m_oder_num AND  po.seqno = vss.tot_seqno
+		 INNER JOIN member mb ON po.order_id = mb.id
+		 LEFT join goods go on p_seq = po.goods_seq
+		 WHERE po.goods_code != ''
+		  <if test="param.search_pay != '' and param.search_pay != null " >
+		   	AND payment = #{param.search_pay}
+		   </if>
+		 <if test="param.search_sday != '' and param.search_sday != null and param.search_eday != '' and param.search_eday != null" >
+		  	 AND DATE(order_date) BETWEEN #{param.search_sday} and #{param.search_eday}
+		  </if>
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	<choose>
+		  		<when test="param.search_title == 'number_re'">
+		  			AND (
+		  				   po.r_tel like '%${param.search_value}%'
+		  				or po.r_handphone like '%${param.search_value}%'
+		  			)
+		  		</when>
+		  		<when test="param.search_title == 'order_phone'">
+		  			AND (
+		  				   mb.han_tel like '%${param.search_value}%'
+		  				or mb.handphone like '%${param.search_value}%'
+		  			)
+		  		</when>
+		  		<otherwise>
+		  			AND po.${param.search_title} like '%${param.search_value}%'	
+		  		</otherwise>
+		  	</choose>
+		  </if>
+		  <if test="param.search_level != '' and param.search_level != null " >
+		    AND mb.member_level = ${param.search_level}
+		  </if>
+		  <if test="param.user_mem_seqno != '' and param.user_mem_seqno != null " >
+		  	AND po.mem_seqno = ${param.user_mem_seqno}
+		  </if>
+		  <if test="param.search_member != '' and param.search_member != null " >
+		  	AND mb.member_level = #{param.search_member}
+		  </if>
+		  <if test="param.search_sale != '' and param.search_sale != null " >
+		  	AND go.sale_type = #{param.search_sale}
+		  </if>
+	</select>
+	
+		
+	<update id="update_payment" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pp_order
+		   SET payment = #{param.payment}
+		 WHERE seqno   = #{param.seqno}
+	</update>
+	
+	
+	<update id="update_order" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pp_order
+		   SET order_ing = #{param.order_ing}
+		 WHERE seqno in ( ${param.seqno} )
+	</update>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pp_order
+		   SET ${param.cellName} = #{param.cellValue}
+		   <if test="param.cellName == 'deliveryno'" >
+		   	  ,delivery_date = now()
+		   </if>  
+		 WHERE order_no          = ${param.order_no}
+	</update>
+	
+	
+	<select id="select_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.*
+		      ,vss.*
+		      ,(CASE WHEN po.o_paypart = '0' THEN '발행' ELSE '' END) as 	o_paypart_nm      		
+				      ,(CASE 
+				      		WHEN po.payment = 'Card' THEN '카드결제' 
+				      		WHEN po.payment = 'Bank' THEN '무통장입금'
+				      		WHEN po.payment = 'Cms' THEN '계좌간편결제'
+				      		ELSE '' END
+		       ) as payment_kind_nm		      
+		      ,mb.member_level
+		      ,mb.name as mem_name
+		      ,vss.tot_price + po.delivery_price - ifnull(po.member_sale,0) - vss.tot_sale_price  as all_price
+		      ,mb.handphone
+		      ,mb.han_tel
+		      ,mb.email
+		      ,vss.tot_sale_price
+		      ,(SELECT sale_type FROM goods WHERE p_seq = po.goods_seq)  AS sale_type
+		  FROM pp_order po
+		 INNER JOIN view_shop_sum2 vss ON po.order_num = vss.m_oder_num
+		 INNER JOIN member mb ON po.order_id = mb.id
+		 WHERE po.goods_code != ''
+	       AND po.seqno = ${param.seqno}
+	</select>
+	
+	<select id="select_order_no" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.*
+		      ,go.image as good_image
+		      ,(SELECT sale_type FROM goods WHERE p_seq = po.goods_seq)  AS sale_type
+		  FROM pp_order po
+		  LEFT JOIN goods go 
+		    ON po.goods_code = go.p_code
+	     WHERE po.order_no = #{param.order_no}
+	</select>
+	
+	<update id="delivery_update" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE pp_order 
+		   SET deliveryno    = #{param.deliveryno}
+		      ,delivery_date = now()
+		      ,tak_sel       = #{param.tak_sel}
+	     WHERE order_no      = #{param.order_no}
+	</update>
+	
+	
+	<update id="update_d_info" parameterType="kr.co.hany.util.CommonMap" >
+		UPDATE pp_order
+		   SET r_name       = #{param.r_name}
+		      ,r_zipcode    = #{param.r_zipcode}
+		      ,r_address    = #{param.r_address}
+		      ,r_tel 		= #{param.r_tel}
+		      ,r_handphone  = #{param.r_handphone}
+		 WHERE order_no     = ${param.order_no}
+	</update>
+	
+	
+	<insert id="add_order_del" parameterType="kr.co.hany.util.CommonMap" >
+		INSERT pp_order_del 
+	    SELECT * 
+	      FROM pp_order
+		  WHERE order_no in ( ${param.all_order_no} )
+	</insert>
+	
+	<delete id="del_order"  parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM pp_order
+		 WHERE order_no in ( ${param.all_order_no} )
+	</delete>
+	
+	
+	<update id="update_card_cancel" parameterType="kr.co.hany.util.CommonMap" >
+		UPDATE pp_order
+		   SET card_cancel_id   = #{param.card_cancel_id}
+		      ,card_cancel_date = now()
+		      ,order_ing        = '5'
+		WHERE order_no  = #{param.c_order_no}
+	</update>
+	
+	<update id="update_talk_send" parameterType="kr.co.hany.util.CommonMap" >
+		UPDATE pp_order
+		   SET talk_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+	
+	<delete id="del_cart" parameterType="kr.co.hany.util.CommonMap" >
+		DELETE FROM pp_order_cart
+		 WHERE seqno in (
+		 	SELECT cart_seqno  
+		 	  FROM pp_order
+			 WHERE order_no in ( ${param.all_order_no} )		 		
+		 )  
+	</delete>
+	
+	
+
+</mapper>

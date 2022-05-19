@@ -1,0 +1,284 @@
+DB정보
+
+*오라클
+	사용자 생성 -> CREATE USER 사용자명 IDENTIFIED BY 비밀번호
+	사용자 권한 -> GRANT CONNECT,RESOURCE,CREATE VIEW,CREATE PROCEDURE,CREATE TRIGGER TO 사용자명
+
+	테이블 생성 
+		-- 게시판 테이블
+		CREATE TABLE BOARD (
+		  SEQ           NUMBER                 NOT NULL, 
+		  BOARD_NAME    VARCHAR2(20 BYTE)          NULL, 
+		  ID            VARCHAR2(20 BYTE)          NULL, 
+		  NAME          VARCHAR2(20 BYTE)          NULL, 
+		  MEMBER_SEQ    VARCHAR2(20 BYTE)          NULL, 
+		  TITLE         VARCHAR2(200 BYTE)         NULL, 
+		  REG_DATE      DATE                       NULL, 
+		  UPT_DATE      DATE                       NULL, 
+		  DEL_DATE      DATE                       NULL, 
+		  NOTICE_YN     VARCHAR2(1 BYTE)           NULL, 
+		  DEL_YN        VARCHAR2(1 BYTE)      DEFAULT 'N'           NULL, 
+		  MAIN_YN       VARCHAR2(1 BYTE)           NULL, 
+		  REF           NUMBER                     NULL, 
+		  REF_STEP      NUMBER                     NULL, 
+		  REF_LEVEL     NUMBER                     NULL, 
+		  CONTENT       CLOB                       NULL, 
+		  HIT           NUMBER                DEFAULT 0                     NULL, 
+		  UPT_ID        VARCHAR2(100 BYTE)         NULL, 
+		  PWD           VARCHAR2(100 BYTE)         NULL
+		);
+		
+		COMMENT ON TABLE BOARD IS '게시판';
+		
+		COMMENT ON COLUMN BOARD.SEQ IS '순번';
+		
+		COMMENT ON COLUMN BOARD.BOARD_NAME IS '게시판구분';
+		
+		COMMENT ON COLUMN BOARD.ID IS '아이디';
+		
+		COMMENT ON COLUMN BOARD.NAME IS '이름';
+		
+		COMMENT ON COLUMN BOARD.MEMBER_SEQ IS '회원순번';
+		
+		COMMENT ON COLUMN BOARD.TITLE IS '제목';
+		
+		COMMENT ON COLUMN BOARD.REG_DATE IS '등록일';
+		
+		COMMENT ON COLUMN BOARD.UPT_DATE IS '수정일';
+		
+		COMMENT ON COLUMN BOARD.DEL_DATE IS '삭제일';
+		
+		COMMENT ON COLUMN BOARD.NOTICE_YN IS '공지여부';
+		
+		COMMENT ON COLUMN BOARD.DEL_YN IS '삭제여부';
+		
+		COMMENT ON COLUMN BOARD.MAIN_YN IS '메인여부';
+		
+		COMMENT ON COLUMN BOARD.REF IS '답글순번';
+		
+		COMMENT ON COLUMN BOARD.REF_STEP IS '답글 단계';
+		
+		COMMENT ON COLUMN BOARD.REF_LEVEL IS '답글레벨';
+		
+		COMMENT ON COLUMN BOARD.CONTENT IS '내용';
+		
+		COMMENT ON COLUMN BOARD.HIT IS '조회수';
+		
+		COMMENT ON COLUMN BOARD.UPT_ID IS '삭제수정';
+		
+		COMMENT ON COLUMN BOARD.PWD IS '비밀번호';
+		
+		
+		-- 게시판 덧글 테이블
+		CREATE TABLE BOARD_COMMENT (
+		  SEQ           NUMBER                  NOT NULL, 
+		  ID            VARCHAR2(20 BYTE)           NULL, 
+		  NAME          VARCHAR2(20 BYTE)           NULL, 
+		  MEMBER_SEQ    VARCHAR2(20 BYTE)           NULL, 
+		  CONTENTS      VARCHAR2(4000 BYTE)         NULL, 
+		  REG_DATE      DATE                        NULL, 
+		  IP            DATE                        NULL, 
+		  UPT_DATE      DATE                        NULL, 
+		  DEL_DATE      DATE                        NULL, 
+		  DEL_YN        VARCHAR2(1 BYTE)            NULL, 
+		  BOARD_SEQ     NUMBER                  NOT NULL
+		);
+		
+		COMMENT ON TABLE BOARD_COMMENT IS '게시판 덧글';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.SEQ IS '순번';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.ID IS '아이디';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.NAME IS '이름';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.MEMBER_SEQ IS '회원순번';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.CONTENTS IS '내용';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.REG_DATE IS '등록일';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.IP IS '아이피';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.UPT_DATE IS '수정일';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.DEL_DATE IS '삭제일';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.DEL_YN IS '삭제여부';
+		
+		COMMENT ON COLUMN BOARD_COMMENT.BOARD_SEQ IS '보드순번';
+		
+		-- 게시판 덧글 순번생성
+		CREATE SEQUENCE BOARD_COMMENT_SEQ
+	    START WITH 1
+	    INCREMENT BY 1
+	    MAXVALUE 9999999999999999999999999999
+	    MINVALUE 1
+	    NOCYCLE
+		NOCACHE;
+		
+		
+		-- 게시판 파일 테이블
+		CREATE TABLE BOARD_FILE (
+		  SEQ               NUMBER                 NOT NULL, 
+		  BOARD_SEQ         NUMBER                 NOT NULL, 
+		  FILENAME          VARCHAR2(100 BYTE)         NULL, 
+		  REFILENAME        VARCHAR2(100 BYTE)         NULL, 
+		  REG_DATE          DATE                       NULL, 
+		  INDEX_SEQ         NUMBER                     NULL, 
+		  PATH              VARCHAR2(100 BYTE)         NULL, 
+		  FILESIZE          NUMBER                     NULL, 
+		  EXT               VARCHAR2(20 BYTE)          NULL, 
+		  TYPE              VARCHAR2(20 BYTE)          NULL, 
+		  FILECONTENTYPE    VARCHAR2(100 BYTE)         NULL
+		);
+		
+		COMMENT ON TABLE BOARD_FILE IS '게시판 첨부파일';
+		
+		COMMENT ON COLUMN BOARD_FILE.FILENAME IS '원본파일명';
+		
+		COMMENT ON COLUMN BOARD_FILE.REFILENAME IS '변환파일명';
+		
+		COMMENT ON COLUMN BOARD_FILE.REG_DATE IS '등록일';
+		
+		COMMENT ON COLUMN BOARD_FILE.INDEX_SEQ IS '등록순번';
+		
+		COMMENT ON COLUMN BOARD_FILE.PATH IS '저장경로';
+		
+		COMMENT ON COLUMN BOARD_FILE.FILESIZE IS '파일용량';
+		
+		COMMENT ON COLUMN BOARD_FILE.EXT IS '파일확장자';
+		
+		COMMENT ON COLUMN BOARD_FILE.TYPE IS '파일저장타입';
+		
+		COMMENT ON COLUMN BOARD_FILE.FILECONTENTYPE IS '파일콘텐츠타입';
+		
+		COMMENT ON COLUMN BOARD_FILE.SEQ IS '순번';
+		
+		COMMENT ON COLUMN BOARD_FILE.BOARD_SEQ IS '게시판순번';
+		
+		-- 게시판 파일 순번생성
+		CREATE SEQUENCE BOARD_FILE_SEQ
+	    START WITH 1
+	    INCREMENT BY 1
+	    MAXVALUE 9999999999999999999999999999
+	    MINVALUE 1
+	    NOCYCLE
+		NOCACHE;
+		
+		-- 관리자 테이블
+		CREATE TABLE MASTER (
+		  SEQ         NUMBER                  NOT NULL, 
+		  ID          VARCHAR2(100 BYTE)          NULL, 
+		  NAME        VARCHAR2(100 BYTE)          NULL, 
+		  PWD         VARCHAR2(100 BYTE)          NULL, 
+		  MEMO        VARCHAR2(4000 BYTE)         NULL, 
+		  DEL_YN      VARCHAR2(1 BYTE)       DEFAULT 'N'            NULL, 
+		  REG_DATE    DATE                        NULL, 
+		  UPT_DATE    DATE                        NULL, 
+		  GRADE       VARCHAR2(20 BYTE)           NULL
+		);
+		
+		COMMENT ON TABLE MASTER IS '관리자';
+		
+		COMMENT ON COLUMN MASTER.SEQ IS '순번';
+		
+		COMMENT ON COLUMN MASTER.ID IS '아이디';
+		
+		COMMENT ON COLUMN MASTER.NAME IS '이름';
+		
+		COMMENT ON COLUMN MASTER.PWD IS '비밀번호';
+		
+		COMMENT ON COLUMN MASTER.MEMO IS '메모';
+		
+		COMMENT ON COLUMN MASTER.DEL_YN IS '삭제여부';
+		
+		COMMENT ON COLUMN MASTER.REG_DATE IS '등록일';
+		
+		COMMENT ON COLUMN MASTER.UPT_DATE IS '수정일';
+		
+		COMMENT ON COLUMN MASTER.GRADE IS '등급';
+		
+		-- 관리자 순번 생성
+		CREATE SEQUENCE MASTER_SEQ
+	    START WITH 1
+	    INCREMENT BY 1
+	    MAXVALUE 9999999999999999999999999999
+	    MINVALUE 1
+	    NOCYCLE
+	    NOCACHE;
+	    
+	    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    
+	    --달라이라마 DB 추가정보
+	    
+	    --후원신청 
+	    CREATE TABLE SUPPORT (
+		  SEQ         	NUMBER                  NOT NULL, 
+		  NAME        	VARCHAR2(100)          		NULL, 
+		  BIRTH       	VARCHAR2(10)           		NULL, 
+		  ADDR        	VARCHAR2(200)          		NULL,
+		  CELL1       	CHAR(4)					    NULL, 
+		  CELL2       	CHAR(4)					  	NULL, 
+		  CELL3       	CHAR(4)					 	NULL, 
+		  TEL1        	CHAR(4)					  	NULL, 
+		  TEL2        	CHAR(4)					 	NULL, 
+		  TEL3        	CHAR(4)					 	NULL,
+		  PRICE       	VARCHAR2(20)                NULL,
+		  BANK_NAME   	VARCHAR2(100)               NULL,
+		  ACCOUNT_NUM 	VARCHAR2(100)               NULL,
+		  ACCOUNT_NAME  VARCHAR2(100)               NULL,
+		  TRANSFER_DATE VARCHAR2(2)                 NULL,
+		  DEL_YN      VARCHAR2(1)       DEFAULT 'N'            NULL, 
+		  REG_DATE    DATE                        NULL, 
+		  DEL_DATE    DATE                        NULL
+		);
+		
+		COMMENT ON TABLE SUPPORT IS '후원신청';
+
+		COMMENT ON COLUMN SUPPORT.SEQ IS '번호';
+		
+		COMMENT ON COLUMN SUPPORT.NAME IS '이름';
+		
+		COMMENT ON COLUMN SUPPORT.BIRTH IS '생년월일';
+		
+		COMMENT ON COLUMN SUPPORT.ADDR IS '주소';
+		
+		COMMENT ON COLUMN SUPPORT.CELL1 IS '핸드폰1';
+		
+		COMMENT ON COLUMN SUPPORT.CELL2 IS '핸드폰2';
+		
+		COMMENT ON COLUMN SUPPORT.CELL3 IS '핸드폰3';
+		
+		COMMENT ON COLUMN SUPPORT.TEL1 IS '전화1';
+		
+		COMMENT ON COLUMN SUPPORT.TEL2 IS '전화2';
+		
+		COMMENT ON COLUMN SUPPORT.TEL3 IS '전화3';
+		
+		COMMENT ON COLUMN SUPPORT.PRICE IS '후원금액';
+		
+		COMMENT ON COLUMN SUPPORT.BANK_NAME IS '은행';
+		
+		COMMENT ON COLUMN SUPPORT.ACCOUNT_NUM IS '계좌번호';
+		
+		COMMENT ON COLUMN SUPPORT.ACCOUNT_NAME IS '예금주';
+		
+		COMMENT ON COLUMN SUPPORT.TRANSFER_DATE IS '이체일';
+		
+		COMMENT ON COLUMN SUPPORT.DEL_YN IS '삭제여부';
+		
+		COMMENT ON COLUMN SUPPORT.REG_DATE IS '등록일';
+		
+		COMMENT ON COLUMN SUPPORT.DEL_DATE IS '삭제일';
+		
+		-- 후원신청 순번 생성
+		CREATE SEQUENCE SUPPORT_SEQ
+	    START WITH 1
+	    INCREMENT BY 1
+	    MAXVALUE 9999999999999999999999999999
+	    MINVALUE 1
+	    NOCYCLE
+	    NOCACHE;
+		
+		

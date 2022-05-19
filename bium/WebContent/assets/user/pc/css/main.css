@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+
+/* main */
+#Mcontainer {position:relative; margin-left:200px; width:1050px; height:100%; box-sizing:border-box;}
+
+.bannerArea {width:100%; height:200px; border-bottom:1px solid #e1e1e1; background:#ffffff;}
+.bannerArea .notice {width:450px; height:200px; float:left; padding:25px 35px 0 30px; border-right:1px solid #e1e1e1; box-sizing:border-box;}
+
+.bannerArea .notice>ul {width:100%; padding:0px 0 0 15px; font-size:15px;}
+.bannerArea .notice>ul>li {position:relative; display:inline-block; padding:0 0 9px 10px; line-height:1.5; background:url('../images/list01.gif') no-repeat 0 7px;}
+.bannerArea .notice>ul>li>span {display:inline-block; float:right; width:100px; text-align:right;}
+.bannerArea .notice>ul>li>a {width:260px; float:left; display:inline-block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;}
+.bannerArea .notice .tit {display:inline-block; width:100%;  font-family: 'Gmarket Sans', sans-serif; font-size:24px; font-weight:500; padding-bottom:8px;}
+.bannerArea .notice .tit a {display:inline-block; width:20px; line-height:20px;}
+
+.bannerArea .banner {position:relative; width:300px; height:200px; float:left; padding:25px 35px 0 25px; border-right:1px solid #e1e1e1; box-sizing:border-box;}
+.bannerArea .banner .tit {display:inline-block; width:100%;  font-family: 'Gmarket Sans', sans-serif; font-size:24px; font-weight:500; padding-bottom:8px;}
+.bannerArea .banner .txt {padding:0px 0 0 10px; font-size:15px;}
+.bannerArea .banner .txt span {font-weight:700; display:block; margin-bottom:10px; font-size:16px;}
+.bannerArea .banner a {position:absolute; right:20px; bottom:20px; background:#fb665f; font-family: 'Gmarket Sans', sans-serif; font-size:12px; font-weight:300; color:#ffffff; line-height:25px; padding:2px 18px 0 18px;
+border-radius:20px;-moz-border-radius:20px;-webkit-border-radius:20px;-ms-border-radius:20px;-khtml-border-radius:20px;-o-border-radius:20px;}
+
+.bannerArea .ic01 {background:url('../images/m_banner01.png') no-repeat 210px 55px;}
+.bannerArea .ic02 {background:url('../images/m_banner02.png') no-repeat 190px 55px;}
+
+.mproduct {width:100%; display:inline-block; padding:30px 0 30px 0; border-right:1px solid #e1e1e1; background:#ffffff; box-sizing:border-box;}
+.mproduct .tit {text-align:center; padding-bottom:20px; color:#606060;}
+.mproduct .tit span {display:block; color:#fb665f; font-family: 'Gmarket Sans', sans-serif; font-size:30px; font-weight:500; padding-top:5px;}
+.mproduct ul {padding:0 0 0 50px;}
+.mproduct ul li a {display:inline-block; float:left; width:290px; text-align:center; font-weight:600; margin-right:40px;} 
+.mproduct ul li img {width:290px; height:200px; border:1px solid #e1e1e1; margin-bottom:10px;box-sizing:border-box;}

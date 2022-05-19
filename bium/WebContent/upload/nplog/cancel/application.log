@@ -1,0 +1,5 @@
+23:20:01.634 <000001> ------ Start Nicepay Java V.nicepay_tx-0.9.9.27_20190604--------
+23:20:01.637 <000001> service mode : CL0
+23:20:01.638 <000001> common message validation success
+23:20:01.675 <000001> 지불수단이 설정되지 않았습니다. 취소 서비스일 경우 BANK, CARD, CELLPHONE 이 중 하나를 설정해야 합니다.
+23:20:01.681 <000001> Transaction Complete  LapTime[0.183 sec.]

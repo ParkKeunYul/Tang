@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.board.BoardTotDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+
+	<select id="getMaxSeq" resultType="Integer">
+		SELECT IFNULL(MAX(seq),1) as cnt FROM board
+	</select>
+	
+	<select id="noticeList" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT T1.*
+              ,(SELECT count(seq) FROM board_comment WHERE board_seq = T1.seq AND DEL_YN != 'Y') as ccnt              
+     	  FROM board T1 
+    	 WHERE T1.DEL_YN = 'N' 
+    	   AND T1.board_name = #{param.board_name ,jdbcType=VARCHAR}
+    	   AND T1.NOTICE_YN = 'Y'    	   
+    	 ORDER by ref desc limit 0 , 10
+	</select>
+	
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+       SELECT T1.*
+             ,(SELECT count(seq) FROM board_comment WHERE board_seq = T1.seq AND DEL_YN != 'Y') as ccnt
+             ,(SELECT a_name FROM adminmember WHERE a_seqno = T1.member_seq) as admin_nm
+             ,(SELECT name FROM member WHERE seqno = T1.member_seq) as mem_nm
+             ,date_format(T1.reg_date, '%Y-%m-%d %T') as reg_date_ymd
+             ,date_format(T1.reg_date, '%Y.%m.%d') as reg_date_user
+             ,T1.ori_name1||T1.ori_name2||T1.ori_name3 as ori_name
+    	 FROM board T1 
+   		WHERE ifnull(T1.del_yn,'N') = 'N' 
+   		  AND T1.board_name = #{param.board_name ,jdbcType=VARCHAR}
+	    <if test="param.search_value != null" >
+	    	<if test="param.search_value != ''" >
+		    	<choose>
+		    		<when test="param.search_title  == 'all_type'">
+		    			AND (T1.title like '%${param.search_value}%' or T1.content like '%${param.search_value}%') 
+		    		</when>
+		    		<otherwise>
+		    			AND T1.${param.search_title } like '%${param.search_value}%'	
+		    		</otherwise>
+		    	</choose>
+       		</if>
+       	</if>
+       	<if test="param.search_cate != null" >
+	    	<if test="param.search_cate != ''" >
+	    	 	AND T1.cate_nm = ${param.search_cate}
+	    	</if>
+	    </if>
+       	<if test="param.master_grade == 2">
+        	AND T1.MEMBER_SEQ = ${param.master_seq}
+        </if>
+        <if test="param.board_name == 'qna' and param.view_type == 'user'">
+        	AND T1.member_seq = ${param.member_seq}
+        </if>
+        
+	    ORDER by T1.ref desc, T1.ref_level limit ${param.start} , ${param.pageing}
+	</select>
+		
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="int" >
+		SELECT count(seq) as cnt
+		  FROM board T1
+		 WHERE ifnull(T1.DEL_YN,'N') = 'N' 
+		   AND board_NAME = #{param.board_name ,jdbcType=VARCHAR}
+		  <if  test="param.search_value != null" ><if  test="param.search_value != ''" >
+	    		<choose>
+		    		<when test="param.search_title  == 'all_type'">
+		    			AND (T1.title like '%${param.search_value}%' or T1.content like '%${param.search_value}%') 
+		    		</when>
+		    		<otherwise>
+		    			AND T1.${param.search_title } like '%${param.search_value}%'	
+		    		</otherwise>
+		    	</choose>
+	       </if></if>
+	       <if test="param.search_cate != null" >
+		    	<if test="param.search_cate != ''" >
+		    	 	AND T1.cate_nm = ${param.search_cate}
+		    	</if>
+		    </if>
+           <if test="param.master_grade == 2">
+          		AND T1.MEMBER_SEQ = ${param.master_seq}
+          	</if>
+          	<if test="param.board_name == 'qna' and param.view_type == 'user'">
+	        	AND T1.member_seq = ${param.member_seq}
+	        </if>
+	</select>
+	
+	<select id="listCount2" parameterType="kr.co.hany.util.CommonMap" resultType="int" >
+		SELECT count(seq) as cnt
+		  FROM board T1
+		 WHERE DEL_YN = 'N' AND board_NAME = #{param.board_name2 ,jdbcType=VARCHAR}
+		  <if  test="param.search_value != null" ><if  test="param.search_value != ''" >
+	    		<choose>
+		    		<when test="param.search_title  == 'all_type'">
+		    			AND (T1.title like '%${param.search_value}%' or T1.content like '%${param.search_value}%') 
+		    		</when>
+		    		<otherwise>
+		    			AND T1.${param.search_title } like '%${param.search_value}%'	
+		    		</otherwise>
+		    	</choose>
+	       </if></if>
+           <if test="param.master_grade == 2">
+          		AND T1.MEMBER_SEQ = ${param.master_seq}
+          	</if>
+          	<if test="param.board_name == 'qna' and param.view_type == 'user'">
+	        	AND T1.member_seq = ${param.member_seq}
+	        </if>
+	</select>
+	
+	<select id="minilist" parameterType="String" resultType="java.util.Map">
+		SELECT *
+		   FROM board
+		  WHERE DEL_YN = 'N' 
+		     AND board_NAME = #{param.board_name}		     
+		  ORDER by seq desc limit 0 , 4
+	</select>
+	
+	<!-- <update id="remodify" parameterType="java.util.Map">
+		UPDATE board
+		   set ref_step = ref_step+1
+		 WHERE ref      = #{param.ref:INTEGER}
+		   AND ref_step > #{param.ref_step ,jdbcType=VARCHAR}
+	</update> -->
+	
+	<insert id="insert" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO board( 
+		  seq
+		 ,board_name
+		 ,id
+		 ,name
+		 ,member_Seq
+		 ,title
+		 ,reg_date
+		 ,notice_yn
+		 ,main_yn
+		 ,ref
+		 ,ref_step
+		 ,ref_level
+		 ,del_yn
+		 ,pwd
+		 ,content
+		 ,thum_img
+		 ,ori_name1
+		 ,re_name1
+		 ,ori_name2
+		 ,re_name2
+		 ,ori_name3
+		 ,re_name3
+		 ,cate_nm
+	  )VALUES(  
+	      ${param.seq}
+		 ,#{param.board_name}
+		 ,#{param.id}
+		 ,#{param.name}
+		 ,${param.member_seq}
+		 ,#{param.title}
+		 ,now()
+		 ,#{param.notice_yn}
+		 ,#{param.main_yn}
+		 ,${param.ref}
+		 ,ifnull(${param.ref_step},0)
+		 ,ifnull(${param.ref_level},0)
+		 ,'N'
+		 ,#{param.pwd}
+		 ,#{param.content}
+		 ,#{param.thum_img  ,jdbcType=VARCHAR}		 
+		 ,#{param.ori_name1 ,jdbcType=VARCHAR}
+		 ,#{param.re_name1 ,jdbcType=VARCHAR}
+		 ,#{param.ori_name2 ,jdbcType=VARCHAR}
+		 ,#{param.re_name2 ,jdbcType=VARCHAR}
+		 ,#{param.ori_name3 ,jdbcType=VARCHAR}
+		 ,#{param.re_name3 ,jdbcType=VARCHAR}
+		 ,#{param.cate_nm}
+	  )
+	</insert>
+	
+	
+	<update id="increaseHit" parameterType="java.util.Map">
+		UPDATE board
+		   SET hit = IFNULL(hit,0)+1
+		 WHERE seq = ${param.seq}  
+	</update>
+	
+	<update id="update" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE board
+		   SET title     = #{param.title  ,jdbcType=VARCHAR}
+		      ,content   = #{param.content  ,jdbcType=CLOB}
+		      ,upt_date  = now()
+		      ,upt_id    = #{param.id  ,jdbcType=VARCHAR}
+		      ,ori_name1 = #{param.ori_name1}
+	  		  ,re_name1  = #{param.re_name1}
+	  		  ,ori_name2 = #{param.ori_name2}
+	  		  ,re_name2  = #{param.re_name2}
+	  	  	  ,ori_name3 = #{param.ori_name3}
+	  		  ,re_name3  = #{param.re_name3}
+	  		  ,cate_nm   = #{param.cate_nm ,jdbcType=VARCHAR}
+		      <if test="param.notice_yn != null">
+		       	,notice_yn   = #{param.notice_yn  ,jdbcType=VARCHAR}
+		      </if>
+		      <if test="param.main_yn != null">
+		       	,main_yn     = #{param.main_yn  ,jdbcType=VARCHAR}
+		      </if>
+		      <if test="param.thum_img != null">
+				,thum_img = #{param.thum_img  ,jdbcType=VARCHAR}
+			  </if>
+			   ,re_content = #{param.re_content}
+			   ,email_send = #{param.email_send}
+			   ,sms_send   = #{param.sms_send}
+			   ,re_com     = #{param.re_com}
+		  WHERE seq = ${param.seq}		       
+	</update>
+	
+	<select id="del_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.* 		  	   
+		  FROM board T1
+		 WHERE seq in ( ${param.seq} )		  
+	</select>
+	
+	<delete id="del" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM board
+		 WHERE seq in ( ${param.seq} )
+	</delete>
+	
+	<update id="update_notice_yn" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE board
+		   SET notice_yn = #{param.notice_yn}
+		 WHERE seq       = ${param.seq}
+	</update>
+	
+	
+	
+	
+	
+	<select id="commentlist" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT * 
+		  FROM board_comment
+		 WHERE board_seq = ${param.seq}
+		     AND del_yn != 'Y'
+		 ORDER by seq asc
+	</select>
+	
+	<insert id="commentinsert" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO board_comment
+					( SEQ
+					 ,ID
+					 ,NAME
+					 ,MEMBER_SEQ
+					 ,CONTENTS
+					 ,REG_DATE
+					 ,IP
+					 ,DEL_YN
+					 ,board_SEQ)
+				     VALUES
+				     (  board_comment_SEQ.nextval
+					   ,#{param.id  ,jdbcType=VARCHAR}
+					   ,#{param.name  ,jdbcType=VARCHAR}
+					   ,${param.member_seq  ,jdbcType=VARCHAR}
+					   ,#{param.contents  ,jdbcType=VARCHAR}
+					   ,sysdate
+					   ,''
+					   ,'N'
+					   ,${param.board_seq}    )
+	</insert>
+	
+	<select id="commentView" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT * 
+		  FROM board_comment
+		 WHERE seq = ${param.seq}
+	</select>
+	
+	<delete id="commentdel" parameterType="String" >
+		UPDATE board_comment
+		     SET del_yn = 'Y'
+		 WHERE seq  in (${seq})
+	</delete>
+	
+	<select id="maxLevel" parameterType="kr.co.hany.util.CommonMap" resultType="String">
+		SELECT MAX(REF_LEVEL) as maxLevel
+		   FROM board
+		 WHERE ref = ${param.ref}
+		     AND ref_step = ${param.ref_step}
+	</select>
+	
+	<update id="plus_ref_level" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE board
+		   SET REF_LEVEL = NVL(REF_LEVEL,0)+1
+		 WHERE ref = ${param.ref}
+		   AND ref_level &gt;= ${param.ref_level}  
+	</update>
+	
+	<update id="commentModify" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE board_comment
+		     SET contents = #{param.contents  ,jdbcType=VARCHAR}
+		          ,upt_date = sysdate
+		 WHERE seq = ${param.seq}
+	</update>
+	
+	<select id="view" resultType="java.util.Map" parameterType="kr.co.hany.util.CommonMap">
+ 		SELECT T1.* 
+		      ,T2.name as mem_name
+		      ,T2.han_name as mem_han_name
+		      ,(SELECT date_format(reg_date, '%Y.%m.%d')  FROM board WHERE seq = (SELECT MAX(seq) FROM board WHERE board_name = T1.board_name AND seq  &lt; T1.seq AND DEL_YN !='Y' ) ) as PRE_REG
+		      ,(SELECT date_format(reg_date, '%Y.%m.%d')  FROM board WHERE seq = (SELECT MIN(seq) FROM board WHERE board_name = T1.board_name AND seq > T1.seq AND DEL_YN !='Y' ) ) as NEXT_REG
+		      ,(SELECT MAX(seq) FROM board WHERE board_name = T1.board_name AND seq &lt; T1.seq  AND DEL_YN !='Y'  AND DEL_YN !='Y' ) as PRE_SEQ
+		      ,(SELECT MIN(seq) FROM board WHERE board_name = T1.board_name AND seq > T1.seq  AND DEL_YN !='Y' ) as NEXT_SEQ
+		      ,(SELECT title FROM board WHERE seq = (SELECT MAX(seq) FROM board WHERE board_name = T1.board_name AND seq  &lt; T1.seq AND DEL_YN !='Y' ) ) as PRE_TITLE
+		      ,(SELECT title FROM board WHERE seq = (SELECT MIN(seq) FROM board WHERE board_name = T1.board_name AND seq > T1.seq AND DEL_YN !='Y' ) ) as NEXT_TITLE
+		      ,date_format(T1.reg_date, '%Y.%m.%d') as reg_date_user
+		      ,concat(T1.ori_name1, T1.ori_name2 , T1.ori_name3) as ori_name
+		      ,T2.handphone
+		      ,T2.email
+		  FROM board T1
+		  LEFT join member T2 on T1.member_seq = T2.seqno
+		 WHERE board_name = #{param.board_name}
+		   AND seq = ${param.seq}
+		   <if test="param.board_name == 'qna' and param.view_type == 'user'">
+	        	AND T1.member_seq = ${param.member_seq}
+	        </if>
+	</select>
+	
+	<select id="nlist" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT T1.*
+             ,(SELECT count(seq) FROM board_comment WHERE board_seq = T1.seq AND DEL_YN != 'Y') as ccnt
+             ,(SELECT a_name FROM adminmember WHERE a_seqno = T1.member_seq) as admin_nm
+             ,(SELECT name FROM member WHERE seqno = T1.member_seq) as mem_nm
+             ,date_format(T1.reg_date, '%Y-%m-%d %T') as reg_date_ymd
+             ,date_format(T1.reg_date, '%Y.%m.%d') as reg_date_user
+             ,T1.ori_name1||T1.ori_name2||T1.ori_name3 as ori_name
+    	 FROM board T1 
+   		WHERE ifnull(T1.del_yn,'N') = 'N' 
+   		  AND T1.board_name = #{param.board_name}
+   		  AND T1.notice_yn = 'y'    
+	    ORDER by T1.ref desc
+	</select>
+</mapper>

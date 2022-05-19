@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.order.PersonalDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		    
+		     ,date_format(upt_date, '%Y.%m.%d') as upt_date2  
+		 FROM personal_order
+		 WHERE del_yn = 'n'
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		  <if test="param.search_view != '' and param.search_view != null " >
+		    AND view_yn = ${param.search_view}
+		  </if>
+		  <if test="param.pay_yn != '' and param.pay_yn != null " >
+		  	AND pay_yn = ${param.search_pay}
+		  </if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)		      
+		 FROM personal_order
+		 WHERE del_yn = 'n'
+		 <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		  <if test="param.search_view != '' and param.search_view != null " >
+		    AND view_yn = ${param.search_view}
+		  </if>
+		  <if test="param.pay_yn != '' and param.pay_yn != null " >
+		  	AND pay_yn = ${param.search_pay}
+		  </if>
+	</select>
+
+
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO personal_order(
+			 mem_seqno
+			,name
+			,id
+			,han_name
+			,title
+			,view_yn
+			,content
+			,price
+			,upt_user
+			,upt_date
+			,pay_yn
+			,del_yn
+			,admin_date
+		)VALUES(
+			 #{param.mem_seqno}
+			,#{param.name}
+			,#{param.id}
+			,#{param.han_name}
+			,#{param.title}
+			,#{param.view_yn}
+			,#{param.content}
+			,#{param.price}
+			,#{param.upt_user}
+			,now()
+			,'n'
+			,'n'
+			,now()
+		)
+	</insert>
+	
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE personal_order
+		   SET mem_seqno = #{param.mem_seqno}
+			  ,name      = #{param.name}
+			  ,id        = #{param.id}
+			  ,han_name  = #{param.han_name}
+			  ,title     = #{param.title}
+			  ,view_yn   = #{param.view_yn}
+		      ,content   = #{param.content}
+			  ,price     = #{param.price}
+			  ,upt_user  = #{param.upt_user}
+			  ,upt_date  = now() 
+		 WHERE seqno = ${param.seqno}
+	</update>
+
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE personal_order
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	<select id="view"  parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * FROM personal_order
+		 WHERE seqno = ${param.seqno}
+	</select>
+
+	<update id="del" parameterType="kr.co.hany.util.CommonMap" >
+		UPDATE personal_order
+		   SET del_yn = 'y'
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	<select id="detail_count" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno) 
+		  FROM personal_order_detail
+		 WHERE personal_seqno = ${param.seqno}
+	</select>
+	
+
+	<select id="select_detail" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		  FROM personal_order_detail
+		 WHERE personal_seqno = ${param.seqno}
+		   AND del_yn         = 'n'
+	</select>
+
+	<update id="confirm_admin"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE personal_order
+		   SET admin_id        = #{param.admin_id}
+		      ,admin_seqno     = #{param.admin_seqno}
+		      ,admin_name      = #{param.admin_name}
+		      ,admin_date      = now()
+		      ,admin_confirm   = 'y' 
+		 WHERE seqno = ${param.seqno}
+	</update>
+
+</mapper>

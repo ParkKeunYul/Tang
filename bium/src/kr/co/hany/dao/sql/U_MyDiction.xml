@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MyDictionDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,(SELECT GROUP_CONCAT(  concat(subT2.yak_name,'[', subT1.my_joje ,']')  ORDER by subT2.yak_name  , '')  
+				    FROM my_dictionary_yakjae subT1 
+				   INNER JOIN yakjae subT2 on subT1.yak_code = subT2.yak_code
+				   WHERE subT1.my_seqno = T1.seqno
+					ORDER by subT2.yak_name ) item_list
+			  ,date_format(wdate, '%Y.%m.%d' ) as wdate2
+		  FROM my_dictionary T1
+		 WHERE 1 = 1
+		   AND id = #{id}
+		 <if test="search_value != '' and search_value != null " >
+		  	AND ${search_title} like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+		 ORDER by T1.s_name limit ${start} , ${pageing}
+	</select>
+
+
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)
+		  FROM my_dictionary T1 
+		 WHERE 1 = 1  
+		   AND id = #{id}
+		 <if test="search_value != '' and search_value != null " >
+		  	AND ${search_title} like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+	</select>
+	
+	
+	
+	<select id="select_main" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.my_joje
+		      ,T2.seqno
+		      ,T2.yak_name
+		      ,T2.yak_code
+		      ,T2.yak_from
+		      ,T2.yak_price
+		      ,T2.yak_danga
+		      ,T2.yak_status
+		      ,T2.group_code
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		      ,TRUNCATE(T2.yak_danga,0) as i_yak_danga
+      		  ,TRUNCATE(T1.my_joje,0) * TRUNCATE(T2.yak_danga,0) as tot_yak_danga
+		  FROM my_dictionary_yakjae T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.my_seqno = ${my_seqno}	
+		   AND T1.id = #{id} 	 
+		  <!-- ORDER by T1.seqno asc -->
+		 ORDER by T2.yak_name
+	</select>
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT * 
+		  FROM my_dictionary
+		 WHERE seqno = ${seqno}
+		   AND id    = #{id}
+	</select>
+	
+	<select id="select_group_yakjae" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		  FROM yakjae 		 		 
+		 WHERE group_code = #{group_code}
+		   AND seqno     != ${seqno}
+		 ORDER by yak_name
+	</select>
+	
+	
+	<select id="list_yakjae" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.*		
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt        
+		  FROM yakjae T1
+		 WHERE 1 = 1
+		 <if test="search_value != '' and search_value != null " >
+		  	AND T1.yak_name like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+		 ORDER by T1.yak_name asc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount_yakjae" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(T1.seqno) 	   	   
+		 FROM yakjae T1 	
+		 WHERE 1 = 1
+		 <if test="search_value != '' and search_value != null " >
+		  	AND T1.yak_name like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+	</select>
+	
+	 <select id="add_yakjae_multi" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+	 	SELECT T1.*		
+	 	      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt		            
+		  FROM yakjae T1
+		 <!-- WHERE T1.yak_status = 'y' -->
+		 WHERE 1 = 1
+		   AND T1.yak_name in ( ${m_search_value} ) 		   
+		 ORDER by T1.yak_name
+	 </select>
+	 
+	 <select id="add_yakjae_multi_new" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+	 	SELECT TOP1.* 
+		  FROM (
+		  	SELECT T1.seqno
+			      ,T1.yak_name
+			      ,T1.yak_code
+			      ,T1.yak_from
+			      ,T1.yak_danga
+			      ,T1.group_code
+			      ,T1.yak_status
+			      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt
+			      ,1 as num		            
+			  FROM yakjae T1
+			 WHERE 1 = 1
+			   AND T1.yak_name  = #{m_search_value}
+			UNION ALL 
+			SELECT T1.seqno
+			      ,T1.yak_name
+			      ,T1.yak_code
+			      ,T1.yak_from
+			      ,T1.yak_danga
+			      ,T1.group_code
+			      ,T1.yak_status
+			      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt
+			      ,2 as num		            
+			  FROM yakjae T1
+			 WHERE 1 = 1
+			   AND T1.yak_name  like '${m_search_value}%'
+			   AND T1.yak_made = 'y'
+		) TOP1
+	 	ORDER by TOP1.num asc limit 0 , 1
+	 </select>
+	 	 
+	<update id="update_mydic" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE my_dictionary
+		   SET s_name = #{s_name}
+		      ,b_name = #{b_name}
+		 WHERE seqno  = ${my_seqno}
+	</update>
+	
+	<delete id="delete_mydic_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM my_dictionary_yakjae
+		 WHERE my_seqno  = ${my_seqno}		
+	</delete>
+	
+	<insert id="add_mydic" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO my_dictionary(
+		     seqno
+			,b_name
+			,s_name
+			,id
+			,wdate
+		)VALUES(
+		     ${seqno}
+		    ,#{b_name}
+		    ,#{s_name}
+		    ,#{id}
+		    ,now()
+		)
+	</insert>
+	
+	<insert id="add_mydic_yakjae" parameterType="java.util.Map">
+		INSERT INTO my_dictionary_yakjae(
+			 my_seqno
+			,my_joje
+			,my_standard
+			,yak_code
+			,id
+			,wdate
+		)VALUES(
+			 ${my_seqno}
+			,${my_joje}
+			,${my_joje}
+			,'${yak_code}'
+			,'${id}'
+			,now()
+		) 	
+	</insert>
+	
+	<delete id="del_mydic" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM my_dictionary
+		 WHERE seqno in ( ${seqno} )
+	</delete>
+	
+	<delete id="del_mydic_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM my_dictionary_yakjae
+		 WHERE my_seqno in ( ${seqno} )
+	</delete>
+
+</mapper>

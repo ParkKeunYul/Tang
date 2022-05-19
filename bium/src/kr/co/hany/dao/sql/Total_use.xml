@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.total.UseDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT TOP.yak_code
+		      ,TOP.yak_name
+		      ,TOP.yak_seqno
+		      ,TOP.yak_from
+		      ,TOP.yak_danga
+		      ,TOP.group_name
+		      ,sum(use_cnt) use_cnt
+		      ,sum(part_cnt) part_cnt
+		      ,IFNULL((SELECT sum(ea) FROM yakjae_his WHERE TOP.yak_seqno = yak_seqno),0) as all_cnt
+		  FROM (
+			SELECT T2.yak_code            
+			      ,T2.yak_name
+			      ,T2.yak_from
+			      ,T2.yak_danga
+			      ,T2.group_name
+			      ,0 as use_cnt
+			      ,sum(ea) as part_cnt
+			      ,T1.yak_seqno
+			  FROM yakjae_his T1
+			LEFT JOIN(
+				SELECT subT1.group_name
+				      ,subT1.group_code
+				      ,subT2.yak_name
+				      ,subT2.yak_from
+				      ,subT2.yak_danga
+				      ,subT2.yak_code
+				      ,subT2.seqno
+				  FROM yak_group subT1
+				INNER JOIN yakjae subT2  on subT1.group_code  = subT2.group_code  
+			) T2 on T1.yak_seqno  = T2.seqno
+			 WHERE T1.add_date >= #{param.search_sday}
+			   AND T1.add_date &lt;= #{param.search_eday}
+			   <if test="param.search_yaknm != '' and param.search_yaknm != null " >
+				AND T2.yak_name like '%${param.search_yaknm}%'
+			   </if>
+			   <if test="param.search_groupnm != '' and param.search_groupnm != null " >
+				AND T2.group_name like '%${param.search_groupnm}%'
+			   </if>
+			   <if test="param.search_from != '' and param.search_from != null " >
+				AND T2.yak_from like '%${param.search_from}%'
+			   </if>
+			 GROUP by T1.yak_seqno
+			UNION all
+			SELECT T1.yak_code            
+			      ,T1.yak_name
+			      ,T1.yak_from
+			      ,T1.yak_danga
+			      ,T1.group_name
+			      ,ROUND(sum(T2.total_yakjae),2) as use_cnt   
+					,0 part_cnt 
+					,T1.seqno as yak_seqno
+			  FROM (
+				SELECT subT1.group_name
+				      ,subT1.group_code
+				      ,subT2.yak_name
+				      ,subT2.yak_from
+				      ,subT2.yak_danga
+				      ,subT2.yak_code
+				      ,subT2.seqno
+				  FROM yak_group subT1
+				INNER JOIN yakjae subT2  on subT1.group_code  = subT2.group_code  
+			) T1
+			 LEFT JOIN  p_order_yakjae T2 on  T1.yak_code  = T2.yak_code
+			 WHERE  T2.wdate >= #{param.search_sday}
+			  AND   T2.wdate &lt;= #{param.search_eday}
+			  <if test="param.search_yaknm != '' and param.search_yaknm != null " >
+				AND T1.yak_name like '%${param.search_yaknm}%'
+			  </if> 
+			  <if test="param.search_groupnm != '' and param.search_groupnm != null " >
+				AND T1.group_name like '%${param.search_groupnm}%'
+			  </if>
+			  <if test="param.search_from != '' and param.search_from != null " >
+				AND T1.yak_from like '%${param.search_from}%'
+			  </if>
+			group by T1.yak_code
+			        ,T1.yak_name
+			        ,T1.yak_from
+			        ,T1.yak_danga
+			        ,T1.group_name
+		) TOP
+		WHERE 1 = 1
+		GROUP by TOP.yak_code
+			      ,TOP.yak_name
+			      ,TOP.yak_from
+			      ,TOP.yak_danga
+			      ,TOP.group_name
+		ORDER by TOP.yak_name asc	
+	</select>
+	
+	<select id="select_use" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT wdate
+		      ,round(sum(total_yakjae) , 2) as tot
+		  FROM p_order_yakjae
+		 WHERE wdate    >= #{param.search_sday}
+		   AND wdate &lt;= #{param.search_eday}
+		   AND yak_code  = #{param.yak_code}
+		 GROUP by wdate
+	</select>
+	
+	<select id="select_add" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT add_date
+		      ,round(sum(ea) , 2) as tot
+		  FROM yakjae_his
+		 WHERE add_date    >= #{param.search_sday}
+		   AND add_date &lt;= #{param.search_eday}
+		   AND yak_seqno    = #{param.yak_seqno}
+		 GROUP by add_date
+	</select>
+	
+	
+	<select id="select_all" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT * 
+		  FROM( 
+				SELECT TOP.yak_code
+				      ,TOP.yak_name
+				      ,TOP.yak_seqno
+				      ,TOP.yak_from
+				      ,TOP.yak_danga
+				      ,TOP.group_name
+				      ,round(sum(use_cnt),0) use_cnt
+				      ,round(sum(part_cnt),0) all_cnt
+				      ,round(sum(part_cnt) - sum(use_cnt),0) as stock_cnt
+				  FROM (
+					SELECT T2.yak_code            
+					      ,T2.yak_name
+					      ,T2.yak_from
+					      ,T2.yak_danga
+					      ,T2.group_name
+					      ,0 as use_cnt
+					      ,sum(ea) as part_cnt
+					      ,T1.yak_seqno
+					  FROM yakjae_his T1
+					LEFT JOIN(
+						SELECT subT1.group_name
+						      ,subT1.group_code
+						      ,subT2.yak_name
+						      ,subT2.yak_from
+						      ,subT2.yak_danga
+						      ,subT2.yak_code
+						      ,subT2.seqno
+						  FROM yak_group subT1
+						INNER JOIN yakjae subT2  on subT1.group_code  = subT2.group_code  
+					) T2 on T1.yak_seqno  = T2.seqno
+					 WHERE 1 = 1
+					   <if test="param.search_yaknm != '' and param.search_yaknm != null " >
+						AND T2.yak_name like '%${param.search_yaknm}%'
+					   </if>
+					   <if test="param.search_groupnm != '' and param.search_groupnm != null " >
+						AND T2.group_name like '%${param.search_groupnm}%'
+					   </if>
+					   <if test="param.search_from != '' and param.search_from != null " >
+						AND T2.yak_from like '%${param.search_from}%'
+					   </if>
+					 GROUP by T1.yak_seqno
+					UNION all
+					SELECT T1.yak_code            
+					      ,T1.yak_name
+					      ,T1.yak_from
+					      ,T1.yak_danga
+					      ,T1.group_name
+					      ,ROUND(sum(T2.total_yakjae),2) as use_cnt   
+							,0 part_cnt 
+							,T1.seqno as yak_seqno
+					  FROM (
+						SELECT subT1.group_name
+						      ,subT1.group_code
+						      ,subT2.yak_name
+						      ,subT2.yak_from
+						      ,subT2.yak_danga
+						      ,subT2.yak_code
+						      ,subT2.seqno
+						  FROM yak_group subT1
+						INNER JOIN yakjae subT2  on subT1.group_code  = subT2.group_code  
+					) T1
+					 LEFT JOIN  p_order_yakjae T2 on  T1.yak_code  = T2.yak_code
+					 WHERE 1 = 1
+					  <if test="param.search_yaknm != '' and param.search_yaknm != null " >
+						AND T1.yak_name like '%${param.search_yaknm}%'
+					  </if> 
+					  <if test="param.search_groupnm != '' and param.search_groupnm != null " >
+						AND T1.group_name like '%${param.search_groupnm}%'
+					  </if>
+					  <if test="param.search_from != '' and param.search_from != null " >
+						AND T1.yak_from like '%${param.search_from}%'
+					  </if>
+					group by T1.yak_code
+					        ,T1.yak_name
+					        ,T1.yak_from
+					        ,T1.yak_danga
+					        ,T1.group_name
+				) TOP
+				WHERE 1 = 1
+				GROUP by TOP.yak_code
+					      ,TOP.yak_name
+					      ,TOP.yak_from
+					      ,TOP.yak_danga
+					      ,TOP.group_name
+		)T1
+		WHERE T1.use_cnt > 0
+		  OR  T1.all_cnt > 0
+		  OR  stock_cnt != 0
+		ORDER by T1.${param.orderCol} ${param.orderA}
+	</select>
+	
+	
+	<select id="select_use_mon" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT DATE_FORMAT(wdate,'%Y-%m') as wdate
+		      ,round(sum(total_yakjae) , 2) as tot
+		  FROM p_order_yakjae
+		 WHERE DATE_FORMAT(wdate,'%Y%m')  >=  DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -${param.s_year} month), '%Y%m')
+		   AND yak_code = #{param.yak_code}
+		 GROUP by DATE_FORMAT(wdate,'%Y-%m') 
+	</select>
+	
+	<select id="select_add_mon" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT DATE_FORMAT(add_date,'%Y-%m')  as add_date
+		      ,round(sum(ea) , 2) as tot
+		  FROM yakjae_his
+		 WHERE DATE_FORMAT(add_date,'%Y%m')  >= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -${param.s_year} month), '%Y%m')
+		   AND yak_seqno    = #{param.yak_seqno}
+		 GROUP by add_date
+	</select>
+	
+	
+	<select id="price_total" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.* 
+		      ,T2.han_name
+		      ,T1.yakjae_tot - T1.yakjae_sale_tot as yakjae_price_tot
+		  FROM (
+			SELECT mem_seqno
+			      ,count(seqno) as cnt
+				  ,round(sum(order_total_price + member_sale )) as all_tot
+			      ,sum(order_total_price ) as order_tot
+			      ,round(sum(member_sale )) as sale_tot
+			      ,sum(order_delivery_price ) as  delivery_tot
+			      ,sum(order_tang_price ) as  tang_tot
+			      ,sum(order_suju_price ) as  jusu_tot
+			      ,sum(order_pojang_price ) as  pojang_tot
+				  ,sum(order_yakjae_price ) as  yakjae_tot
+				  ,round( sum((order_yakjae_price * order_sale_per ) / 100 ) )as yakjae_sale_tot
+				  ,round( sum(( (order_delivery_price + order_tang_price + order_suju_price + order_pojang_price ) * order_sale_per ) / 100 ) ) as tang_sale_tot
+			  FROM p_order 
+			 WHERE payment in (1 , 3)
+			   AND DATE(order_date) BETWEEN #{param.search_sday} and #{param.search_eday}
+			 GROUP by mem_seqno
+		 ) T1 
+		 LEFT JOIN member T2 on T1.mem_seqno = T2.seqno
+		 <if test="param.search_name != '' and param.search_name != null " >
+			WHERE  T2.han_name like '%${param.search_name}%'
+		  </if>
+		ORDER by T2.han_name asc
+	</select>
+	
+	
+	
+</mapper>

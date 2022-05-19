@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="DictionDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.b_code
+		      ,T1.b_name
+		      ,T2.s_code
+		      ,T2.seqno
+		      ,T2.s_name
+		      ,T2.s_code    
+			  ,T2.s_name
+			  ,T2.s_jomun
+			  ,T2.s_jukeung
+			  ,T2.s_chamgo  
+		      <!-- ,(select GROUP_CONCAT(dy_name ORDER by dy_name , '') from dic_yakjae where s_code = T2.s_code  and b_code = T1.b_code  ) item_list -->
+		      ,(select GROUP_CONCAT(  concat(dy_name, '[', dy_standard ,']') ORDER by dy_name , '') from dic_yakjae where s_code = T2.s_code  and b_code = T1.b_code  ) item_list
+		  FROM b_dictionary T1
+		 INNER JOIN  s_dictionary T2 on T1.b_code  = T2.b_code
+		 WHERE 1 = 1
+		 <if test="search_value != '' and search_value != null " >
+		  	AND ${search_title} like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+		 ORDER by b_name asc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(T2.seqno) 	   	   	    
+		 FROM b_dictionary T1
+		INNER JOIN  s_dictionary T2 on T1.b_code  = T2.b_code 			
+		WHERE 1 = 1
+		<if test="search_value != '' and search_value != null " >
+		  	AND ${search_title} like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+	</select>
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.b_code
+		      ,T1.b_name
+		      ,T2.s_code
+		      ,T2.seqno
+		      ,T2.s_name
+		      ,T2.s_code    
+			  ,T2.s_name
+			  ,T2.s_jomun
+			  ,T2.s_jukeung
+			  ,T2.s_chamgo  		   
+		  FROM b_dictionary T1
+		 INNER JOIN  s_dictionary T2 on T1.b_code  = T2.b_code
+		 WHERE T2.seqno = ${seqno}
+	</select>
+	
+	<select id="sublist" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.*
+		      ,T2.dy_standard
+		      ,TRUNCATE(T1.yak_danga,0) as i_yak_danga
+      		  ,TRUNCATE(T2.dy_standard,0) * TRUNCATE(T1.yak_danga,0) as tot_yak_danga
+      		  ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T1.group_code),0) as group_cnt
+		  FROM yakjae T1
+		 INNER JOIN dic_yakjae T2 
+		    on T1.yak_code = T2.dy_code
+		 WHERE T2.s_code = #{s_code}
+		   AND T2.b_code = #{b_code}
+		<!-- ORDER by T1.yak_name -->		
+		ORDER by T1.yak_name asc
+	</select>
+	
+	
+	<select id="mydic_count" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(*) 
+		  FROM my_dictionary
+		 WHERE id        = #{id}
+		   <!-- AND dic_seqno in( ${check_seqno}) --> 
+		   AND s_name in (${check_sname})
+	</select>
+	
+	<select id="temp_dic_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.b_code
+		      ,T1.b_name
+		      ,T2.s_code
+		      ,T2.seqno
+		      ,T2.s_name
+		      ,T2.s_code    
+			  ,T2.s_name
+			  ,T2.s_jomun
+			  ,T2.s_jukeung
+			  ,T2.s_chamgo  
+		  FROM b_dictionary T1
+		 INNER JOIN  s_dictionary T2 on T1.b_code  = T2.b_code
+		 WHERE T2.seqno in (${check_seqno})
+	</select>
+	
+	<select id="max_mydic_seqno" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT ifnull(max(seqno),0) +1 
+		  FROM my_dictionary
+	</select>
+
+	<insert id="add_my_dic" parameterType="java.util.Map">
+		INSERT into my_dictionary(
+			  seqno
+			, dic_seqno		   
+			, s_name
+			, s_jomun
+			, s_jukeung
+			, b_name
+			, s_chamgo
+			, id
+			, wdate
+		) VALUES (
+			  #{mydic_seqno}
+			, #{seqno}		   
+			, #{s_name}
+			, #{s_jomun}
+			, #{s_jukeung}
+			, #{b_name}
+			, #{s_chamgo}
+			, #{id}
+			, now()
+		)
+	</insert>
+	
+	<insert id="add_my_dic_yak" parameterType="java.util.Map">
+		insert into my_dictionary_yakjae(
+			 my_seqno
+			,my_standard
+			,my_joje
+			,yak_code
+			,complete
+			,id
+			,wdate
+		) SELECT ${mydic_seqno} 
+		        ,T2.dy_standard
+		        ,T2.dy_standard
+				,T1.yak_code 
+				,'y'      
+				,#{id}
+				,now()
+		  FROM yakjae T1
+		 INNER JOIN dic_yakjae T2 
+		    on T1.yak_code = T2.dy_code
+		 WHERE T2.s_code = #{s_code}
+		   AND T2.b_code = #{b_code}
+		ORDER by T2.seqno asc
+	</insert>
+
+</mapper>

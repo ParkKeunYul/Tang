@@ -1,0 +1,4 @@
+@charset "UTF-8";
+@import url('default.css?1');
+@import url('main.css?2');
+@import url('sub.css?123');

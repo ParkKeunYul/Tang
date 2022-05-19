@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.board.BannerDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+       SELECT *
+             ,date_format(reg_date, '%Y-%m-%d %T') as reg_date_ymd
+    	 FROM banner 
+   		WHERE ifnull(del_yn,'N') = 'N' 
+	    ORDER by seq desc limit ${param.start} , ${param.pageing}
+	</select>
+		
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="int" >
+		SELECT count(seq)
+    	 FROM banner 
+   		WHERE ifnull(del_yn,'N') = 'N'
+	</select>
+	
+	<select id="getMaxSeq" resultType="Integer">
+		SELECT IFNULL(MAX(seq),0) as cnt FROM banner
+	</select>
+	
+	<insert id="insert" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO banner(
+			 seq
+			,title
+			,ori_name
+			,re_name
+			,link
+			,target
+			,use_yn
+			,sort_seq
+			,reg_date
+		) VALUES (
+			 ${param.seq}
+			,#{param.title}
+			,#{param.ori_name}
+			,#{param.re_name}
+			,#{param.link}
+			,#{param.target}
+			,#{param.use_yn}
+			,#{param.sort_seq}
+			,now()
+		)
+	</insert>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE banner
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seq = ${param.seqno}
+	</update>
+	
+	
+	<insert id="update" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE banner
+		   SET title     = #{param.title}
+		      ,ori_name  = #{param.title}
+		      ,re_name   = #{param.re_name}
+		      ,link      = #{param.link}
+		      ,target    = #{param.target}
+		      ,use_yn    = #{param.use_yn}
+		      ,sort_seq  = #{param.sort_seq}
+		 WHERE seq       = ${param.seq} 
+	</insert>
+	
+	<select id="del_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		  	   
+		  FROM banner
+		 WHERE seq in ( ${param.seq} )		  
+	</select>
+	
+	<delete id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE banner
+		   SET DEL_YN = 'Y'
+		 WHERE seq in ( ${param.seq} )
+	</delete>
+	
+	<select id="user_list" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+       SELECT *
+    	 FROM banner 
+   		WHERE ifnull(del_yn,'N') = 'N' 
+   		  AND use_yn = 'Y'
+   		ORDER by  cast(sort_seq as unsigned)  asc
+	</select>
+	
+</mapper>

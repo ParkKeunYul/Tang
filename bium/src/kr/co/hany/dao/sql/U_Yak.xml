@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="YakDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.*	
+    		  ,date_format(T1.wdate, '%Y-%m-%d %T' ) as wdate2	     
+		 FROM goods T1
+		 WHERE T1.view_yn = 'y'
+		   AND T1.sale_type = #{sale_type} 
+		 <if test="group_code != '' and group_code != null " >
+		 	AND T1.p_bigpart = #{group_code}
+		 </if>
+		 <if test="sub_code != '' and sub_code != null " >
+		 	AND T1.p_seq  in (
+		  		SELECT p_seq 
+				  FROM goods_sub_group
+		  		 WHERE p_seq          = T1.p_seq
+		 		   AND sub_group_code = ${sub_code}
+		    )
+		 </if>
+		 <if test="search_value != '' and search_value != null " >
+		 	AND T1.p_name like '%${search_value}%'
+		 </if>
+		 ORDER by T1.sort_seq asc
+		         ,T1.p_seq desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.p_seq)	     
+		  FROM goods T1
+		 WHERE T1.view_yn = 'y'
+		   AND T1.sale_type = #{sale_type}
+		 <if test="group_code != '' and group_code != null " >
+		 	AND T1.p_bigpart = #{group_code}
+		 </if>
+		 <if test="sub_code != '' and sub_code != null " >
+		 	AND T1.p_seq  in (
+		  		SELECT p_seq 
+				  FROM goods_sub_group
+		  		 WHERE p_seq  = T1.p_seq
+		 		   AND sub_group_code = 9
+		    )
+		   </if>
+		   <if test="search_value != '' and search_value != null " >
+		 		AND T1.p_name like '%${search_value}%'
+		    </if>
+	</select>
+
+	<select id="goods_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *	
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2	     
+		  FROM goods 
+		 WHERE view_yn = 'y'
+		   AND p_ea    = '처방가능'
+		   AND p_seq   = ${p_seq}
+	</select>
+	
+	<select id="cart_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *
+		  FROM view_pp_order_cart
+		 WHERE mem_seqno        = ${mem_seqno}
+		   AND goods_seq        = ${p_seq}
+		   AND box_option_seqno = ${box_option_seqno}
+	</select>
+	
+	<insert id="add_cart" parameterType="java.util.Map">
+		INSERT into pp_order_cart(
+			 mem_seqno 
+			,goods_seq 
+			,goods_code 
+			,goods_name 
+			,ea 
+			,order_date
+			,box_option_price
+			,box_option_nm
+			,box_option_seqno
+			,sale_type
+		) VALUES (
+			 #{mem_seqno} 
+			,#{p_seq} 
+			,#{p_code} 
+			,#{p_name} 
+			,#{ea} 
+			,now()
+			,${box_option_price}
+			,#{box_option_nm}
+			,#{box_option_seqno}
+			,#{sale_type}
+		)
+	</insert>
+	
+	<update id="mod_cart" parameterType="java.util.Map">
+		UPDATE pp_order_cart
+		   SET ea           = ea + ${ea}
+		 WHERE seqno        = ${seqno} 
+	</update>
+	
+	
+	<select id="unuse_goods" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(p_seq)
+		  FROM goods
+		 WHERE p_ea = '처방불가'
+		   AND p_seq in ( ${all_seqno} )			
+	</select>
+	
+	
+	<select id="goods_pay_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *
+		      ,(${ea} * p_price) + ${box_option_price} goods_tot		
+		      ,${ea} as ea      
+		      ,-9999 as seqno
+		      ,#{box_option_nm} as box_option_nm
+		      ,${box_option_seqno} as box_option_seqno
+		      ,${box_option_price} as box_option_price
+		  FROM goods
+		 WHERE p_ea != '처방불가'
+		   AND p_seq in ( ${all_seqno} )	
+	</select>
+	
+	
+	<select id="select_option" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		  FROM goods_box_option
+		 WHERE del_yn      = 'n'
+		   AND use_yn      = 'y'
+		   AND goods_seqno = ${p_seq}
+		 ORDER by sort_seq asc
+	</select>
+	
+	<select id="select_pre_order" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		  FROM goods_pre_order
+		 WHERE goods_seqno = ${p_seq}
+		   AND mem_seqno   = ${mem_seqno} 
+	</select>
+	
+	<insert id="add_preorder" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO goods_pre_order(
+			 mem_seqno
+			,goods_seqno
+			,ea
+			,upt_date
+			,sing_img
+		) VALUES (
+			${mem_seqno}
+		   ,${goods_seqno}
+		   ,${ea}
+		   ,now()
+		   ,#{sing_img}
+		) 
+	</insert>
+	
+	<update id="mod_preorder" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE goods_pre_order
+		   SET ea        = ea + ${ea}
+		      ,sing_img  = #{sing_img}
+		      ,upt_date  = now()
+		 WHERE seqno       = ${seqno}
+		   AND mem_seqno   = ${mem_seqno}
+		   AND goods_seqno = ${goods_seqno}
+	</update>
+	
+	
+	<insert id="add_preorder_his" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO goods_pre_order_his(
+			 mem_seqno
+			,goods_seqno
+			,ea
+			,upt_date
+			,sing_img
+		) VALUES (
+			${mem_seqno}
+		   ,${goods_seqno}
+		   ,${ea}
+		   ,now()
+		   ,#{sing_img}
+		) 
+	</insert>
+	
+	<select id="order_cnt" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT ifnull(sum(ea),0) as order_cnt
+		  FROM pp_order
+		 WHERE mem_seqno  = ${mem_seqno}
+		   AND goods_seq  = ${p_seq} 
+		   AND order_ing !=5		 
+	</select>
+	
+	<select id="cart_cnt" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT ifnull(sum(ea),0) as cart_cnt
+		  FROM view_pp_order_cart
+		 WHERE mem_seqno  = ${mem_seqno}
+		   AND goods_seq  = ${p_seq}
+		   <if test="call_type == 'cart'" >
+				AND seqno != ${seqno}
+		   </if> 		
+	</select>	
+</mapper>
+
+<!-- 
+
+
+create view view_pp_order_cart as 
+SELECT * 
+  FROM pp_order_cart
+ WHERE order_date >= now() - interval 1 day
+   AND seqno not in(
+	SELECT cart_seqno FROM 	pp_order WHERE order_date >= now() - interval 2 day
+)
+;
+ -->
