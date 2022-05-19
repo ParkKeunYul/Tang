@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="OrderHisDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.* 
+		      ,date_format(T1.order_date, '%Y-%m-%d' ) as order_date2
+		      ,(SELECT id FROM manage_delivery WHERE seqno = T1.tak_sel) as tak_sel_id
+		  FROM (
+				SELECT po.seqno	   
+				      ,1 as order_type
+				      ,'탕전처방 ' as order_type_nm
+				      ,po.s_name as goods_name
+				      ,0 tot_cnt 
+				      ,po.order_total_price + po.order_delivery_price as all_price
+				      ,po.payment_kind 
+				      ,(CASE 
+				   		WHEN po.payment_kind = 'Card' THEN '카드결제' 
+				   		WHEN po.payment_kind = 'Bank' THEN '무통장입금'
+				   		WHEN po.payment_kind = 'Point' THEN '포인트결제'
+				   		ELSE '' END
+				   	 ) as 	payment_kind_nm
+				   	 ,po.payment
+				   	 ,po.order_ing
+				   	 ,po.tak_sel
+				   	 ,po.delivery_no
+				   	 ,po.order_date
+				   	 ,po.bunch
+				   	 ,po.bunch_num
+				   	 ,ifnull(po.cancel_ing, 'n') as cancel_ing
+				   	 ,0 as tot_sale_price
+				   	 ,po.card_gu_no
+				  FROM p_order po 
+				 INNER JOIN member mb on po.id = mb.id
+				 WHERE po.mem_seqno            = ${mem_seqno}				
+				 <if test="search_value != '' and search_value != null " >
+				 	AND po.s_name  like '%${search_value}%' 
+				 </if>
+				 <if test="search_payment != '' and search_payment != null ">
+				 	<if test="search_payment == 1">
+				 		AND po.payment  = 1
+				 	</if>
+				 	<if test="search_payment == 2">
+				 		AND po.payment  != 1
+				 	</if>
+				 </if>
+				 <if test="s_order_date != '' and s_order_date != null and e_order_date != '' and e_order_date != null" >
+				  	 AND DATE(order_date) BETWEEN #{s_order_date} and #{e_order_date}
+				  </if>
+				 UNION ALL
+				 SELECT po.seqno
+				      ,2 as order_type
+				      ,'약속처방 ' as order_type_nm
+				      ,po.goods_name
+				      ,vss.tot_cnt
+				      ,vss.tot_price + po.delivery_price - ifnull(po.member_sale,0) as all_price      
+				      ,po.payment as payment_kind
+						,(CASE 
+				      		WHEN po.payment = 'Card' THEN '카드결제' 
+				      		WHEN po.payment = 'Bank' THEN '무통장입금'
+				      		WHEN po.payment = 'Point' THEN '포인트결제'
+				      		ELSE '' END
+				       ) as payment_kind_nm
+				       ,po.pay_ing as payment
+				       ,po.order_ing
+				       ,po.tak_sel
+				       ,po.deliveryno as delivery_no
+				       ,po.order_date
+				       ,'n' bunch
+				       ,0  bunch_num
+				       ,ifnull(po.cancel_ing, 'n') as cancel_ing
+				       ,vss.tot_sale_price
+				       ,po.card_gu_no
+				  FROM pp_order po
+				 INNER JOIN view_shop_sum2 vss 
+				    ON po.order_num = vss.m_oder_num AND  po.seqno = vss.tot_seqno
+				 INNER JOIN member mb ON po.order_id = mb.id
+				 WHERE po.goods_code != ''
+				   AND  po.mem_seqno   = ${mem_seqno}
+				 <if test="search_value != '' and search_value != null " >
+				 	AND po.goods_name  like '%${search_value}%' 
+				 </if>				 
+				 <if test="search_payment != '' and search_payment != null ">
+				 	<if test="search_payment == 1">
+				 		AND po.pay_ing  in (1,4)
+				 	</if>
+				 	<if test="search_payment == 2">
+				 		AND po.pay_ing  in  (2,3)
+				 	</if>
+				 </if>
+				 <if test="s_order_date != '' and s_order_date != null and e_order_date != '' and e_order_date != null" >
+				  	 AND DATE(order_date) BETWEEN #{s_order_date} and #{e_order_date}
+				 </if>
+		) T1
+		WHERE 1 = 1
+		<if test="search_order_type != '' and search_order_type != null " >
+			AND order_type = ${search_order_type}
+		</if>
+		ORDER by order_date desc
+		        ,seqno desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)		      
+		  FROM (
+				SELECT po.seqno	   
+				      ,1 as order_type
+				      ,'탕전처방 ' as order_type_nm
+				      ,po.s_name as goods_name
+				      ,0 tot_cnt 
+				      ,po.order_total_price as all_price
+				      ,po.payment_kind 
+				      ,(CASE 
+				   		WHEN po.payment_kind = 'Card' THEN '카드결제' 
+				   		WHEN po.payment_kind = 'Bank' THEN '무통장입금'
+				   		WHEN po.payment_kind = 'Point' THEN '포인트결제'
+				   		ELSE '' END
+				   	 ) as 	payment_kind_nm
+				   	 ,po.payment
+				   	 ,po.order_ing
+				   	 ,po.tak_sel
+				   	 ,po.delivery_no
+				   	 ,po.order_date
+				  FROM p_order po 
+				 INNER JOIN member mb on po.id = mb.id
+				 WHERE po.mem_seqno            = ${mem_seqno}
+				<if test="search_value != '' and search_value != null " >
+				 	AND po.s_name  like '%${search_value}%' 
+				 </if>
+				 <if test="search_payment != '' and search_payment != null ">
+				 	<if test="search_payment == 1">
+				 		AND po.payment  = 1
+				 	</if>
+				 	<if test="search_payment == 2">
+				 		AND po.payment  != 1
+				 	</if>
+				 </if>
+				 <if test="s_order_date != '' and s_order_date != null and e_order_date != '' and e_order_date != null" >
+				  	 AND DATE(order_date) BETWEEN #{s_order_date} and #{e_order_date}
+				 </if>
+				 UNION ALL
+				 SELECT po.seqno
+				      ,2 as order_type
+				      ,'약속처방 ' as order_type_nm
+				      ,po.goods_name
+				      ,vss.tot_cnt
+				      ,vss.tot_price + po.delivery_price - ifnull(po.member_sale,0) as all_price      
+				      ,po.payment as payment_kind
+						,(CASE 
+				      		WHEN po.payment = 'Card' THEN '카드결제' 
+				      		WHEN po.payment = 'Bank' THEN '무통장입금'
+				      		ELSE '' END
+				       ) as payment_kind_nm
+				       ,po.pay_ing as payment
+				       ,po.order_ing
+				       ,po.tak_sel
+				       ,po.deliveryno
+				       ,po.order_date
+				  FROM pp_order po
+				 INNER JOIN view_shop_sum2 vss 
+				    ON po.order_num = vss.m_oder_num AND  po.seqno = vss.tot_seqno
+				 INNER JOIN member mb ON po.order_id = mb.id
+				 WHERE po.goods_code != ''				 
+				  AND  po.mem_seqno   = ${mem_seqno}
+				  <if test="search_value != '' and search_value != null " >
+				 	AND po.goods_name  like '%${search_value}%' 
+				 </if>				 
+				 <if test="search_payment != '' and search_payment != null ">
+				 	<if test="search_payment == 1">
+				 		AND po.pay_ing  in (1,4)
+				 	</if>
+				 	<if test="search_payment == 2">
+				 		AND po.pay_ing  in  (2,3)
+				 	</if>
+				 </if>
+				 <if test="s_order_date != '' and s_order_date != null and e_order_date != '' and e_order_date != null" >
+				  	 AND DATE(order_date) BETWEEN #{s_order_date} and #{e_order_date}
+				 </if>
+		) T1
+		WHERE 1 = 1
+		<if test="search_order_type != '' and search_order_type != null " >
+			AND order_type = ${search_order_type}
+		</if>
+	</select>
+	
+	
+	<select id="yak_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.* 
+		      ,vss.*
+		      ,(CASE WHEN po.o_paypart = '0' THEN '발행' ELSE '' END) as 	o_paypart_nm      		
+				      ,(CASE 
+				      		WHEN po.payment = 'Card' THEN '카드' 
+				      		WHEN po.payment = 'Bank' THEN '무통장'
+				      		WHEN po.payment = 'Point' THEN '포인트결제'
+				      		ELSE '' END
+		       ) as payment_kind_nm		      
+		      ,mb.member_level
+		      ,mb.name as mem_name
+		      ,vss.tot_price + po.delivery_price - ifnull(po.member_sale,0) as all_price
+		      ,(SELECT delivery_nm FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_nm
+		      ,(SELECT id FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_id
+		 FROM pp_order po
+		 INNER JOIN view_shop_sum2 vss 
+		    ON po.order_num = vss.m_oder_num AND  po.seqno = vss.tot_seqno
+		 INNER JOIN member mb ON po.order_id = mb.id
+		 WHERE po.goods_code != ''
+		   AND po.mem_seqno      = ${mem_seqno}
+		   AND po.seqno          = ${seqno}
+	</select>
+	
+	
+	<select id="yak_view_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.*
+		      ,go.image as good_image
+		  FROM pp_order po
+		  LEFT JOIN goods go 
+		    ON po.goods_code = go.p_code
+	     WHERE po.order_no   = #{order_no}
+	       AND po.mem_seqno  = ${mem_seqno}
+	</select>
+	
+	
+	<select id="tang_view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT po.*
+		      ,date_format(po.wdate, '%Y-%m-%d %T' ) as wdate2
+		      ,(CASE WHEN po.cash_bill = '1' THEN '발행' ELSE '' END) as 	cash_bill_nm      
+		      ,(CASE WHEN po.c_more_tang = 'y' THEN '발송' ELSE '' END) as 	c_more_tang_nm
+		      ,(CASE 
+		      		WHEN po.payment_kind = 'Card' THEN '카드결제' 
+		      		WHEN po.payment_kind = 'Bank' THEN '무통장입금'
+		      		WHEN po.payment_kind = 'Point' THEN '포인트결제'
+		      		ELSE '' END
+		      	) as 	payment_kind_nm
+		      ,mb.member_level		   
+		      ,mb.email
+		      ,(CASE WHEN po.w_sex = 'm' THEN '남자' WHEN po.w_sex = 'w' THEN '여자' ELSE '' END) as 	w_sex_nm
+		      ,(SELECT delivery_nm FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_nm
+		      ,(SELECT id FROM manage_delivery WHERE seqno = po.tak_sel) as tak_sel_id
+		      ,(SELECT box_name FROM box_table WHERE seqno = po.c_box_type) as c_box_nm
+		      ,(SELECT pouch_name FROM pouch_table WHERE seqno = po.c_pouch_type) as c_pouch_nm		      
+		      ,(SELECT sty_name   FROM sty_table WHERE seqno = po.c_stpom_type) as c_stpom_nm 
+		  FROM p_order po 
+		 INNER JOIN member mb on po.id = mb.id
+	     WHERE po.seqno      = ${seqno}
+	       AND po.mem_seqno  = ${mem_seqno}
+	</select>
+	
+	
+	<select id="tang_yakjae_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		select T1.yak_code
+		      ,replace(T1.p_joje, ',' ,'') as p_joje
+			  ,replace(T1.total_yakjae, ',' ,'') as total_yakjae
+			  ,replace(T1.yak_price, ',' ,'') as yak_price
+			  ,replace(T1.p_danga, ',' ,'')  as p_danga
+			  ,T1.p_from
+			  ,T2.yak_name
+			  ,(SELECT c_chup_ea FROM p_order WHERE seqno = T1.p_seqno) as c_chup_ea
+		 FROM p_order_yakjae T1
+		INNER JOIN yakjae T2  
+		   ON T1.yak_code = T2.yak_code
+		WHERE T1.p_seqno   = ${seqno} 
+		  AND T1.mem_seqno = ${mem_seqno}
+		ORDER by T2.yak_name asc
+	</select>
+	
+	
+	<update id="order_cancel"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE ${table_nm}
+		   SET cancel_ing = 'i'
+	     WHERE mem_seqno  = ${mem_seqno}
+	       AND seqno      = ${seqno}  		   
+	</update>
+	
+	
+</mapper>

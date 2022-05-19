@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="AmountUserDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 		      
+				,date_format(T1.reg_date, '%Y-%m-%d') as reg_date2
+		  FROM amount_product T1	
+		 WHERE del_yn  != 'y'
+		   AND show_yn  = 'y'
+		 ORDER by T1.seqno desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)
+		  FROM amount_product T1
+		 WHERE del_yn  != 'y'
+		   AND show_yn  = 'y'
+	</select>
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT *	
+		      ,date_format(reg_date, '%Y-%m-%d %T' ) as reg_date2	     
+		  FROM amount_product 
+		 WHERE del_yn  != 'y'
+		   AND show_yn  = 'y'
+		   AND seqno   = ${seqno}
+	</select>
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM amount_order
+	</select>
+	
+	<insert id="add_card"  parameterType="kr.co.hany.util.CommonMap" >
+		INSERT INTO amount_order(
+			 seqno
+			,mem_seqno
+			,amount_seqno
+			,amount_code
+			,amount_price
+			,amount_title
+			,ea
+			,price
+			,tot_price
+			,point
+			,tot_point
+			,card_gu_no
+			,card_ju_no
+			,card_su_no
+			,card_nm
+			,card_code
+			,card_quota
+			,card_amt
+			,order_date
+		)VALUES(
+			 #{seqno}
+			,#{mem_seqno}
+			,#{amount_seqno}
+			,#{amount_code}
+			,#{amount_price}
+			,#{amount_title}
+			,#{ea}
+			,#{price}
+			,#{tot_price}
+			,#{point}
+			,#{tot_point}
+			,#{card_gu_no}
+			,#{card_ju_no}
+			,#{card_su_no}
+			,#{card_nm}
+			,#{card_code}
+			,#{card_quota}
+			,#{card_amt}
+			,now()
+		)
+	</insert>
+	
+	<insert id="add_point"  parameterType="kr.co.hany.util.CommonMap" >
+		INSERT INTO amount_point_add(
+		     amount_seqno
+			,mem_seqno
+			,point
+			,reg_date
+			,reason
+			,order_seqno
+		)VALUES(
+			 #{amount_seqno}
+			,#{mem_seqno}
+			,#{tot_point}
+			,now()
+			,#{reason}
+			,#{order_seqno}
+		)
+	</insert>
+	
+	<select id="point_list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,(SELECT goods_name FROM pp_order WHERE seqno = T1.pp_seqno) AS use_reason
+		  FROM (
+			SELECT point
+			      ,point AS p_point
+			      ,0     AS m_point
+			      
+			      ,'p' AS point_type
+			      ,reg_date
+			      ,reason
+					,0 AS pp_seqno	      
+			  FROM amount_point_add
+			 WHERE mem_seqno = #{mem_seqno}
+			UNION ALL
+			SELECT POINT 	      
+			      ,0     AS p_point
+			      ,point AS m_point
+			      ,'M' AS TYPE
+			      ,reg_date
+			      ,'결제사용'  reason
+			      ,pp_seqno
+			  FROM amount_point_use
+			 WHERE mem_seqno = #{mem_seqno}
+		) T1
+		ORDER BY T1.reg_date desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="point_listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.point) 
+		  FROM (
+			SELECT point
+			      ,point AS p_point
+			      ,0     AS m_point
+			      
+			      ,'p' AS point_type
+			      ,reg_date
+			      ,reason
+					,0 AS pp_seqno	      
+			  FROM amount_point_add
+			 WHERE mem_seqno = #{mem_seqno}
+			UNION ALL
+			SELECT POINT 	      
+			      ,0     AS p_point
+			      ,point AS m_point
+			      ,'M' AS TYPE
+			      ,reg_date
+			      ,'결제사용'  reason
+			      ,pp_seqno
+			  FROM amount_point_use
+			 WHERE mem_seqno = #{mem_seqno}
+		) T1
+	</select>
+	
+	
+	<select id="point_all" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT SUM(T1.p_point) as p
+		      ,SUM(T1.m_point) as m
+		      ,SUM(T1.p_point) - SUM(T1.m_point) as tot 
+		  FROM (
+			SELECT point
+			      ,point AS p_point
+			      ,0     AS m_point
+			      
+			      ,'p' AS point_type
+			      ,reg_date
+			      ,'충전' AS reason
+					,0 AS pp_seqno	      
+			  FROM amount_point_add
+			 WHERE mem_seqno = #{mem_seqno}
+			UNION ALL
+			SELECT POINT 	      
+			      ,0     AS p_point
+			      ,point AS m_point
+			      ,'M' AS TYPE
+			      ,reg_date
+			      ,'결제사용'  reason
+			      ,pp_seqno
+			  FROM amount_point_use
+			 WHERE mem_seqno = #{mem_seqno}
+		) T1
+	</select>
+</mapper>
+

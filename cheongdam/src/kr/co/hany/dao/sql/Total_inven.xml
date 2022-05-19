@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.total.InvenDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *
+			  ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2		     
+		  FROM yakjae_his 
+		 WHERE yak_seqno = ${param.yak_seqno}
+		 ORDER by add_date desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" resultType="Integer">
+		SELECT count(seqno)		     
+		  FROM yakjae_his 		 
+		 WHERE yak_seqno = ${param.yak_seqno}
+	</select>
+	
+	
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO yakjae_his(
+			 yak_seqno
+			,yak_code
+			,add_date
+			,ea
+			,a_id
+			,wdate
+		) VALUES (
+			 #{param.a_yak_seqno}
+			,#{param.a_yak_code}
+			,#{param.a_add_date}
+			,#{param.a_ea}
+			,#{param.a_a_id}
+			,now()
+		)
+	</insert>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE yakjae_his
+		   SET ${param.cellName} = #{param.cellValue}
+		      ,u_id              = #{param.u_id}
+		      ,u_date            = now()
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	
+	<delete id="del" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM yakjae_his
+		 WHERE seqno in ( ${param.seqno} )
+	</delete>
+	
+</mapper>

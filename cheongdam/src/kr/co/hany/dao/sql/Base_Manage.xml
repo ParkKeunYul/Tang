@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.base.ManageDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select_manage" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT a_name
+			  ,a_id
+			  ,a_pass
+			  ,a_email
+			  ,a_hp
+			  ,a_level
+			  ,a_contents
+			  ,a_seqno
+			  ,date_format(a_date, '%Y-%m-%d') as a_date
+		  FROM adminmember
+		  <if test="param.a_id != '' and param.a_id != null " >
+		  	WHERE a_id like '%${param.a_id}%'
+		  </if>
+		 ORDER by a_seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_manage_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT a_name
+			  ,a_id
+			  ,a_pass
+			  ,a_email
+			  ,a_hp
+			  ,a_level
+			  ,a_contents
+			  ,a_seqno
+			  ,date_format(a_date, '%Y-%m-%d') as a_date
+		  FROM adminmember
+		  WHERE a_seqno = #{param.a_seqno}
+		 ORDER by a_seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+	   SELECT count(a_seqno) as tot 
+		 FROM adminmember
+		 <if test="param.a_id != '' and param.a_id != null " >
+		  	WHERE a_id like '%${param.a_id}%'
+		 </if>
+	</select>
+	
+
+	<delete id="delete_manage" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM adminmember
+		 WHERE a_seqno in ( ${param.a_seqno} )
+	</delete>
+	
+	<insert id="add_manage" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into adminmember (
+			a_name
+		   ,a_id
+		   ,a_pass
+		   ,a_email
+		   ,a_hp
+		   ,a_level
+		   ,a_contents
+		   ,a_date
+	   ) VALUES (
+	   		#{param.a_name}
+		   ,#{param.a_id}
+		   ,#{param.a_pass}
+		   ,#{param.a_email}
+		   ,#{param.a_hp}
+		   ,#{param.a_level}
+		   ,#{param.a_contents}
+		   ,now()
+	   ) 
+	</insert>
+
+	<update id="mod_manage" parameterType="kr.co.hany.util.CommonMap">
+	 	UPDATE adminmember
+	 	   SET a_name      = #{param.a_name}
+			   ,a_id	   = #{param.a_id}		   
+			   ,a_email    = #{param.a_email}
+			   ,a_hp       = #{param.a_hp}
+			   ,a_level    = #{param.a_level}
+			   ,a_contents = #{param.a_contents}
+			   <if test="param.a_pass != '' and param.a_pass != null " >
+			   	,a_pass 	   = #{param.a_pass}
+			   </if>			   	   
+	     WHERE a_seqno     = ${param.a_seqno}
+	
+	</update>
+
+</mapper>

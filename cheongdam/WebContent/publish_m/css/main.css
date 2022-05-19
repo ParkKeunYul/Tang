@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+/* --- 상단 롤링 배너--- */
+#mainBanner {position:relative;}
+#mainBanner .owl-dots {position:absolute; bottom:1rem; width:100%; }
+#mainBanner .owl-nav {margin:0;}
+#mainBanner .owl-nav > button {position:absolute; top:50%; width:4rem; height:5rem; margin:-15px 0 0; background:rgba(0,0,0,.5) url(../images/btn_mainbnr_arrw.png) 0 -32px no-repeat; background-size:30px auto; border-radius:0;}
+#mainBanner .owl-nav > button span {position:absolute;overflow:hidden;clip:rect(0, 0, 0, 0);width:1px;height:1px;margin:-1px;padding:0;border:0;}
+#mainBanner .owl-nav .owl-prev {left:0; background-position:2px 15px;}
+#mainBanner .owl-nav .owl-next {right:0; background-position: 2px -28px;}
+#mainBanner.owl-theme .owl-dots .owl-dot.active>span {width:2.6rem; background:#02b59d;}
+#mainBanner.owl-theme .owl-dots .owl-dot>span {background:#d9d9d9;}
+
+.bannerarea {width:100%;}
+.bannerarea p {margin-bottom:-2px !important; padding:0;}
+.bannerarea img {width:100%; height:auto; margin:0; padding:0;}
+
+.productM {width:100%; padding:3rem 0; }
+.productM .tit {color:#7aa59f; font-size:1.3rem; text-align:center;}
+.productM .tit span {color:#436560; font-size:2.8rem; font-weight:500; padding:1.0rem 0 0 0; display:block; font-family: "NanumSquare", "나눔스퀘어", sans-serif !important;}
+.productM ul {width:90%; padding:2.5rem 0 0 0; margin:0 auto;}
+.productM ul li {width:50%; float:left; text-align:center; padding:0 10px; box-sizing: border-box;}
+.productM ul li img {width:100%; margin-bottom:1rem;}
+.productM ul li span {display:block; text-align:center; width:100%; font-size:1.4rem; font-weight:700; margin-bottom:3rem; text-overflow:ellipsis;overflow:hidden; white-space:nowrap;}
+
+/* --- 링크(icon 메뉴) --- */
+.mainMenuLink {height:17rem;}
+.mainMenuLink .mLink img {display:inline-block; width:8rem; height:8rem;}
+.mainMenuLink .mLink {display:block; padding-top:3rem; margin:0;}
+.mainMenuLink .mLink * {box-sizing:border-box;}
+.mainMenuLink .mLink > a {display:block; float:left; width:33%; margin:0 auto; text-align:center;}
+.mainMenuLink .mLink > a > strong {display:block; padding-top:.6rem; font-size:1.7rem; font-family:'Noto Sans KR'; color:#323232;}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="FastTangOrderDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="select_fast" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		  FROM tang_good
+		 WHERE del_yn != 'y'
+		   AND view_yn = 'y'		   
+		 <if test="search_value != '' and search_value != null " >
+		  	AND tang_name like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+		 ORDER by tang_name limit ${start} , ${pageing}
+	</select>
+
+
+	<select id="select_fast_count" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM tang_good
+		 WHERE del_yn != 'y'
+		   AND view_yn = 'y'
+		 <if test="search_value != '' and search_value != null " >
+		  	AND tang_name like '%${search_value}%'
+		 </if>
+		 <if test="whereSql != '' and whereSql != null " >
+		 	${whereSql}
+		 </if>
+	</select>
+	
+	<insert id="add_order" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO p_order(
+			 id                  , wdate              , mem_seqno              , name                         , han_name
+	        ,wp_seqno            , w_jindan           , w_name                 , w_age                        , w_birthyear
+	        ,w_etc01             , w_etc02            , w_contents             , s_name                       , b_name
+	        ,c_chup_ea_price     , c_chup_ea          , c_chup_price           , c_chup_ea_g                  , c_chup_ea_1
+	        ,c_chup_g            , c_pack_ml          , c_pack_ea              , c_box_type                   , c_box_text
+	        ,c_pouch_type        , c_pouch_text       , c_joje_contents        , c_joje_file                  , c_joje_folder
+	        ,c_bokyong_contents  , c_bokyong_file     , c_bokyong_folder       , d_type                       , d_from_name
+	        ,d_from_zipcode      , d_from_address01   , d_from_address02       , d_from_handphone             , d_to_zipcode
+	        ,d_to_address01      , d_to_address02     , d_to_handphone         , d_to_contents                , order_yakjae_price 
+	        ,order_tang_price    , order_suju_price   , order_delivery_price   , order_delivery_price_check   , order_pojang_price
+	        ,order_total_price   , c_tang_type        , c_tang_check13         , cart_complete                , w_sex 
+	        ,w_size              , order_date         , member_sale            , view_yn                      , bunch 
+		    ,c_stpom_type        , c_stpom_text       , payment_kind           , order_ing                    , cart_seqno
+		    ,payment             , seqno              , order_no               , d_to_name                    , d_to_tel
+		    ,d_from_tel          , bunch_num          , bill_part              , bill_name                    , bill_email
+		    ,bill_handphone      , card_gu_no         , card_ju_no             , card_su_no                   , card_nm
+		    ,card_code           , card_quota         , card_amt               , order_sale_per               , order_type
+		    ,c_tang_check14      , c_tang_check15     , c_tang_check16
+		)
+		SELECT #{id}               , now()              , #{mem_seqno}           , #{name}                      ,#{han_name}
+		      ,-9999               , ''                 , '모바일주문'              , ''                           ,''
+		      ,''                  , ''                 , ''                     , tang_name                    , jo_from
+		      ,c_chup_ea_price     , c_chup_ea          , c_chup_ea_price * c_chup_ea   , c_chup_g              , c_chup_ea
+		      ,c_chup_g            , c_pack_ml          , c_pack_ea              , c_box_type                   , ''
+		      ,c_pouch_type        , ''                 , ''       			     , ''                           , ''
+		      ,''                  , ''                 , ''                     , #{d_type}                    , #{d_from_name}
+		      ,#{d_from_zipcode}   , #{d_from_address01}, #{d_from_address02}    , #{d_from_handphone}          , #{d_to_zipcode}
+		      ,#{d_to_address01}   , #{d_to_address02}  , #{d_to_handphone}      , ''                           , 0 
+		      ,0                   , 0                  , 0                      , 'n'                          , 0
+		      ,${Amt}              , c_tang_type        , #{c_tang_check13}      , 'n'                          , '' 
+		      ,''                  , now()              , ${member_sale}         , 'n'                          , 'n' 
+			  ,c_stpom_type        , c_stpom_type       , #{payment_kind}    	 , ${order_ing}                 , ${cart_seqno}
+			  ,#{payment}          , ${p_order_seqno}   , #{order_no}            , #{d_to_name}                 , #{d_to_tel}
+			  ,#{d_from_tel}        , ${bunch_num}       , #{bill_part}           , #{bill_name}                 , #{bill_email}
+			  ,#{bill_handphone}   , #{card_gu_no}      , #{card_ju_no}          , #{card_su_no}                , #{card_nm}
+			  ,#{card_code}        , #{card_quota}      , #{card_amt}            , #{order_sale_per}            , '2'
+			  ,#{c_tang_check14}   , #{c_tang_check15}  , #{c_tang_check16}
+		 FROM tang_good
+		WHERE seqno = ${seqno}	
+	</insert>
+
+	<insert id="add_order_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO p_order_yakjae(
+			p_seqno , mem_seqno         , p_joje      , yak_code , id         ,
+			wdate   , total_yakjae      , yak_price   , p_from   , order_type ,
+			p_danga
+						
+		)
+		SELECT ${p_order_seqno} , #{mem_seqno} , p_joje    , yak_code , #{id}   
+		      ,now()            , total_yakjae , yak_price , p_from   , '2'
+		      ,p_danga
+		  FROM tang_good_yakjae
+		 WHERE t_seqno = ${seqno} 		
+	</insert>
+
+
+</mapper>

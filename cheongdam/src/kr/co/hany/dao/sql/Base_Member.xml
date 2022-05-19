@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.base.MemberDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select_member" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		      ,@rownum:=@rownum+1
+		  FROM member
+		  WHERE out_yn != 'Y'
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	<choose>
+		  		<when test="param.search_title == 'handphone' or param.search_title == 'tel' ">
+		  			AND REPLACE(${param.search_title}, '-' , '') like REPLACE('%${param.search_value}%', '-', '')
+		  		</when>
+		  		<otherwise>
+		  			AND ${param.search_title} like '%${param.search_value}%'			
+		  		</otherwise>
+		  	</choose>
+		  </if>
+		  <if test="param.search_group != '' and param.search_group != null " >
+		  	AND group_code = #{param.search_group}
+		  </if>
+		 ORDER by ${param.sidx} ${param.sord} limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM member
+		  WHERE out_yn != 'Y'
+		  <if test="param.search_value != '' and param.search_value != null " >
+			  <choose>
+			  		<when test="param.search_title == 'handphone' or param.search_title == 'tel' ">
+			  			AND REPLACE(${param.search_title}, '-' , '') like REPLACE('%${param.search_value}%', '-', '')
+			  		</when>
+			  		<otherwise>
+			  			AND ${param.search_title} like '%${param.search_value}%'			
+			  		</otherwise>
+			  </choose>
+		  </if>
+		  <if test="param.search_group != '' and param.search_group != null " >
+		  	AND group_code = #{param.search_group}
+		  </if>
+		  
+	</select>
+	
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM member
+		 WHERE seqno = ${param.seqno} 
+	</select>
+	
+	<update id="mod" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET name           = #{param.name}
+		      ,sex            = #{param.sex}
+		      ,tel            = #{param.tel}
+		      ,handphone      = #{param.handphone}
+		      ,zipcode        = #{param.zipcode}
+		      ,address01      = #{param.address01}
+		      ,address02      = #{param.address02}
+		      ,email          = #{param.email}
+		      ,member_level   = #{param.member_level}
+		      ,part           = #{param.part}
+		      ,license_no     = #{param.license_no}
+		      ,han_name       = #{param.han_name}
+		      ,biz_no         = #{param.biz_no}
+		      ,han_zipcode    = #{param.han_zipcode}
+		      ,han_address01  = #{param.han_address01}
+		      ,han_address02  = #{param.han_address02}
+		      ,han_tel        = #{param.han_tel}
+		      ,han_fax        = #{param.han_fax}
+		      ,sub_id_confirm = #{param.sub_id_confirm}
+		      ,license_yn     = #{param.license_yn}
+		      ,bill_yn        = #{param.bill_yn}
+		      ,admin_memo     = #{param.admin_memo}
+		      ,group_code     = #{param.group_code}
+		      ,info_fix       = #{param.info_fix}
+		      <if test="param.password != '' and param.password != null " >
+			   	,password 	   = #{param.password}
+			  </if>
+			  <if test="param.member_file != '' and param.member_file != null  ">
+			  	,member_file     = #{param.member_file}
+			    ,member_file_re  = #{param.member_file}
+			  </if>
+			  <if test="param.member_file2 != '' and param.member_file2 != null  ">
+			  	,member_file2    = #{param.member_file2}
+			  	,member_file2_re = #{param.member_file2}
+			  </if>
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+	<insert id="addSetting" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into common_setup(
+			 id
+			,mem_seqno
+			,wdate
+			,c_tang_type
+			,c_chup_ea
+			,c_pack_ml
+			,c_pack_ea
+			,c_pouch_type
+			,c_pouch_text
+			,pouch_seqno 
+			,c_box_type
+			,c_box_text
+			,box_seqno
+			,c_stpom_type
+			,c_stpom_text
+			,stpom_seqno
+		) values (
+			 #{param.id}
+			,${param.seqno}
+			,now()
+			,'2'
+			,'20'
+			,'120'
+			,'45'
+			,'6'
+			,''
+			,0
+			,'7'
+			,''
+			,0
+			,'1'
+			,''
+			,0
+		) 
+	</insert>
+	
+	<delete id="delSetting" parameterType="kr.co.hany.util.CommonMap">
+		DELETE from common_setup
+	     WHERE mem_seqno = #{param.seqno}
+	</delete>
+	
+	<select id="check_setting" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(id)
+		  FROM common_setup
+		 WHERE mem_seqno = #{param.seqno}
+	</select>
+	
+	<delete id="out_member"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET out_yn = 'Y' 
+		 WHERE seqno in ( ${param.all_seqno} )
+	</delete>
+	
+	<select id="select_out_member" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2
+		  FROM member
+		  WHERE out_yn = 'Y'
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		  <if test="param.search_group != '' and param.search_group != null " >
+		  	AND group_code = #{param.search_group}
+		  </if>
+		 ORDER by ${param.sidx} ${param.sord} limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_out_total" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(seqno)
+		  FROM member
+		  WHERE out_yn = 'Y'
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		  <if test="param.search_group != '' and param.search_group != null " >
+		  	AND group_code = #{param.search_group}
+		  </if>
+	</select>
+	
+	<delete id="restore_member"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET out_yn = 'N' 
+		 WHERE seqno in ( ${param.all_seqno} )
+	</delete>
+	
+	
+	<select id="select_member_point" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT SUM(point) AS tot_point
+		      ,T1.mem_seqno  
+			  ,SUM( (CASE WHEN point &gt; 0 THEN POINT ELSE 0 END) ) AS p_point
+			  ,SUM( (CASE WHEN POINT &lt; 0 THEN POINT * -1 ELSE 0 END) ) AS m_point
+		  FROM(
+			SELECT point
+			       ,mem_seqno	       
+			  FROM amount_point_add			  
+			 UNION ALL
+			 SELECT 
+			 		POINT * -1
+				   ,mem_seqno				
+			  FROM amount_point_use
+		)T1
+		<!-- 
+		<if test="param.seqno != '' and param.seqno != null " >
+			WHERE T1.mem_seqno = ${param.seqno}
+		</if>
+		 -->
+		<if test="param.mem_seqno != '' and param.mem_seqno != null " >
+			WHERE T1.mem_seqno = ${param.mem_seqno}
+		</if>
+		GROUP BY T1.mem_seqno
+	</select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.LoginDAO">
+	<!--  관리자 로그인 처리  -->
+	<select id="adminIdCheck" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT * 
+		  FROM adminmember
+		 WHERE a_id = #{param.id}
+	</select>
+	
+	
+	<!--  사용자 로그인 처리  -->
+	<select id="userIdCheck" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT T1.* 
+		      <!-- ,T2.per sale_per -->
+		      ,GREATEST(T2.per, ifnull((select sale_per from manage_member_group where seqno = T1.group_code), 0) ) as sale_per
+		      ,T2.yak_per
+		  FROM member T1
+		  LEFT JOIN manage_member_grade T2 on T1.member_level = T2.seqno
+		 WHERE T1.id = #{param.id}
+		   AND T1.out_yn != 'Y'
+	</select>
+			
+			
+	<insert id="addInfo" parameterType="java.util.Map">
+		INSERT into log_info(
+			 name
+			,id
+			,han_name			
+			,user_ip
+			,user_br
+			,wdate
+			,ldate
+		) VALUES (
+			 #{name}
+			,#{id}
+			,#{han_name}			
+			,#{user_ip}
+			,#{user_br}
+			,now()
+			,now()
+		)
+	</insert>
+	
+	
+	<select id="getUserInfo" parameterType="kr.co.hany.util.CommonMap" resultType="java.util.Map">
+		SELECT T1.* 
+		      <!-- ,T2.per sale_per -->
+		      ,GREATEST(T2.per, ifnull((select sale_per from manage_member_group where seqno = T1.group_code), 0) ) as sale_per
+		      ,T2.yak_per
+		  FROM member T1
+		  LEFT JOIN manage_member_grade T2 on T1.member_level = T2.seqno
+		 WHERE T1.seqno = ${param.mem_seqno}
+		
+	</select>		
+</mapper>

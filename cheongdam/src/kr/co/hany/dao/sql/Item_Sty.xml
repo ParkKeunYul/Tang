@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.StyDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		     
+		  FROM sty_table 
+		 WHERE del_yn != 'Y'
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="select_total" resultType="Integer">
+		SELECT count(seqno)		     
+		  FROM sty_table 	
+		 WHERE del_yn != 'Y'	 
+	</select>
+	
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM sty_table		 
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into sty_table(
+			 sty_name
+			,sty_size
+			,price
+			,contents
+			,status
+			,wdate
+			,image1
+			,image2
+			,image3
+			,del_yn
+		) VALUE (
+			 #{param.sty_name}
+			,#{param.sty_size}
+			,#{param.price}
+			,#{param.contents}
+			,#{param.status}
+			,now()
+			,#{param.image1}
+			,#{param.image2}
+			,#{param.image3}
+			,'n'
+		)
+	</insert>
+	
+	<select id="select_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *		     
+		  FROM sty_table
+		 WHERE seqno = ${param.seqno} 
+	</select>
+	
+	
+	<update id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE sty_table
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+	
+	
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE sty_table
+		   SET sty_name       = #{param.sty_name}
+			  ,sty_size       = #{param.sty_size}
+			  ,price    	  = #{param.price}
+			  ,contents       = #{param.contents}
+			  ,status  		  = #{param.status}
+			  <if test="param.image1 != '' and param.image1 != null " >
+			  	,image1    = #{param.image1}
+			  </if>
+			  <if test="param.image2 != '' and param.image2 != null " >
+			  	,image2   = #{param.image2}
+			  </if>
+			  <if test="param.image3 != '' and param.image3 != null " >
+			  	,image3   = #{param.image3}
+			  </if>
+		WHERE seqno = ${param.seqno}
+	</update>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE sty_table
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	
+</mapper>

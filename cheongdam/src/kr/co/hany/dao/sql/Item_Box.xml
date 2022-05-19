@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.BoxDAO">
+	<resultMap id="boardMap" type="java.util.Map">
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		     
+		  FROM box_table 
+		 WHERE del_yn != 'y'
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	<select id="select_total" resultType="Integer">
+		SELECT count(seqno)
+		  FROM box_table
+		 WHERE del_yn != 'y'
+	</select>
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE box_table
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM box_table
+	</select>
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into box_table(
+			 box_name
+			,box_size
+			,box_price
+			,box_contents
+			,box_status
+			,wdate
+			,box_image
+			,box_image2
+			,box_image3
+		) VALUE (
+			 #{param.box_name}
+			,#{param.box_size}
+			,#{param.box_price}
+			,#{param.box_contents}
+			,#{param.box_status}
+			,now()
+			,#{param.box_image}
+			,#{param.box_image2}
+			,#{param.box_image3}
+		)
+	</insert>
+	<select id="select_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		  FROM box_table
+		 WHERE seqno = ${param.seqno}
+	</select>
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE box_table
+		   SET box_name     = #{param.box_name}
+			  ,box_size     = #{param.box_size}
+			  ,box_price    = #{param.box_price}
+			  ,box_contents = #{param.box_contents}
+			  ,box_status   = #{param.box_status}
+			  <if test="param.box_image != '' and param.box_image != null " >
+			  	,box_image    = #{param.box_image}
+			  </if>
+			  <if test="param.box_image2 != '' and param.box_image2 != null " >
+			  	,box_image2   = #{param.box_image2}
+			  </if>
+			  <if test="param.box_image3 != '' and param.box_image3 != null " >
+			  	,box_image3   = #{param.box_image3}
+			  </if>
+		WHERE seqno = ${param.seqno}
+	</update>
+	<update id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE box_table
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+</mapper>

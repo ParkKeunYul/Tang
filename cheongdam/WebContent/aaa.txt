@@ -1,0 +1,34 @@
+
+[금액권 상품]
+1.시퀀스
+2.금액
+3.상품명
+4.내용
+5.삭제여부
+6.게시여부
+7.등록일
+8.노출정렬
+
+
+[금액권 결제내역]
+1.시퀀스
+2.회원시퀀스
+3.금액권 시퀀스
+4.금액권 코드
+5.금액권 상품명
+6.주문번호
+7.결제금액
+8.상품금액
+9.결제수량
+card_gu_no
+card_ju_no
+card_su_no
+card_nm
+card_code
+card_quota
+card_amt
+card_cancel_id
+card_cancel_date
+admin_view
+admin_view_id
+cancel_ing

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.AmountDAO">
+	<resultMap id="boardMap" type="java.util.Map">
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *		     
+		  FROM amount_product 
+		 WHERE del_yn != 'y'
+		 ORDER by ${param.sidx} ${param.sord} limit ${param.start} , ${param.pageing}
+	</select>
+	<select id="select_total" resultType="Integer">
+		SELECT count(seqno)
+		  FROM amount_product
+		 WHERE del_yn != 'y'
+	</select>
+	
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE amount_product
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE seqno = ${param.seqno}
+	</update>
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM amount_product
+	</select>
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		INSERT into amount_product(
+			 seqno
+			,a_code
+			,title
+			,detail
+			,price
+			,pre_price
+			,del_yn
+			,show_yn
+			,reg_id
+			,reg_date
+			,upt_id
+			,upt_date
+			,sort_seq
+			,image
+			,point
+		) VALUE (
+			 #{param.seqno}
+			,#{param.a_code}
+			,#{param.title}
+			,#{param.detail}
+			,#{param.price}
+			,#{param.price}
+			,'n'
+			,#{param.show_yn}
+			,#{param.admin_id}
+			,now()
+			,#{param.admin_id}
+			,now()
+			,#{param.sort_seq}
+			,#{param.image}
+			,#{param.point}
+		)
+	</insert>
+	<select id="select_one" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT *
+		  FROM amount_product
+		 WHERE seqno = ${param.seqno}
+	</select>
+	<update id="mod"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE amount_product
+		   SET title      = #{param.title}
+			  ,detail     = #{param.detail}
+			  ,price      = #{param.price}
+			  ,point      = #{param.point}
+			  <if test="param.pre_price !=  param.price" >
+			  	,pre_price  = #{param.pre_price}
+			  </if>
+			  ,upt_id     = #{param.admin_id}
+			  ,upt_date   = now()
+			  ,show_yn    = #{param.show_yn}
+			  ,sort_seq   = #{param.sort_seq}
+			  <if test="param.image != '' and param.image != null " >
+		   	  	, image            = #{param.image}
+		   	  </if>
+		WHERE seqno = ${param.seqno}
+	</update>
+	<update id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE amount_product
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+	
+	
+	
+	<select id="selectHis" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.* 
+		      ,(SELECT GROUP_CONCAT(goods_name SEPARATOR ' , ')  FROM pp_order WHERE order_no = T1.pp_seqno) AS use_reason		      
+		      ,date_format(T1.reg_date, '%Y-%m-%d %r') as reg_date2
+		      
+		  FROM (
+			SELECT point
+			      ,point AS p_point
+			      ,0     AS m_point			      
+			      ,'p' AS point_type
+			      ,reg_date
+			      ,reason
+				  ,0 AS pp_seqno
+				  ,CONCAT('p'    , seqno)	
+				  ,mem_seqno      
+				  ,amount_seqno
+				  ,order_seqno
+				  ,(SELECT id FROM member WHERE seqno = mem_seqno) AS mem_id
+				  ,(SELECT name FROM member WHERE seqno = mem_seqno) AS mem_name
+			  FROM amount_point_add	
+			UNION ALL
+			SELECT POINT 	      
+			      ,0     AS p_point
+			      ,point AS m_point
+			      ,'M' AS point_type
+			      ,reg_date
+			      ,reason
+			      ,pp_seqno
+			      ,CONCAT('m'    , seqno)
+			      ,mem_seqno
+			      ,0 as amount_seqno
+			      ,0 as order_seqno
+			      ,(SELECT id FROM member WHERE seqno = mem_seqno) AS mem_id
+			      ,(SELECT name FROM member WHERE seqno = mem_seqno) AS mem_name
+			  FROM amount_point_use
+		) T1
+		WHERE 1 = 1
+		<if test="param.search_value != '' and param.search_value != null " >
+			AND T1.${param.search_title} like '%${param.search_value}%' 
+		</if>
+		<if test="param.search_type != '' and param.search_type != null " >
+			<choose>
+				<when test="param.search_type  == 'card'">
+					AND T1.order_seqno > 0
+				</when>
+				<when test="param.search_type  == 'ms'">
+					AND T1.point_type = 'M'
+				</when>
+				<when test="param.search_type  == 'ps'">
+					AND T1.point_type = 'p' AND T1.order_seqno &lt;=0
+				</when>
+			</choose>
+		</if>
+		ORDER BY T1.reg_date DESC  limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="selectHis_total" resultType="Integer" parameterType="kr.co.hany.util.CommonMap">
+		SELECT count(T1.point) 		      
+		  FROM (
+			SELECT point
+			      ,point AS p_point
+			      ,0     AS m_point
+			      ,'p' AS point_type
+			      ,reg_date
+			      ,reason
+				  ,0 AS pp_seqno
+				  ,order_seqno
+				  ,(SELECT id FROM member WHERE seqno = mem_seqno) AS mem_id
+				  ,(SELECT name FROM member WHERE seqno = mem_seqno) AS mem_name
+			  FROM amount_point_add	
+			UNION ALL
+			SELECT POINT 	      
+			      ,0     AS p_point
+			      ,point AS m_point
+			      ,'M' AS point_type
+			      ,reg_date
+			      ,reason
+			      ,pp_seqno
+			      ,0 as order_seqno
+			      ,(SELECT id FROM member WHERE seqno = mem_seqno) AS mem_id
+			      ,(SELECT name FROM member WHERE seqno = mem_seqno) AS mem_name
+			  FROM amount_point_use		
+		) T1
+		WHERE 1=1
+		<if test="param.search_value != '' and param.search_value != null " >
+			AND T1.${param.search_title} like '%${param.search_value}%' 
+		</if>
+		<if test="param.search_type != '' and param.search_type != null " >
+			<choose>
+				<when test="param.search_type  == 'card'">
+					AND T1.order_seqno > 0
+				</when>
+				<when test="param.search_type  == 'ms'">
+					AND T1.point_type = 'M'
+				</when>
+				<when test="param.search_type  == 'ps'">
+					AND T1.point_type = 'p' AND T1.order_seqno &lt;=0
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	
+	<select id="selectPayInfo" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.*
+		      ,(SELECT title FROM amount_product WHERE seqno = T1.amount_seqno) AS a_title 
+		      ,(SELECT name FROM member WHERE seqno = T1.mem_seqno) AS mem_name
+		  FROM amount_order T1
+		 WHERE T1.seqno     = #{param.order_seqno}		    
+		   AND T1.mem_seqno = ${param.mem_seqno} 
+	</select>
+	
+	<update id="card_cancel" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE amount_order
+		  SET card_cancel_id   = #{param.card_cancel_id}
+		     ,card_cancel_date = now()
+		     ,cancel_yn        = 'y'
+		WHERE seqno = ${param.seqno}
+	</update>
+	
+	<insert id="del_point" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO amount_point_use(
+			 mem_seqno
+			,pp_seqno
+			,point
+			,reason
+			,reg_date
+		)VALUES(
+			 #{param.mem_seqno}
+			,#{param.pp_seqno}
+			,#{param.point}
+			,#{param.reason}
+			,now()
+		)
+	</insert>
+	
+	<insert id="point_manage" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO ${param.tabel_name}(
+			 mem_seqno
+			,${param.colNm}
+			,point
+			,reason
+			,reg_date
+			,admin_id
+			,order_seqno
+		)VALUES(
+			 #{param.mem_seqno}
+			,0
+			,#{param.point}
+			,#{param.reason}
+			,now()
+			,#{param.admin_id}
+			,0
+		)
+	</insert>
+	
+	
+	<select id="selectOrder" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.*		     
+		      ,T2.name
+		      ,T2.id
+		      ,date_format(T1.order_date, '%Y-%m-%d %r') as order_date2
+		      ,date_format(T1.card_cancel_date, '%Y-%m-%d %r') as card_cancel_date2
+		  FROM amount_order T1
+		  LEFT JOIN member T2 ON T1.mem_seqno = T2.seqno
+		 WHERE 1 = 1
+		 <if test="param.search_value != '' and param.search_value != null " >
+			AND T2.${param.search_title} like '%${param.search_value}%' 
+		</if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="selectOrder_total" resultType="Integer" parameterType="kr.co.hany.util.CommonMap">
+		SELECT count(T1.seqno)
+		  FROM amount_order T1
+		  LEFT JOIN member T2 ON T1.mem_seqno = T2.seqno
+		 WHERE 1 = 1
+		 <if test="param.search_value != '' and param.search_value != null " >
+			AND T2.${param.search_title} like '%${param.search_value}%' 
+		</if>
+	</select>
+	
+	
+	
+</mapper>

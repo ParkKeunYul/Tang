@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>청담원외탕전</title>
+	<link rel="stylesheet" type="text/css" href="../../css/public.css">
+	<script type="text/javascript" src="../../js/lib/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="../../js/lib/plugins_with_sly.js"></script><!-- LNB 플러그인 -->
+	<script type="text/javascript" src="../../js/lib/sly.js"></script><!-- LNB 플러그인 -->
+	<script type="text/javascript" src="../../js/common_ui.js"></script>
+</head>
+<body>
+<div class="wrapper">
+	<!-- header -->
+	<div class="headerWrapper" id="header">
+		<h1 class="logo"><a href="#"><img src="../../images/logo_top.png" alt="청담원외탕전"></a></h1>
+
+		<!-- GNB -->
+		<div class="headerGnbBox">
+			<a href="#layerGNB" class="btnGNB"><span class="hidden">전체메뉴 열기</span></a>
+
+			<div class="gnbBG">
+				<nav class="gnbWrapper" id="layerGNB">
+					<div class="gnbBtns">
+						<span class="logoLayer"><img src="../../images/logo_top_ov.png" alt="청담원외탕전"></span>
+						<button type="button" class="btnCloseMenu"><span class="hidden">전체메뉴 닫기</span></button>
+						<p>
+							<button type="button" onclick="location.href='../member/join_main.html'" class="btnJoin"><span>회원가입</span></button>
+							<button type="button" onclick="location.href='../member/login.html'" class="btnLogin"><span>로그인</span></button>
+						</p>
+					</div>
+
+					<div class="gnbBox">
+						<ul class="gnbDepth01">
+							<li class="menu01">
+								<a href="../info/info01.html" class="depth1">청담원외탕전 소개</a>
+								<div class="dep2Wrapper">
+									<ul class="gnbDepth02">
+										<li><a href="../info/info01.html" class="depth2">청담원외탕전 소개</a></li>
+										<li><a href="../info/info02.html" class="depth2">청담원외탕전 약속</a></li>
+										<li><a href="../info/info03.html" class="depth2">위치안내</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu02">
+								<a href="../product/product_list.html" class="depth1">약속처방</a>
+								<div class="dep2Wrapper">
+									<ul>
+										<li><a href="../product/product_list.html" class="depth2">약속처방</a></li>
+										<li><a href="../product/product_cart.html" class="depth2">약속처방 보관함</a></li>
+										<li><a href="../product/product_ask_list.html" class="depth2">사전조제지시서 관리</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu03">
+								<a href="../community/notice_list.html" class="depth1">고객센터</a>
+								<div class="dep2Wrapper">
+									<ul>
+										<li><a href="../community/notice_list.html" class="depth2">공지사항</a></li>
+										<li><a href="../community/use_list.html" class="depth2">이용안내</a></li>
+										<li><a href="../community/qna_write.html" class="depth2">1:1 문의</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu04">
+								<a href="../mypage/edit.html" class="depth1">마이페이지</a>
+								<div class="dep2Wrapper">
+									<ul>
+										<li><a href="../mypage/edit.html" class="depth2">내 정보수정</a></li>
+										<li><a href="../mypage/order_list.html" class="depth2">주문내역</a></li>
+										<li><a href="../mypage/point_list.html" class="depth2">적립금관리</a></li>
+									</ul>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+
+		</div>
+		<!-- //GNB -->
+	</div>
+	<!-- //header -->
+
+	<!-- container -->
+	<div class="container sub" id="contents">
+		<!-- LNB -->
+		<div class="localMenu">
+			<p class="tit">약속처방</p>
+			<div class="lnbDepth">
+				<ul>
+					<li class="sel"><a href="../product/product_list.html">약속처방</a></li>
+					<li><a href="../product/product_cart.html">약속처방 보관함</a></li>
+					<li><a href="../product/product_ask_list.html">사전조제지시서</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- LNB -->
+		<!-- productsearch -->
+		<div class="productsearch">
+			<div class="sel01">
+				<ul>
+					<li><a href="#"><span class="sel">전체</span></a></li>
+					<li><a href="#"><span>경옥고</span></a></li>
+					<li><a href="#"><span>공진단</span></a></li>
+					<li><a href="#"><span>연조시럽</span></a></li>
+					<li><a href="#"><span>환산제</span></a></li>
+					<li><a href="#"><span>빈용처방</span></a></li>
+					<li><a href="#"><span>기타처방</span></a></li>
+					<li><a href="#"><span class="pri">개인결제</span></a></li>
+				</ul>
+			</div>
+			<div class="sel02">
+				<select name="" id=""  style="width:100%;">
+					<option value="전체">전체</option>
+					<option value="비만">비만</option>
+					<option value="피부">피부</option>
+					<option value="성장">성장</option>
+					<option value="학습">학습</option>
+					<option value="보양">보양</option>
+					<option value="임신">임신</option>
+					<option value="여성">여성</option>
+					<option value="통증">통증</option>
+					<option value="소화">소화</option>
+					<option value="순환">순환</option>
+					<option value="감기">감기</option>
+					<option value="기타">기타</option>
+				</select>
+				<div>
+					<span><input type="text" placeholder="검색어를 입력해주세요." title=" " style="width:90%;"></span>
+					<button type="button" class="btnTypeBasic colorDGreen"><span>검색</span></button>
+				</div>
+			</div>
+		</div>
+		<!-- //productsearch -->
+
+		<!-- 본문 -->
+		<div class="contents" id="contents">
+			<div class="productList">
+				<ul>
+					<li>
+						<a href="../product/product_view01.html">
+							<div class="imgA"><span>경옥고 1.1kg 거북이 단지 상품명이 길어질 경우</span><img src="../../images/thum_none.png" alt="" /></div>
+							<div class="txtA">
+								<em>83.000원</em>
+								<div>
+									<p>2019년 9월 25일 요청하신 개인결제건입니다. 경옥고 + 공진단</p>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li>
+						<a href="../product/product_view01.html">
+							<div class="imgA"><span>경옥고 1.1kg 거북이 단지</span><img src="../../images/thum_none.png" alt="" /></div>
+							<div class="txtA">
+								<em>83.000원</em>
+								<div>
+									<p>2019년 9월 25일 요청하신 개인결제건입니다. 경옥고 + 공진단</p>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="paginationBox">
+				<span> <a href="#" class="btnPrev">이전</a> <a href="#"
+					class="on">1</a> <a href="#">2</a> <a href="#">3</a> <a href="#">4</a>
+					<a href="#">5</a> <a href="#" class="btnNext">다음</a>
+				</span>
+			</div>
+		</div>
+		<!-- //본문 -->
+
+	</div>
+	<!-- //container -->
+
+	<!-- footer -->
+	<div class="footerWrapper" id="footer">
+		<footer>
+			<h3>청담원외탕전</h3>
+			<div class="innerBox">
+				<p>사업자등록번호 : 000-00-0000 / 대표자 : 홍길동</p>
+				<p>대표전화 : 054-123-4567 / 팩스번호 : 054-123-4567</p>
+				<p>통신판매업신고번호 : 제 0000-0000-0000호</p>
+				<p>결제은행: 농협은행 000-000000-00 홍길동(청담원외탕전) </p>
+				<p>사업장 주소 : 경상북도 포항시 북구 장성동 1417-10</p>
+				<p class="copyright">Copyright ⓒ 청담원외탕전 All rights reserved.</p>
+			</div>
+		</footer>
+	</div>
+	<!-- //footer -->
+</div>
+</body>
+</html>

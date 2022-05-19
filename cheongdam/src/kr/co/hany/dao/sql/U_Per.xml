@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="PerDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 		      
+		  FROM personal_order T1		 
+		 WHERE T1.mem_seqno = ${mem_seqno}
+		   AND del_yn    = 'n'
+		   AND view_yn   = 'y'
+		 ORDER by T1.seqno desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)
+		  FROM personal_order T1
+		 WHERE T1.mem_seqno = ${mem_seqno}
+		   AND del_yn = 'n'		 
+		   AND view_yn= 'y'
+	</select>
+	
+	<select id="view" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		  FROM personal_order
+		 WHERE seqno     = ${seqno}
+		   AND mem_seqno = ${mem_seqno}
+		   AND del_yn    = 'n' 
+		   AND view_yn   = 'y'
+	</select>
+	
+	
+	<select id="view_detail" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT * 
+		  FROM personal_order_detail
+		 WHERE personal_seqno = ${seqno}
+		   AND mem_seqno      = ${mem_seqno}
+		   AND del_yn         = 'n'
+	</select>
+	
+	<update id="com_order" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE personal_order
+	       SET pay_yn = 'y'
+	     WHERE seqno = ${seqno}
+	</update>
+	
+	<insert id="add_detail"  parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO personal_order_detail(
+			 personal_seqno
+			,mem_seqno
+			,pay_gbn
+			,card_gu_no
+			,card_ju_no
+			,card_su_no
+			,card_nm
+			,card_code
+			,card_quota
+			,card_amt
+			,wdate
+		) VALUES (
+			 ${seqno}
+			,${mem_seqno}
+			,1
+			,#{card_gu_no}
+			,#{card_ju_no}
+			,#{card_su_no}
+			,#{card_nm}
+			,#{card_code}
+			,#{card_quota}
+			,#{card_amt}
+			,now()
+		)
+	</insert>
+</mapper>
+

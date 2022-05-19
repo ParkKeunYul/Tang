@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.GoodsDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="select" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2	     
+		  FROM goods 
+		 WHERE 1 = 1
+		 <if test="param.search_value != '' and param.search_value != null " >
+		  	AND  ${param.search_title} like '%${param.search_value}%'
+		  </if>
+		 ORDER by ${param.sidx} ${param.sord} limit ${param.start} , ${param.pageing}
+	</select>
+	
+	
+	<select id="select_total" resultType="Integer" parameterType="kr.co.hany.util.CommonMap">
+		SELECT count(p_seq)		     
+		  FROM goods
+		 WHERE 1 = 1 
+		  <if test="param.search_value != '' and param.search_value != null " >
+		  	AND  ${param.search_title} like '%${param.search_value}%'
+		  </if>
+	</select>
+	
+	<update id="update_col" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE goods
+		   SET ${param.cellName} = #{param.cellValue}
+		 WHERE p_seq = ${param.p_seq}
+	</update>
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(p_seq),0)+1 FROM goods		 
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		insert into goods(
+			p_name         , view_yn      , set_design   , yak_design1    , yak_design2      , 
+			yak_design3    , yak_design4  , yak_design5  , yak_design6    , yak_design7      ,
+			yak_design8    , yak_design9  , yak_design10 , yak_design11   , yak_design12     ,
+			yak_design13   , yak_design14 , yak_design15 , jo_from        , p_size           ,
+			jo_complete    , jo_ing       , set_period   , delivery_price , p_code           ,
+			p_bigpart      , p_smallpart  , p_ea         , p_price        , p_from           , 
+			p_bigo         , etc1         , etc2         , group_code     , p_contents       ,
+			image          , image2       , image3       , p_date         , p_seq            ,
+			main_yn        , wdate        , sort_seq
+		) VALUES (
+			#{param.p_name}         , #{param.view_yn}      , #{param.set_design}   , #{param.yak_design1}    , #{param.yak_design2}      , 
+			#{param.yak_design3}    , #{param.yak_design4}  , #{param.yak_design5}  , #{param.yak_design6}    , #{param.yak_design7}      ,
+			#{param.yak_design8}    , #{param.yak_design9}  , #{param.yak_design10} , #{param.yak_design11}   , #{param.yak_design12}     ,
+			#{param.yak_design13}   , #{param.yak_design14} , #{param.yak_design15} , #{param.jo_from}        , #{param.p_size}           ,
+			#{param.jo_complete}    , #{param.jo_ing}       , #{param.set_period}   , #{param.delivery_price} , #{param.p_code}           ,
+			#{param.p_bigpart}      , #{param.p_smallpart}  , #{param.p_ea}         , #{param.p_price}        , #{param.p_from}           , 
+			#{param.p_bigo}         , #{param.etc1}         , #{param.etc2}         , #{param.group_code}     , #{param.p_contents}       , 
+			#{param.image}          , #{param.image2}       , #{param.image3}       , now()                   , ${param.p_seq}            ,
+			#{param.main_yn}        , now()                 , #{param.sort_seq}
+		)
+	</insert>
+	
+	<select id="select_one" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *	
+		      ,date_format(wdate, '%Y-%m-%d %T' ) as wdate2	     
+		  FROM goods 
+		 WHERE p_seq = ${param.p_seq}
+	</select>
+	
+	<update id="mod" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE goods
+		   SET  p_name           = #{param.p_name}  
+		   	  , view_yn          = #{param.view_yn}
+		   	  , set_design       = #{param.set_design}
+		   	  , yak_design1      = #{param.yak_design1}
+		   	  , yak_design2      = #{param.yak_design2}
+		   	  , yak_design3      = #{param.yak_design3}
+		   	  , yak_design4      = #{param.yak_design4}
+		   	  , yak_design5      = #{param.yak_design5}
+		   	  , yak_design6      = #{param.yak_design6}
+		   	  , yak_design7      = #{param.yak_design7}
+		   	  , yak_design8      = #{param.yak_design8}
+		   	  , yak_design9      = #{param.yak_design9}
+		   	  , yak_design10     = #{param.yak_design10}
+		   	  , yak_design11     = #{param.yak_design11}
+		   	  , yak_design12     = #{param.yak_design12}
+		   	  , yak_design13     = #{param.yak_design13}
+		   	  , yak_design14     = #{param.yak_design14}
+		   	  , yak_design15     = #{param.yak_design15}
+		   	  , jo_from          = #{param.jo_from}
+		   	  , p_size           = #{param.p_size}
+		   	  , jo_complete      = #{param.jo_complete}
+		   	  , jo_ing           = #{param.jo_ing}
+		   	  , set_period       = #{param.set_period}
+		   	  , delivery_price   = #{param.delivery_price}
+		   	  , p_code           = #{param.p_code}
+		   	  , p_bigpart        = #{param.p_bigpart}
+		   	  , p_smallpart      = #{param.p_smallpart}
+		   	  , p_ea             = #{param.p_ea}
+		   	  , p_price          = #{param.p_price}
+		   	  , p_from           = #{param.p_from}
+		   	  , p_bigo           = #{param.p_bigo}
+		   	  , etc1             = #{param.etc1}
+		   	  , etc2             = #{param.etc2}
+		   	  , group_code       = #{param.group_code}
+		   	  , p_contents       = #{param.p_contents}
+		   	  , main_yn          = #{param.main_yn}
+		   	  , sort_seq         = #{param.sort_seq}
+		   	  , pre_req          = #{param.pre_req}
+		   	  <if test="param.image != '' and param.image != null " >
+		   	  	, image            = #{param.image}
+		   	  </if>
+		   	  <if test="param.image2 != '' and param.image2 != null " >
+		   	  	, image2           = #{param.image2}
+		   	  </if>
+		   	  <if test="param.image3 != '' and param.image3 != null " >
+		   	  	, image3           = #{param.image3}
+		   	  </if>
+		WHERE p_seq = ${param.p_seq}        
+	</update>
+	
+	<delete id="del_sub_group_code" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM goods_sub_group
+		 WHERE p_seq = ${param.p_seq}	
+	</delete>
+	
+	<insert id="add_sub_group_code" parameterType="kr.co.hany.util.CommonMap">
+		INSERT INTO goods_sub_group(
+			 p_seq
+			,sub_group_code
+		) SELECT ${param.p_seq}
+		        ,seqno
+		    FROM shop_subgroup
+		   WHERE seqno in ( ${param.p_bigpart_sub} ) 
+	</insert>	
+	
+	<select id="select_sub_group_code" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap">
+		SELECT T1.sub_group_code 
+		      ,T2.group_name
+		  FROM goods_sub_group T1
+		INNER JOIN shop_subgroup T2 on T1.sub_group_code = T2.seqno		 
+		 WHERE T1.p_seq  = ${param.p_seq}
+		   AND T2.del_yn = 'n' 
+	</select>
+	
+	
+	<select id="select_option" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT *			      	     
+		  FROM goods_box_option 
+		 WHERE goods_seqno = ${param.goods_seqno}		
+		   AND del_yn = 'n'  
+		 ORDER by sort_seq asc
+	</select>
+	
+	
+	<insert id="add_option" parameterType="java.util.Map">
+		INSERT INTO goods_box_option(
+			 goods_seqno
+			,sort_seq
+			,box_nm
+			,use_yn
+			,box_price
+			,wdate
+			,del_yn
+		) VALUES (
+			 #{param.goods_seqno}
+			,#{param.sort_seq}
+			,#{param.box_nm}
+			,#{param.use_yn}
+			,#{param.box_price}
+			,now()
+			,'n'
+		)
+	</insert>
+	
+	<update id="mod_option"  parameterType="java.util.Map">
+		UPDATE goods_box_option
+		   SET sort_seq  = #{param.sort_seq}
+		      ,box_nm    = #{param.box_nm}
+		      ,use_yn    = #{param.use_yn}
+		      ,box_price = #{param.box_price}
+		 WHERE goods_seqno = ${param.goods_seqno}
+		   AND seqno       = ${param.seqno}
+		   AND 1 = 1
+	</update>
+	
+	
+	<update id="del_option"  parameterType="kr.co.hany.util.CommonMap">
+		UPDATE goods_box_option
+		   SET del_yn = 'y'
+		 WHERE goods_seqno = ${param.goods_seqno}
+		   AND seqno       = ${param.seqno}
+	</update>
+</mapper>

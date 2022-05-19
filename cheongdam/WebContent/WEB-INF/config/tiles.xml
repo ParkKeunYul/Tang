@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+     
+     
+      <!-- 어드민 레이아웃 -->
+     <definition name="adminlayout" template="/WEB-INF/jsps/admin/layout/layout.jsp">  
+         <put-attribute name="header" value="/WEB-INF/jsps/admin/layout/header.jsp" />
+         <put-attribute name="letfmenu" value="/WEB-INF/jsps/admin/layout/left_menu.jsp" />
+         <put-attribute name="body" value="" />
+         <put-attribute name="footer" value="/WEB-INF/jsps/admin/layout/footer.jsp" />
+     </definition>
+         
+     <definition name="/*.abss" extends="adminlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/admin/{1}.jsp" />
+     </definition>
+     <definition name="/*/*.abss" extends="adminlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/admin/{1}/{2}.jsp" />
+     </definition>
+     <definition name="/*/*/*.abss" extends="adminlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/admin/{1}/{2}/{3}.jsp" />
+     </definition>
+     <definition name="/*/*/*/*.abss" extends="adminlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/admin/{1}/{2}/{3}/{4}.jsp" />
+     </definition>
+     
+     
+	<!-- pc 사용자 레이아웃 -->
+	<definition name="userlayout" template="/WEB-INF/jsps/user/pc/layout/layout.jsp">  
+         <put-attribute name="header" value="/WEB-INF/jsps/user/pc/layout/header.jsp" />
+         <put-attribute name="body" value="" />
+         <put-attribute name="footer" value="/WEB-INF/jsps/user/pc/layout/footer.jsp" />
+     </definition>
+	 <definition name="/*.bss" extends="userlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/pc/{1}.jsp" />
+     </definition>
+	 <definition name="/*/*.bss" extends="userlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/pc/{1}/{2}.jsp" />
+     </definition>
+     <definition name="/*/*/*.bss" extends="userlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/pc/{1}/{2}/{3}.jsp" />
+     </definition>
+     <definition name="/*/*/*/*.bss" extends="userlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/pc/{1}/{2}/{3}/{4}.jsp" />
+     </definition>
+     
+     <definition name="/*.u" template="/WEB-INF/jsps/user/pc/{1}.jsp" />
+     <definition name="/*/*.u"  template="/WEB-INF/jsps/user/pc/{1}/{2}.jsp" />
+     <definition name="/*/*/*.u" template ="/WEB-INF/jsps/user/pc/{1}/{2}/{3}.jsp" />
+     <definition name="/*/*/*/*.u" template ="/WEB-INF/jsps/user/pc/{1}/{2}/{3}/{4}.jsp" />
+     <!--// pc 사용자 레이아웃 -->
+     
+     
+     <!-- 모바일 -->
+     <definition name="muserlayout" template="/WEB-INF/jsps/user/m/layout/layout.jsp">  
+         <put-attribute name="header" value="/WEB-INF/jsps/user/m/layout/header.jsp" />
+         <put-attribute name="body" value="" />
+         <put-attribute name="footer" value="/WEB-INF/jsps/user/m/layout/footer.jsp" />
+     </definition>
+     <definition name="/*.m" extends="muserlayout">
+     	<put-attribute name="m" value="/WEB-INF/jsps/user/{1}.jsp" />
+     </definition>
+	 <definition name="/*/*.m" extends="muserlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/{1}/{2}.jsp" />
+     </definition>
+     <definition name="/*/*/*.m" extends="muserlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/{1}/{2}/{3}.jsp" />
+     </definition>
+     <definition name="/*/*/*/*.m" extends="muserlayout">
+     	<put-attribute name="body" value="/WEB-INF/jsps/user/{1}/{2}/{3}/{4}.jsp" />
+     </definition>
+    
+     <definition name="/*.mp" template="/WEB-INF/jsps/user/{1}.jsp" />
+     <definition name="/*/*.mp"  template="/WEB-INF/jsps/user/{1}/{2}.jsp" />
+     <definition name="/*/*/*.mp" template ="/WEB-INF/jsps/user/{1}/{2}/{3}.jsp" />
+     <definition name="/*/*/*/*.mp" template ="/WEB-INF/jsps/user/{1}/{2}/{3}/{4}.jsp" />
+     <!-- 모바일 -->
+     
+	 	
+     <!--  레이아웃 없이 페이지 확인 -->
+     <definition name="/*.a" template="/WEB-INF/jsps/admin/{1}.jsp" />
+     <definition name="/*/*.a"  template="/WEB-INF/jsps/admin/{1}/{2}.jsp" />
+     <definition name="/*/*/*.a" template ="/WEB-INF/jsps/admin/{1}/{2}/{3}.jsp" />
+     <definition name="/*/*/*/*.a" template ="/WEB-INF/jsps/admin/{1}/{2}/{3}/{4}.jsp" />
+     
+     
+     
+     <definition name="/*.pop" template="/WEB-INF/jsps/common/{1}.jsp" />
+     <definition name="/*/*.pop"  template="/WEB-INF/jsps/common/{1}/{2}.jsp" />
+     <definition name="/*/*/*.pop" template ="/WEB-INF/jsps/common/{1}/{2}/{3}.jsp" />
+     <definition name="/*/*/*/*.pop" template ="/WEB-INF/jsps/common/{1}/{2}/{3}/{4}.jsp" />
+     
+     <definition name="/*.test" template="/WEB-INF/jsps/common/{1}.jsp" />
+     <definition name="/*/*.test"  template="/WEB-INF/jsps/common/{1}/{2}.jsp" />
+     <definition name="/*/*/*.test" template ="/WEB-INF/jsps/common/{1}/{2}/{3}.jsp" />
+     <definition name="/*/*/*/*.test" template ="/WEB-INF/jsps/common/{1}/{2}/{3}/{4}.jsp" />
+    
+     <definition name="/img_uploader.daum" template ="/assets/common/daum/pages/trex/image.jsp" />
+     <definition name="/file_uploader.daum" template ="/assets/common/daum/pages/trex/file.jsp" />
+     
+     
+</tiles-definitions> 

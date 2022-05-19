@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="AskDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	<select id="list" parameterType="kr.co.hany.util.CommonMap" resultMap="boardMap" >
+		SELECT T1.* 
+		      ,T2.p_name
+		      ,(SELECT ifnull(sum(ea),0)
+				    FROM pp_order
+				   WHERE mem_seqno  = T1.mem_seqno
+				     AND goods_seq  = T1.goods_seqno
+				     AND order_ing !=5
+				) as 	order_cnt
+				,(SELECT ifnull(sum(ea),0)
+				  FROM view_pp_order_cart
+				 WHERE mem_seqno  = T1.mem_seqno
+				   AND goods_seq  = T1.goods_seqno
+				 ) as cart_cnt
+				,date_format(T1.upt_date, '%Y-%m-%d') as upt_date2
+		  FROM goods_pre_order T1
+		 INNER JOIN goods T2  on T1.goods_seqno = T2.p_seq
+		 WHERE mem_seqno = ${mem_seqno}
+		 ORDER by T1.seqno desc limit ${start} , ${pageing}
+	</select>
+	
+	<select id="listCount" parameterType="kr.co.hany.util.CommonMap" resultType="Integer">
+		SELECT count(T1.seqno)
+		  FROM goods_pre_order T1
+		 INNER JOIN goods T2  on T1.goods_seqno = T2.p_seq
+		 WHERE mem_seqno = ${mem_seqno}
+	</select>
+	
+</mapper>
+

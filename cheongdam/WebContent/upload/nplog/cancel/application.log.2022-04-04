@@ -1,0 +1,36 @@
+10:20:39.968 <000363> ------ Start Nicepay Java V.nicepay_tx-0.9.9.27_20190604--------
+10:20:39.968 <000363> service mode : CL0
+10:20:39.968 <000363> common message validation success
+10:20:39.968 <000363> parameter validation success
+10:20:39.968 <000363> MID          : cdherb111m
+10:20:39.968 <000363> TID          : cdherb111m01012204041020370784
+10:20:39.968 <000363> PayMethod    : CARD
+10:20:39.968 <000363> GoodsName    : 
+10:20:39.968 <000363> BuyerName    : 
+10:20:39.968 <000363> Amt          : 
+10:20:39.968 <000363> Moid         : 
+10:20:39.968 <000363> MallReserved : 
+10:20:39.969 <000363> MallIP       : 
+10:20:39.969 <000363> ClickpayCl   : null
+10:20:39.969 <000363> EncMode	   : 
+10:20:39.969 <000363> TrKey        : 
+10:20:39.969 <000363> HeaderValueSetter >> EdiDate가 없어 새로 생성
+10:20:39.969 <000363> MERCHANT --> NICE [NPG01IPGC120220404102039003180cdherb111m01012204041020370784S MALL 00000TX^JAVA_TX_0.9.9.27                                                                                 1WLbdEX939XL2L8K+OPAo0I1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OPRElU2EZEcPrrXHQyqF3wEI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OSbptNOQAESxAul/SifjYWEI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U49ESVTYRkRw2PhWJQcbhbdxiy4updqYaL0xvy6tdZ+b0I1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OzmzGzvugcS9AkulVOLoGzUI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtTq1sV8Hc2BdI661x0Mqhd8DrrXHQyqF3wOutcdDKoXfA661x0Mqhd8BCNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U7QGYSRMML1weutcdDKoXfATyzlw0JaDVxCNU1eg4vtTkI1TV6Di+1OQjVNXoOL7U5CNU1eg4vtThNRU6qb8DIc]
+10:20:39.969 <000363> connect to 121.133.126.1, port : 9001
+10:20:40.334 <000363> MERCHANT <-- NICE [NPG01IPGC220220404102040002318cdherb111m01012204041020370784S MALL 0000 정상취소                                                                                            CARD      00                                        000000005999                                                                KRW                                                                                                                                                                                                                                                                                                                                                                                                                cdherb111m                                                                                          /211.43.203.51:55488                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 00000000599920220404102039346524932001      취소 성공                                                                                           000000000000                              00000000000000011ClickpayCl=]
+10:20:40.334 <000363> 응답 결과    : [2001|취소 성공]
+10:20:40.334 <000363> 제휴사 메시지: [0000|정상취소]
+10:20:40.334 <000363> TID          : cdherb111m01012204041020370784
+10:20:40.334 <000363> PayMethod    : CARD
+10:20:40.334 <000363> GoodsName    : 
+10:20:40.334 <000363> Amt          : 5999
+10:20:40.334 <000363> Moid         : 
+10:20:40.334 <000363> AuthDate     : null
+10:20:40.334 <000363> AuthCode     : null
+10:20:40.334 <000363> CardCode     : null
+10:20:40.334 <000363> CardName     : null
+10:20:40.334 <000363> CardQuota    : null
+10:20:40.334 <000363> CardInterest : null
+10:20:40.334 <000363> AcquCardCode : null
+10:20:40.334 <000363> AcquCardName : null
+10:20:40.334 <000363> Transaction Complete  LapTime[0.369 sec.]

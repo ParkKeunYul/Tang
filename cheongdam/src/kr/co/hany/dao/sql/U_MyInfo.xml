@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="MyInfoDAO">
+
+	<resultMap id="boardMap" type="java.util.Map"> 
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 		
+	</resultMap>
+	
+	
+	<update id="updateInfo" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE member
+		   SET jumin           = #{jumin}
+			  ,tel  	       = #{tel}
+			  ,handphone       = #{handphone}
+			  ,zipcode         = #{zipcode}
+			  ,address01       = #{address01}
+			  ,address02       = #{address02}
+			  ,email		   = #{email}						 
+			  ,license_no      = #{license_no}
+			  ,from_school     = #{from_school}
+			  ,school_no       = #{school_no}
+			  ,biz_no          = #{biz_no}			  
+			  ,han_zipcode     = #{han_zipcode}
+			  ,han_address01   = #{han_address01}
+			  ,han_address02   = #{han_address02}
+			  ,han_tel         = #{han_tel}
+			  ,han_fax		   = #{han_fax}	  
+			  ,mailing         = #{mailing}
+			  ,sex             = #{sex}
+			  ,han_name        = #{han_name}
+			  ,sign_img        = #{sign_img}
+			  <if test="member_file != '' and member_file != null  ">
+			  	,member_file     = #{member_file}
+			    ,member_file_re  = #{member_file}
+			  </if>
+			  <if test="member_file2 != '' and member_file2 != null  ">
+			  	,member_file2    = #{member_file2}
+			  	,member_file2_re = #{member_file2}
+			  </if>
+			  <if test="password != '' and password != null  ">
+			  	,password        = #{password}
+			  </if>
+		 WHERE seqno = ${seqno}
+	</update>
+
+</mapper>

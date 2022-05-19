@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko">
+<head>	
+	<title>청담원외탕전</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta name="title" content="청담원외탕전">
+	<link rel="stylesheet" type="text/css" href="../../css/style.css" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.12.3.min.js" /></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".gnbDepth li").mouseover(function (){
+				var class_nm = $(this).prop("class");
+				var no = class_nm.substring(class_nm.length, class_nm.length-2);
+				$(".submenu" + no).css("display","");
+			});			
+			$(".gnbDepth li").mouseleave(function (){
+				var class_nm = $(this).prop("class");
+				var no = class_nm.substring(class_nm.length, class_nm.length-2);
+				$(".submenu" + no).css("display","none");
+			});
+			$(".gnbDepth").mouseover(function (){
+				var class_nm = $(this).prop("class");
+				var no = class_nm.substring(class_nm.length, class_nm.length-2);
+				$(".gnbDepth2bg").css("display","");
+			});			
+			$(".gnbDepth").mouseleave(function (){
+				var class_nm = $(this).prop("class");
+				var no = class_nm.substring(class_nm.length, class_nm.length-2);
+				$(".gnbDepth2bg").css("display","none");
+			});
+		});
+	</script>
+</head>
+<body>
+<div id="wrap" class="bg01">
+	<!-- header 시작 -->
+	<div class="headerWrapper" id="header">
+		<!-- GNB -->
+		<div class="headerFixedBox">
+			<!-- LnbArea -->
+			<div id="LnbArea">
+				<div class="logoarea">
+					<h1><a href="#"><img src="../../images/common/logo.png" alt="청담원외탕전" /></a></h1>
+				</div>
+				<ul class="loginbtn">					
+					<li><a href="../member/join_main.html"><img src="../../images/common/btn_join.png" alt="회원가입" /></a></li>
+					<li><a href="../member/login.html"><img src="../../images/common/btn_login.png" alt="로그인" /></a></li>
+					<!-- 로그인 후 -->
+					<!--<li class="logout"><a href="#"><img src="../../images/common/btn_logout.png" alt="로그아웃" /></a></li>-->
+					<!-- //로그인 후 -->
+				</ul>
+				<!-- Lnb -->
+				<ul class="gnbDepth">
+					<li class="menu01">
+						<a href="../info/info01.html"><img src="../../images/common/mm01_ov.png" alt="청담원외탕전 소개" /></a>
+						<div class="depWrapper submenu01" style="display:none;">
+							<ul>
+								<li><a href="../info/info01.html">청담원외탕전 소개</a></li>
+								<li><a href="../info/info02.html">청담원외탕전의 약속</a></li>
+								<li><a href="../info/info03.html">위치안내</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="menu02">
+						<a href="../product/product_list.html"><img src="../../images/common/mm02.png" alt="약속처방" /></a>
+						<div class="depWrapper submenu02" style="display:none;top:50px;">
+							<ul>
+								<li><a href="../product/product_list.html">약속처방</a></li>
+								<li><a href="../product/product_cart.html">약속처방 보관함</a></li>
+								<li><a href="../product/product_ask_list.html">사전조제지시서 관리</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="menu03">
+						<a href="../community/notice_list.html"><img src="../../images/common/mm03.png" alt="고객센터" /></a>
+						<div class="depWrapper submenu03" style="display:none;top:100px;">
+							<ul>
+								<li><a href="../community/notice_list.html">공지사항</a></li>
+								<li><a href="../community/use_list.html">이용안내</a></li>
+								<li><a href="../community/qna_write.html">문의게시판</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="menu04">
+						<a href="../mypage/edit.html"><img src="../../images/common/mm04.png" alt="마이페이지" /></a>
+						<div class="depWrapper submenu04" style="display:none;top:150px;">
+							<ul>
+								<li><a href="../mypage/edit.html">내 정보수정</a></li>
+								<li><a href="../mypage/order_list.html">주문내역</a></li>
+								<li><a href="../mypage/point_list.html">적립금관리</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+				<div class="gnbDepth2bg" style="display:none;"></div>
+				<!-- Lnb //-->
+			</div>
+			<!-- LnbArea //-->
+			<ul class="Micon">
+				<li><a href="#"><img src="../../images/common/icon01.png" alt="주문내역" /></a></li>
+				<li><a href="#"><img src="../../images/common/icon02.png" alt="약속처방 보관함" /></a></li>
+				<li><a href="#"><img src="../../images/common/icon03.png" alt="오시는길" /></a></li>
+			</ul>
+			<p class="cscenter"><img src="../../images/common/cscenter.png" alt="상담전화 054-123-4567" /></p>
+		</div>
+		<!-- // GNB -->
+	</div>
+	<!-- //header -->
+	<!-- container -->
+	<div id="container">
+		<!-- contents -->
+		<div id="contents">
+
+			<div class="sub_gnb">
+				<p class="sname">CHEONGDAM HERB</p>
+				<p class="sg"><span>고객센터</span><span>이용안내</span></p>
+			</div>
+
+			<ul class="sub_Menu w33">
+				<li><a href="../community/notice_list.html">공지사항</a></li>
+				<li><a href="../community/use_list.html">이용안내</a></li>
+				<li class="sel"><a href="../community/qna_write.html">1:1문의</a></li>
+			</ul>
+
+			<div class="bannerArea mb20">
+				<p class="ba03">
+					<strong>1:1문의 게시판</strong>입니다. <br/>문의 작성 시 카카오톡 또는 전화로 답변해 드립니다.
+				</p>
+			</div>
+
+			<!-- 본문내용 -->
+			<!-- table -->
+			<div class="st01">
+				<table class="basic">
+					<colgroup>
+						<col width="120px" />
+						<col width="*" />
+					</colgroup>
+					<tbody>
+						<tr>
+							<th>작성자</th>
+							<td>홍길동(대박한의원)</td>
+						</tr>
+						<tr>
+							<th>문의유형</th>
+							<td>
+								<label><input type="radio" checked /> 배송관련</label>
+								<label><input type="radio" /> 취소/교환/반품</label>
+								<label><input type="radio" /> 상품관련</label>
+								<label><input type="radio" /> 기타</label>
+							</td>
+						</tr>
+						<tr>
+							<th>제목</th>
+							<td><input type="text" name="" id="" style="width:650px;"></td>
+						</tr>
+						<tr>
+							<th>첨부파일</th>
+							<td><input type="file" style="width:400px;"/></td>
+						</tr>
+						<tr>
+							<th>문의내용</th>
+							<td><textarea name="" id="" style="width:650px; height:100px;resize:none;"></textarea></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- //table -->
+			<!-- btnarea -->
+			<div class="btn_area01">
+				<a href="#"><span class="cw h60">취소</span></a>
+				<a href="#"><span class="cg h60">확인</span></a>
+			</div>
+			<!-- //btnarea -->
+			<!-- //본문내용 -->
+
+		</div>
+		<!-- // contents -->
+
+	</div>
+	<!-- // container -->
+	<!-- footer -->
+	<div id="footer" class="w1000">
+		<!-- footer_inner -->
+		<div id="footer_inner">
+			<h2>청담원외탕전</h2>
+			<div class="copyright">
+				<ul>
+					<li>
+						<p class="pnone">사업자등록번호 : 000-00-0000</p>
+						<p>상호명 : 청담원외탕전</p><p>대표자 : 홍길동</p>
+						<p>대표전화 : 054-123-4567</p><p>팩스번호 : 054-123-4567</p>
+					</li>
+					<li>
+						<p class="pnone">통신판매업신고번호 : 제 0000-0000-0000호</p>
+						<p>결제은행: 농협은행 000-000000-00 홍길동(청담원외탕전)
+					</li>
+					<li>사업장 주소 : 경상북도 포항시 북구 장성동 1417-10</li>
+					<li>Copyright ⓒ 청담원외탕전 All rights reserved.</li>
+				</ul>
+			</div>
+		</div>
+		<!-- //footer_inner -->
+	</div>
+	<!-- //footer -->
+	<!-- btntop -->
+	<div id="btntop"><p class="btntopA"><a class="return_top" href="#"><img src="../../images/sub/top.png" alt="위로" /></a></p></div>
+	<!-- btntop //-->
+</div>
+</body>
+</html>

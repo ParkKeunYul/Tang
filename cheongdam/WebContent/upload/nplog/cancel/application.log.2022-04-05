@@ -1,0 +1,10 @@
+15:53:58.613 <000517> ------ Start Nicepay Java V.nicepay_tx-0.9.9.27_20190604--------
+15:53:58.613 <000517> service mode : CL0
+15:53:58.613 <000517> common message validation success
+15:53:58.613 <000517> 취소금액 미설정 오류입니다.
+15:53:58.615 <000517> Transaction Complete  LapTime[0.004 sec.]
+15:54:33.063 <000519> ------ Start Nicepay Java V.nicepay_tx-0.9.9.27_20190604--------
+15:54:33.063 <000519> service mode : CL0
+15:54:33.063 <000519> common message validation success
+15:54:33.063 <000519> 취소금액 미설정 오류입니다.
+15:54:33.064 <000519> Transaction Complete  LapTime[0.004 sec.]

@@ -1,0 +1,394 @@
+@charset "utf-8";
+
+
+.map {width:100%; background:#403f41; line-height:1.8rem;}
+.map ul {padding:2rem 2rem 1.5rem 2rem;}
+.map ul li {margin:0 0 1.5rem 0; color:#cccccc;}
+.map ul li span {color:#ffffff; font-weight:700; display:block; padding-bottom:.5rem;}
+
+.imgB img {width:100%; height:auto;}
+
+/* product */
+.productsearch {width:100%; background:#f5f2ee; padding:3.0rem 1.5rem 3.0rem 1.5rem; margin-top:-3px; box-sizing: border-box;}
+.productsearch .sel01 {display:inline-block; width:100%; margin:0 0 .5rem 0; border-top:1px solid #dddddd; border-left:1px solid #dddddd;}
+.productsearch .sel01 ul {display:inline-block; width:100%; }
+.productsearch .sel01 ul li {width:25%; display:inline-block; float:left; background:#ffffff; border-right:1px solid #dddddd; border-bottom:1px solid #dddddd; box-sizing: border-box;}
+.productsearch .sel01 ul li span {width:100%; display:inline-block; line-height:3.0rem; box-sizing: border-box; text-align:center; font-size:1.3rem; }
+.productsearch .sel01 .sel {background:#ce731b; color:#ffffff;}
+.productsearch .sel01 .pri {background:#00b49c; color:#ffffff;}
+
+.productsearch .sel02 {border-top:1px solid #acacac; padding-top:1.5rem; margin-top:.9rem;}
+.productsearch .sel02 select {height:3.5rem;}
+.productsearch .sel02 [type="text"] {height:3.5rem;}
+.productsearch .sel02 div {position:relative; margin-top:.8rem;}
+.productsearch .sel02 div button{position:absolute;right:0;top:0}
+
+.productList {width:100%; display:inline-block;}
+.productList ul li {width:47%; margin:0 0 2rem 0; float:left; box-sizing: border-box;}
+.productList ul li:nth-child(1), .productList ul li:nth-child(4),.productList ul li:nth-child(7) {float:right;}
+.productList ul li a {display:inline-block; border:1px solid #dbdbdb; text-decoration:none; box-sizing: border-box;}
+.productList ul li a:hover {border:1px solid #444444; box-sizing: border-box;}
+.productList ul li a:hover .imgA span {background:rgba(46,108,100,0.7);}
+.productList ul .imgA {position:relative;}
+.productList ul .imgA img {width:100%; height:auto; box-sizing: border-box;}
+.productList ul .imgA span {position:absolute; bottom:0; left:0; width:100%; color:#ffffff; padding:1rem; line-height:3rem; height:5rem; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; background:rgba(0,0,0,0.7); box-sizing: border-box;}
+.productList ul .txtA {width:90%; height:190px; margin:0 auto; padding:1.5rem 0px 1rem 0px;}
+.productList ul .txtA em {display:inline-block; width:100%; border-bottom:1px solid #444444; font-size:1.7rem; color:#272727; font-weight:700; text-align:center; padding:0 0 1.3rem 0; margin-bottom:1rem;}
+.productList ul .txtA div p {padding-bottom:10px; color:#272727;}
+.productList ul .txtA div p strong {font-weight:700; display:block;}
+
+.productView {}
+.productView .inner {width:100%; background:#f8f8f8; border:1px solid #eeeeee; padding:2rem 1.5rem 1.0rem 1.5rem; box-sizing:border-box;}
+.productView .inner ul {border-bottom:1px solid #e4e4e4; padding-bottom:.8rem;}
+.productView .inner ul:last-child {border-bottom:none;}
+.productView .inner ul li {margin-bottom:.9rem; line-height:2rem;}
+.productView .inner ul li label.title {width:25%; font-weight:700; float:left; display:table;}
+.productView .inner ul li p {width:75%; display:table-cell; vertical-align:middle;}
+.productView .inner ul li a {line-height:2.0rem; }
+.productView .inner ul li strong {font-weight:700;}
+.productView .inner select {width:100%;}
+.productView .inner .name {font-weight:700;}
+.productView .inner .won {font-weight:700; color:#ed0000;}
+.productView .inner .count {font-weight:700; color:#00ac95;}
+.productView .inner .countbox {border-bottom:1px solid #acacac; padding:1.5rem 0 1.0rem 0;}
+.productView .inner .countbox li {line-height:2.5rem;}
+.productView .inner .opbox {display:inline-block; width:100%; border-bottom:1px solid #acacac; padding:1.5rem 0 .5rem 0;}
+.productView .inner .opbox li {margin-bottom:.9rem; width:100%; height:3rem;}
+.productView .inner .opbox label {width:30%; line-height:3rem; font-size:1.3rem;}
+.productView .inner .opbox p {width:70%; float:right; text-align:right; padding-right:0rem;}
+.productView .inner .wonbox {display:inline-block; width:100%; border-bottom:none; padding:1.5rem 0 .5rem 0;}
+.productView .inner .wonbox li {margin-bottom:.9rem; width:100%; height:2rem;}
+.productView .inner .wonbox li:last-child {font-size:1.6rem;}
+.productView .inner .wonbox label {width:30%; line-height:2rem; font-weight:700;}
+.productView .inner .wonbox p {width:70%; float:right; text-align:right; padding-right:0rem;}
+.productView .inner .wonbox .total {color:#019682; font-weight:700;}
+
+.productInfo {width:100%; margin:4rem 0 2rem 0;}
+.productInfo .tit {font-size:1.7rem; font-weight:700; width:100%; padding:0 0 1rem 0; border-bottom:1px solid #dddddd;}
+.productInfo .infoinner {padding:2rem 1rem; box-sizing:border-box; border-bottom:1px solid #dddddd;}
+.productInfo .infoinner img {width:100%; height:auto;}
+
+.productCart .check {width:100%; background:#ecebe9; border:1px solid #c9c9c9; padding:.5rem .5rem .5rem 1.5rem; margin-bottom:1rem; box-sizing: border-box;}
+.productCart .check label {padding-left:.5rem; font-weight:700;}
+.productCart .inner {padding-bottom:1rem;}
+.productCart .inner a {line-height:2.0rem;}
+.productCart .cList {position:relative;border:1px solid #c9c9c9; padding:1.8rem 2rem .5rem 2rem; margin-bottom:2rem;box-sizing: border-box;}
+.productCart .cList [type=checkbox] {position:absolute; top:2rem; left:1.5rem;}
+.productCart .cList .Dtit {display:table;}
+.productCart .cList .Dtit img {height:60px; display:table;}
+.productCart .cList .Dtit p {width:100%; vertical-align:top; padding-left:1.0rem; font-weight:700; font-size:1.5rem; display:table-cell;}
+.productCart .cList .Dtit .orderok {font-size:1.0rem; background:#02b59d; color:#ffffff; display:inline-block; line-height:2rem; padding:0 .5rem; margin-bottom:.2rem;font-weight:normal;}
+.productCart .cList .Dtit .orderno {font-size:1.0rem; background:#3b3b3b; color:#ffffff; display:inline-block; line-height:2rem; padding:0 .5rem; margin-bottom:.2rem;font-weight:normal;}
+.productCart .cList .op {margin-top:.5rem;}
+.productCart .cList .op li {line-height:1.3rem; color:#585858; font-size:1.3rem; line-height:1.8rem;}
+.productCart .cList .info {display:inline-block; width:100%; padding-top:.5rem;}
+.productCart .cList .info li {width:100%; line-height:2.5rem;}
+.productCart .cList .info li label {width:50%; float:left; font-weight:700;}
+.productCart .cList .info li p {width:50%; float:right; text-align:right;}
+.productCart .cList .info li p strong {font-weight:700; padding-right:.3rem;}
+.productCart .cList .info li:last-child {color:#0c8c7b;}
+.productCart .cList .opbox {display:inline-block; width:100%; border-top:1px solid #acacac; border-bottom:1px solid #acacac; padding:.8rem 0 0 0; margin-top:1.5rem;}
+.productCart .cList .opbox li {margin-bottom:.9rem; width:100%; height:3rem;}
+.productCart .cList .opbox label {width:30%; line-height:3rem; font-size:1.3rem;}
+.productCart .cList .opbox p {width:70%; float:right; text-align:right; padding-right:0rem;}
+.productCart .cList .wonbox {display:inline-block; width:100%; border-bottom:none; padding:.8rem 0 0 0;}
+.productCart .cList .wonbox li {margin-bottom:.9rem; width:100%; height:2rem;}
+.productCart .cList .wonbox li:last-child {font-size:1.6rem;}
+.productCart .cList .wonbox label {width:30%; line-height:2rem; font-weight:700;}
+.productCart .cList .wonbox p {width:70%; float:right; text-align:right; padding-right:0rem;}
+.productCart .cList .wonbox .total {color:#019682; font-weight:700;}
+
+.cartEnd {width:100%; background:#f9f9f9; padding:3rem 1.5rem; margin-bottom:3rem; box-sizing: border-box;}
+.cartEnd .tit {color:#0e8b7a; font-size:1.8rem; font-weight:600; font-family: 'Noto Serif KR', serif; text-align:center; padding-bottom:30px;}
+
+.delsearch {position:relative;}
+.delsearch input[type="text"] {height:3.5rem;}
+.delsearch div {position:absolute; top:0; right:0;}
+.delList {margin-top:2rem;}
+.delList .Listbox {border:1px solid #c9c9c9; padding:1.5rem 2rem 1.3rem 2rem; margin-bottom:1.0rem;}
+.delList .Listbox .tit {font-size:1.6rem; font-weight:700; width:100%; line-height:2rem; margin-bottom:.5rem;}
+.delList .Listbox ul {padding-top:.5rem;}
+.delList .Listbox ul li {margin-bottom:.1rem; font-size:1.3rem;}
+.delList .Listbox ul li:first-child { font-weight:700; margin-bottom:.7rem;}
+
+/* product > 사전조제지시서*/
+.askList {width:100%; margin:0 auto; border-top:2px solid #00b49c;}
+.askList thead tr th {border-bottom:1px solid #e5e5e5; background:#f1f1f1; border-left:1px solid #e5e5e5; font-weight:700; padding:1.3rem 0; text-align:center;}
+.askList thead tr th:first-child {border-left:none;}
+.askList tbody tr th {border-bottom:1px solid #e5e5e5; background:#f1f1f1; font-weight:700; padding:1.3rem 1rem .5rem 0; text-align:right;}
+.askList tbody tr td {border-bottom:1px solid #e5e5e5; border-left:1px solid #e5e5e5; padding:1rem 0 ; text-align:center;}
+.askList tbody tr td:first-child {border-left:none;}
+.askList .L {text-align:left; padding-left:1.3rem; }
+.askList tbody tr td a {line-height:2.0rem; margin:.2rem 0;}
+
+.askForminner{display:inline-block; width:100%; padding:1.5rem 2rem 2.5rem 2rem; box-sizing:border-box;background:#f9f9f9;}
+.askForm{width:100%; margin:0 auto ;}
+.askForm textarea {display:block; border:1px solid #d3d3d3;}
+.askForm select{height:3.5rem;width:100%;border:1px solid #d3d3d3;}
+.askForm textarea:focus ,.askForm select:focus{border:1px solid #00b49c;outline: none;}
+.askForm li{margin-bottom:1rem; width:100%; display:block;}
+.askForm li:last-child{margin-bottom:0}
+.askForm .type02 {position:relative;}
+.askForm .type02:after {display:block;content:'';clear:both;}
+.askForm .type02 .title {display:block;width:8rem;position:absolute;left:0;top:0;height:30px;line-height:30px;font-weight:700;}
+.askForm .type03 .title2 {display:block;width:100%;line-height:2rem;font-weight:700;}
+.askForm .type03 .title2 span {font-size:1.3rem; font-weight:normal; color:#cb0000;}
+.askForm .type02 div{margin-left:8rem;box-sizing: border-box;line-height:30px;}
+.askForminner a.sizeXS {line-height:2.0rem; float:right; margin-top:.5rem;}
+
+/* mypage */
+.searchArea {width:100%; background:#f5f2ee; padding:1.5rem 1.5rem 3.0rem 1.5rem; margin-top:-3px; box-sizing: border-box;}
+.searchArea .tit {display:block; font-size:1.7rem; font-weight:700; padding:1.5rem 0 .7rem 0;}
+.searchArea select {height:3.5rem;}
+.searchArea .cal {display:inline-block; vertical-align:middle; border:1px solid #dddddd; border-left:none; width:3.5rem; height:3.5rem; background:#ffffff url('../images/icon_cal.png') no-repeat center ;background-size:15px auto; box-sizing: border-box;}
+.searchArea [type="text"] {height:3.5rem;}
+.searchArea .section {position:relative;}
+.searchArea .section button {position:absolute; right:0;}
+
+.searchArea .btnA {display:inline-block; margin:.5rem 0; width:100%;}
+.searchArea .btnA span {display:inline-block; width:60px; line-height:3.0rem; border:1px solid #dddddd; background:#ffffff; box-sizing: border-box; text-align:center; margin-right:3px; font-size:1.3rem; }
+.searchArea .btnA .sel {background:#00b49c; border:1px solid #00b49c; color:#ffffff; border:none;}
+
+.delivery {padding-top:2.5rem;}
+.delivery label {width:30%; line-height:3.0rem; font-weight:700; float:left;}
+.orderList {width:100%;}
+.orderList .Listbox {position:relative; border:1px solid #c9c9c9; padding:2rem 1.3rem 1.2rem 1.3rem; margin-bottom:2.0rem;}
+.orderList .Listbox .tit {font-weight:700; font-size:1.6rem;}
+.orderList .Listbox .tit .open {position:absolute; top:.9rem; right:1.2rem; width:3.5rem; height:3.5rem; background:#ffffff url('../images/btn_up.png') no-repeat center ;background-size:24px auto;}
+.orderList .Listbox .tit .close {position:absolute; top:.9rem; right:1.2rem; width:3.5rem; height:3.5rem; background:#ffffff url('../images/btn_down.png') no-repeat center ;background-size:24px auto;}
+.orderList .Listbox ul {margin-top:1.0rem;}
+.orderList .Listbox ul li {margin-bottom:.5rem;}
+.orderList .Listbox ul li span {font-weight:700;}
+.orderList .Listbox .btn {margin:1.5rem 0 .7rem 0;}
+.orderList .Listbox .btn a{line-height:3.0rem;}
+.orderList .Listbox .openbox {border-top:1px solid #c9c9c9; margin-top:1rem;}
+
+.orderview {width:100%;}
+.orderview .Listbox {position:relative; background:#f9f9f9; border:1px solid #c9c9c9; padding:0; margin-bottom:1.0rem;}
+.orderview .Listbox .tit01 {display:block; width:100%; padding:1rem; font-size:1.6rem; font-weight:700; color:#ffffff; background:#1d766a; border-bottom:1px solid #c9c9c9; box-sizing: border-box;}
+.orderview .Listbox .tit02 {display:block; width:100%; padding:1rem; font-size:1.6rem; font-weight:700; background:#f4eddb; border-bottom:1px solid #c9c9c9; box-sizing: border-box;}
+.orderview .Listbox .tit03 {display:block; width:100%; padding:1rem; font-size:1.6rem; font-weight:700; background:#e5f2f6; border-bottom:1px solid #c9c9c9; box-sizing: border-box;}
+.orderview .Listbox ul {padding:1.7rem 1.2rem .5rem 1.2rem;}
+.orderview .Listbox ul li {margin-bottom:.9rem; line-height:2rem;}
+.orderview .Listbox ul li label.title {width:22%; font-weight:700; float:left; display:table;}
+.orderview .Listbox ul li p {display:table-cell; vertical-align:middle;}
+.orderview .Listbox ul li a {line-height:2.0rem; }
+.orderview .Listbox ul li strong {font-weight:700;}
+.orderview .Listbox input[type="text"],.Listbox select{height:3.5rem;width:100%;}
+.orderview .Listbox input[type="text"]:focus,.Listbox textarea:focus ,.Listbox select:focus{border:1px solid #00b49c;outline: none;}
+.orderview .Listbox .selectArea:after{display:block;content:'';clear:both;}
+.orderview .Listbox .selectArea select{width:49%}
+.orderview .Listbox .selectArea select:nth-of-type(1){float:left;}
+.orderview .Listbox .selectArea select:nth-of-type(2){float:right;}
+.orderview .Listbox .type02{position:relative;}
+.orderview .Listbox .type02:after{display:block;content:'';clear:both;}
+.orderview .Listbox .type02 .title{display:block;width:7rem;position:absolute;left:0;top:0;height:30px;line-height:30px;font-weight:700;}
+.orderview .Listbox .type02 div{margin-left:7rem;box-sizing: border-box;line-height:30px;}
+.orderview .Listbox .type02.address input[type="text"]{margin-bottom:0.3rem;}
+.orderview .Listbox .type02.address button {margin-bottom:0.3rem;}
+.orderview .Listbox textarea {border:1px solid #d3d3d3;}
+
+.orderview .orderDetail {position:relative; background:#ffffff; border:1px solid #c9c9c9; padding:0 1.5rem 1.2rem 1.5rem; box-sizing: border-box;}
+.orderview .orderDetail .detailList { border-bottom:1px solid #c9c9c9; padding:1.8rem .5rem 1.0rem .5rem; box-sizing: border-box;}
+.orderview .orderDetail .detailList .Dtit {display:table; padding-bottom:.5rem;}
+.orderview .orderDetail .detailList .Dtit img {height:50px;display:table;}
+.orderview .orderDetail .detailList .Dtit p {vertical-align:top; padding:.5rem 0 0 1.0rem; font-weight:700; font-size:1.5rem;display:table-cell;}
+.orderview .orderDetail .detailList .op li {line-height:1.3rem; color:#585858; font-size:1.3rem; line-height:1.8rem;}
+.orderview .orderDetail .detailList .info {display:inline-block; width:100%; padding-top:.5rem;}
+.orderview .orderDetail .detailList .info li {width:100%; line-height:2.5rem;}
+.orderview .orderDetail .detailList .info li label {width:50%; float:left; font-weight:700;}
+.orderview .orderDetail .detailList .info li p {width:50%; float:right; text-align:right;}
+.orderview .orderDetail .detailList .info li p strong {font-weight:700; padding-right:.3rem;}
+.orderview .orderDetail .detailList .info li:last-child {color:#0c8c7b;}
+.orderview .orderDetail .detailList:last-child {padding-bottom:0; border:none;}
+
+.orderview .orderTotal {position:relative; background:#f1f1f1; border:1px solid #c9c9c9; margin-top:-1px; }
+.orderview .orderTotal .tit04 {display:block; width:100%; padding:1rem; font-size:1.6rem; font-weight:700; background:#00b49c; color:#ffffff; border-bottom:1px solid #c9c9c9; box-sizing: border-box;}
+.orderview .orderTotal .tlist {display:inline-block; width:100%; padding:1rem 1.5rem 1.5rem 1.5rem; box-sizing: border-box;}
+.orderview .orderTotal .tlist li {width:100%; line-height:2.8rem;}
+.orderview .orderTotal .tlist li label {width:50%; float:left; font-weight:700;}
+.orderview .orderTotal .tlist li p {width:50%; float:right; text-align:right;}
+.orderview .orderTotal .tlist li p strong {font-weight:700; padding-right:.3rem;}
+
+.orderview .orderTotal .point {position:relative; border-top:1px solid #c9c9c9; margin:0 1.5rem; padding:.5rem 0;}
+.orderview .orderTotal .point li {text-align:right;margin:.5rem 0;}
+.orderview .orderTotal .point .btnpoint {display:inline-block; background:#00a08b; font-size:1.2rem; color:#ffffff; width:70px; text-align:center; margin-left:1rem;}
+.orderview .orderTotal .point .btnpointok {display:inline-block; background:#212121; font-size:1.2rem; color:#ffffff; width:70px; text-align:center; margin-left:1rem;}
+.orderview .orderTotal .point input[type="text"] {height:2.0rem; line-height:2.0rem; }
+
+.orderview .paybox {position:relative; background:#f9f9f9; border:1px solid #c9c9c9; padding:0 0 2rem 0; margin:1.0rem 0;}
+.orderview .paybox .tit01 {display:block; width:100%; padding:1rem; font-size:1.6rem; font-weight:700; color:#ffffff; background:#1d766a; border-bottom:1px solid #c9c9c9; box-sizing: border-box;}
+.orderview .paybox .inner {width:100%; padding:1.5rem 1.5rem 0 1.5rem;box-sizing: border-box;}
+.orderview .paybox .inner .selA label {margin:0 1.5rem 0 .5rem; vertical-align:top;}
+.orderview .paybox .inner .selA {width:100%; border-bottom:1px solid #c9c9c9; padding-bottom:1.5rem; margin-bottom:1.5rem; box-sizing: border-box;}
+.orderview .paybox .inner label.tit {display:inline-block; width:30%; float:left; font-weight:700; line-height:3rem;}
+
+.totalarea {display:inline-block; width:100%; padding:1rem 1.5rem 1rem 1.5rem; border:1px solid #c9c9c9; margin-top:-1px; box-sizing: border-box; background:#e2e2e2;}
+.totalarea li {width:100%; line-height:3rem; font-weight:700; font-size:1.7rem;}
+.totalarea li label {width:50%; float:left;}
+.totalarea li p {width:50%; float:right; text-align:right;}
+.totalarea li p strong { color:#e80000; padding-right:.3rem;}
+.coBox {padding:1.0rem 0 0 0; font-size:1.3rem;}
+.coBox p {float:left; padding-right:.5rem;}
+.coBox a {line-height:2.0rem;}
+
+.graybox {width:100%; background:#ecebe9; border:1px solid #c9c9c9; padding:1rem ; margin-bottom:1rem; box-sizing: border-box;}
+.graybox span {font-weight:700;}
+
+.pointBox {width:100%; background:#f5f5f5; padding:2rem 2.5rem 1.2rem 2.5rem; margin-bottom:2rem; box-sizing: border-box;}
+.pointBox ul li {margin-bottom:.7rem;}
+.pointBox span {font-weight:700; font-size:1.6rem;}
+.pointBox .per {font-size:1.2rem;}
+.pointBox .won {font-weight:700; color:#007868;}
+.pointBox ul li ol {margin-top:1.2rem;}
+.pointBox ul li ol li {margin-bottom:.2rem; padding-left:.8rem;}
+.pointBox ul li ol li:last-child {padding-top:1.0rem;}
+
+.pointList {width:100%;}
+.pointList .Listbox {border:1px solid #c9c9c9; padding:1.5rem 2rem; margin-bottom:1.0rem;}
+.pointList .Listbox .tit {border-bottom:1px solid #c9c9c9; padding-bottom:1rem; margin-bottom:1.0rem;}
+.pointList .Listbox .tit.plus span {display:inline-block; padding:.2rem .7rem; margin-right:.5rem; background:#00b49c; color:#ffffff;}
+.pointList .Listbox .tit.plus font {color:#1887c6; font-weight:700;}
+.pointList .Listbox .tit.minus span {display:inline-block; padding:.2rem .7rem; margin-right:.5rem; background:#cd6c16; color:#ffffff;}
+.pointList .Listbox .tit.minus font {color:#f70000; font-weight:700;}
+.pointList .Listbox ul li {width:100%; line-height:2.3rem;}
+.pointList .Listbox ul li span {font-weight:700;}
+.pointList .Listbox .date, .pointList .Listbox .class {width:50%; float:left;}
+
+/* member */
+.loginbox {width:90%; margin:2rem auto;}
+.loginA span {display:inline-block; width:100%; margin:0 0 1rem 0;}
+.loginA a.loginB {display:inline-block; width:100%; line-height:4rem; text-align:center; font-weight:700; background-color:#00b49c; color:#ffffff;}
+.conbox {width:100%; margin:20px auto 20px auto; background:#f4f6f9; padding:20px 20px; box-sizing: border-box; line-height:1.5;}
+.conbox span {color:#07a48f; font-weight:700;}
+
+.join01 {width:85%; margin:2rem auto;}
+.join01 a{text-decoration:none; text-align:left;}
+.join01 ul li {width:100%; height:150px; display:inline-block; vertical-align:top; margin:0 0 2rem 0; padding-left:3rem; color:#ffffff; font-size:1.4rem; line-height:1.8rem; box-sizing: border-box;}
+.join01 ul li span {display:block; width:100%; font-size:2.8rem; font-weight:600; font-family: 'Noto Serif KR', serif; line-height:20px; margin:4rem 0 1.5rem 0;}
+
+.join01 .bg01 {background:#b4a99e url('../images/bg_join01.png') no-repeat right bottom; }
+.join01 .bg02 {background:#84a19d url('../images/bg_join02.png') no-repeat right bottom;}
+
+.join02 {border:1px solid #d9d9d9; width:100%; height:300px; overflow-y:auto; padding:1.5rem; font-size:1.2rem; line-height:1.8rem; box-sizing: border-box;}
+
+.member .innerBoxMem, .member .innerBoxMemP{padding:2rem 1.5rem;border-top:2px solid #00b49c;box-sizing:border-box;background:#f9f9f9;}
+.member .innerBoxMem p, .member .innerBoxMemP p{font-size:1.2rem;color:#5d5d5d;line-height:130%}
+.member .innerBoxMemP{border-top:2px solid #2a5ca8;}
+.Memtit {margin:-1rem 0 1rem 0; font-size:1.2rem; color:#2a5ca8;}
+
+/* member > 회원 정보입력 */
+.member .memberForm{width:100%; margin:0 auto ;}
+.member .memberForm input[type="text"],.memberForm input[type="password"],.memberForm select{height:3.5rem;width:100%;}
+.member .memberForm input[type="text"]:focus,.memberForm input[type="password"]:focus ,.memberForm select:focus{border:1px solid #00b49c;outline: none;}
+.member .memberForm li{margin-bottom:1rem}
+.member .memberForm li:last-child{margin-bottom:0}
+.member .memberForm .idArea{position:relative;}
+.member .memberForm .idArea > span{display:block;margin-right:50px;}
+.member .memberForm .idArea button{position:absolute;right:0;top:0}
+.member .memberForm .infoNoti,
+.member .memberForm .validationNo{font-size: 1.1rem;margin-top:.5rem;color:#e10505;}
+.member .memberForm .selectArea:after{display:block;content:'';clear:both;}
+.member .memberForm .selectArea select{width:49%}
+.member .memberForm .selectArea select:nth-of-type(1){float:left;}
+.member .memberForm .selectArea select:nth-of-type(2){float:right;}
+.member .memberForm .type02.genArea{}
+.member .memberForm .type02.genArea label{margin-right:2rem}
+.member .memberForm .type02{position:relative;}
+.member .memberForm .type02:after{display:block;content:'';clear:both;}
+.member .memberForm .type02 .title{display:block;width:8rem;position:absolute;left:0;top:0;height:30px;line-height:30px;font-weight:700;}
+.member .memberForm .type02 div{margin-left:8rem;box-sizing: border-box;line-height:30px;}
+.member .memberForm .type02.address input[type="text"]{margin-bottom:0.3rem;}
+.member .memberForm .type02.address button {margin-bottom:0.3rem;}
+.member .memberForm .greent {display:inline-block;font-size: 1.1rem; color:#26995d;}
+.member .memberForm .line0 {line-height:1.2 !important;}
+
+.joinend {width:100%; font-size:14px; background:url('../images/bg_joinend.png') no-repeat center 30px; background-size:110px auto; padding-top:3rem;}
+.joinend .tit {width:100%; text-align:center; padding: 130px 0 30px 0; font-size:2.0rem; font-weight:600; font-family: 'Noto Serif KR', serif;}
+.joinend .txtbox {text-align:center; width:85%; margin:0 auto;}
+.joinend .comment {width:95%; margin:25px auto; background:#f4f6f9; padding:2rem 1rem 2rem 1.5rem; box-sizing: border-box; line-height:1.5;}
+.joinend .comment p {font-weight:700;}
+.joinend .comment strong {font-weight:700;}
+
+/* --- 텍스트형 컨텐츠 --- */
+.textsContsWrapper {position:relative; padding:0 0 1.5rem; }
+.textsContsWrapper:before {content:''; position:absolute; top:0; left:0; right:0; width:100%; height:3px; background:#1b3e63;}
+.textsContsWrapper .innerWrapper {padding:1.5rem 0; font-size:1.4rem;}
+.textsContsWrapper > .contsSubTit {padding:1.5rem 1.5rem 1.3rem; font-size:1.4rem; border-bottom:1px solid #dfdfdf; background:#fbfbfb;}
+.textsContsWrapper + .btnArea {margin-top:0;}
+
+/* --- 페이지네이션 --- */
+.paginationBox {margin-top:2.5rem; text-align:center;}
+.paginationBox * {box-sizing:border-box;}
+.paginationBox > span {overflow:hidden; display:inline-block;}
+.paginationBox a {float:left; display:block; width:2rem; height:3rem; margin-left:.8rem; color:#1d1d1d; line-height:2.8rem; font-size:1.5rem;}
+.paginationBox a.on {color:#119c89;}
+.paginationBox .btnPrev, .paginationBox .btnNext {overflow:hidden; width:3rem; padding-left:3rem; background:url(../images/btn_paging.png) 0 -1px no-repeat; background-size:30px auto; border-color:#1b3e63;}
+.paginationBox .btnPrev {margin-left:0;}
+.paginationBox .btnNext {background-position:1px -39px}
+
+/* 게시판 공통 */
+.btnArea{margin-top:1rem;text-align:right}
+.btnArea.center{text-align:center;}
+.btnArea.center button{margin:0 8px;}
+.btnArea.write{overflow:hidden;margin-top:2rem; text-align:center;}
+.btnArea.write button{width:45%; margin:0 .4rem;}
+.btnArea.write a{width:48%;}
+.btnArea.write a:first-child{float:left;}
+.btnArea.write a:flast-child{float:right;}
+.btnArea.view{overflow:hidden;margin-top:2rem; text-align:center;}
+.btnArea.view button{width:49%; margin:0;}
+.btnArea.view button:first-child{float:left;}
+.btnArea.view button:last-child{float:right;}
+
+.board_search {width:100%; position:relative;}
+.board_search input[type="text"] {height:3.5rem; width:87%;}
+.board_search button{position:absolute;right:0;top:0}
+.board_list ul {margin-top:1.5rem;} 
+.board_list ul li {width:100%; margin:0 0 1rem 0; padding:1.5rem; border:1px solid #c9c9c9; box-sizing: border-box; line-height:1.9rem;}
+.board_list ul li.sel {background:#f8f8f8;}
+.board_list ul li.sel a {background:#f8f8f8; color:#279b8b; font-weight:700; }
+.board_list ul li span {font-size:1.3rem; margin:1.0rem 0 0 0; display:block;}
+
+.commView{border-top:2px solid #00b49c;}
+.commView *{font-size:1.2rem;color:#1d1d1d;}
+.commView h4{padding:1.2rem 1rem;background:#f6f6f6;color:#2da292;border-bottom:1px solid #dfdfdf;font-size:1.4rem;margin-top:1px;font-weight:700}
+.commView b{font-weight:700}
+.commView .dateInfo{padding:1rem 1rem;border-bottom:1px solid #dfdfdf;}
+.commView .dateInfo span{position:relative;display:inline-block;margin-right:15px;padding-right:15px;}
+.commView .dateInfo span:after{content:"";position:absolute;top:1px;left:-15px;border-left:1px solid #b6b6b6;height:15px;}
+.commView .dateInfo span:first-child:after{display:none}
+.commView .textInfo{padding:1.5rem 1rem;min-height:12rem;border-bottom:1px solid #dfdfdf;line-height:170%;}
+.commView .fileInfo{position:relative;padding:1rem;color:#1d1d1d;border-bottom:1px solid #dfdfdf;}
+.commView .fileInfo > b{display:block;position:absolute;top:1rem;left:1rem;padding-left:1.8rem;background: url(../images/icon_file.png) no-repeat 0 50%; background-size:12px auto}
+.commView .fileInfo > ul{margin-left:8rem}
+.commView .fileInfo > ul li{display:inline-block;}
+.textInfoAnswer{position:relative;background:#f6f6f6;}
+.textInfoAnswer b{position:absolute;top:1.5rem ;left:1rem ;color:#5a5a5a;}
+.textInfoAnswer p{padding:1.5rem 1rem;margin-left:6rem;color:#5a5a5a;}
+.commView .imgCenter{text-align:center;}
+.commView .imgCenter > img {width:100%; height:auto;}
+.commView .btnArea a span {color:#ffffff !important;}
+.prevNext p{position:relative; padding:1rem;}
+.prevNext p b{position:absolute;top:1rem;left:1rem;}
+.prevNext p a{margin-left:4.8rem;color:#616161;display:block;overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.prevNext p.prev{border-top:1px solid #ebebeb;border-bottom:1px solid #ebebeb; margin-top:1.5rem;}
+.prevNext p.next{border-bottom:1px solid #dfdfdf;}
+
+/* 1:1 문의 */
+.boardForminner{padding:1.5rem;border-top:2px solid #00b49c;box-sizing:border-box;background:#f9f9f9;}
+.boardForm{width:100%; margin:0 auto ;}
+.boardForm input[type="text"],.boardForm textarea,.boardForm select{height:3.5rem;width:100%;border:1px solid #d3d3d3;}
+.boardForm input[type="text"]:focus,.boardForm textarea:focus ,.boardForm select:focus{border:1px solid #00b49c;outline: none;}
+.boardForm li{margin-bottom:1rem}
+.boardForm li:last-child{margin-bottom:0}
+.boardForm .selectArea:after{display:block;content:'';clear:both;}
+.boardForm .selectArea select{width:49%}
+.boardForm .selectArea select:nth-of-type(1){float:left;}
+.boardForm .selectArea select:nth-of-type(2){float:right;}
+.boardForm .type02.genArea{padding:.7rem 0;}
+.boardForm .type02.genArea label{margin-right:2rem}
+.boardForm .type02{position:relative;}
+.boardForm .type02:after{display:block;content:'';clear:both;}
+.boardForm .type02 .title{display:block;width:8rem;position:absolute;left:0;top:0;height:30px;line-height:30px;font-weight:700;}
+.boardForm .type02 div{margin-left:8rem;box-sizing: border-box;line-height:30px;}

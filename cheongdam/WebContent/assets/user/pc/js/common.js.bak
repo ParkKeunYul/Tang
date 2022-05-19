@@ -1,0 +1,106 @@
+$(window).load(function(){
+    Base.init();
+
+});
+
+var Base = {
+    init : function()
+    {
+        if ($('.main-slide').length !== 0) {
+            $('.main-slide').bxSlider({
+                slideMargin: 0,
+                startSlide: 0,
+                auto:true,
+                autoDelay:500,
+                autoHover:true,
+                onSliderLoad: function(){ 
+                	$(".main-slide").css("visibility", "visible");
+                }
+            });
+        };
+    },
+    
+};
+$(document).ready(function(){
+	$(".return_top").hide(); // 탑 버튼 숨김
+	//탑버튼 보이게 하기
+	$(window).scroll(function () {
+		if ($(this).scrollTop() > 200) { // 원하는 윈도우 높이값 적어넣기
+			$('.return_top').fadeIn();
+		} else {
+			$('.return_top').fadeOut();
+		}
+	});
+	//탑으로 이동하기
+	$('.return_top').click(function () {
+		$('body,html').animate({
+			scrollTop: 0
+		}, 500);  // 탑으로 이동하는 스크롤 속도
+		return false;
+	});
+
+	$(".gnbDepth li").mouseover(function (){			
+			$('.depWrapper').hide();
+
+			var index = $(this).index(); 
+			$(".submenu0" + (index+1)).css("display",""); 
+									
+			var gnbDepth2bg = $('.gnbDepth2bg').width(); 
+			
+
+			if(gnbDepth2bg == 160){	  				
+				$('.gnbDepth2bg').stop().css('width', '160px');  
+				$('.headerWrapper').stop().css('width', '360px');
+			}else{  
+				
+				$('.gnbDepth2bg').stop().animate({ 
+					width  :  '160px'
+				}, 320, function() {  
+					 console.log('gnbDepth2bg 160 완료');
+				});
+								
+				$('.headerWrapper').stop().animate({ 
+					width  :  '360px'
+				}, 320, function() { 
+					 console.log('headerWrapper 360 완료');
+				});			
+			}
+			
+			
+			try{
+				
+				var img_nm   = $(this).find('a').find('img').attr('src').replace('_ov', '');			
+				var img_over = img_nm.substr(0 , img_nm.lastIndexOf('.')) +"_ov.png";
+
+				$(this).find('a').find('img').attr('src', img_over);
+			}catch(e){}
+			
+			
+		});		
+		
+		$(".gnbDepth li").mouseleave(function (){
+
+			$('.gnbDepth2bg').stop().animate({ 
+				width  :  '0px'
+			}, 320, function() { 
+				 console.log('gnbDepth2bg 0 완료');
+			});
+
+			$('.headerWrapper').stop().animate({ 
+				width  :  '200px'
+			}, 320, function() { 
+				 console.log('gnbDepth2bg 200 완료');
+			});
+
+
+			try{				
+				var img_over = $(this).find('a').find('img').attr('src');				
+				var img_nm  = img_over.replace('_ov', '');
+				$(this).find('a').find('img').attr('src', img_nm);
+			}catch(e){}
+			
+		});
+
+
+
+});

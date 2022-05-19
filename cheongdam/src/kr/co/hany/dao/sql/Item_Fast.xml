@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hany.dao.admin.item.FastDAO">
+	<resultMap id="boardMap" type="java.util.Map">
+		<result property="CONTENT" column="CONTENT" javaType="java.lang.String" jdbcType="CLOB" typeHandler="org.apache.ibatis.type.ClobTypeHandler" /> 
+	</resultMap>
+	
+	<select id="list" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.*
+		      ,(SELECT GROUP_CONCAT(  concat(subT2.yak_name, '[', subT1.p_from ,']') ORDER by subT2.yak_name , '') 
+			       FROM tang_good_yakjae  subT1
+			      INNER JOIN  yakjae subT2 
+			       	ON subT1.yak_code = subT2.yak_code
+			      WHERE subT1.t_seqno = T1.seqno  
+			     ) yakjae
+			   ,(SELECT GROUP_CONCAT(  subT2.yak_name ORDER by subT2.yak_name , '') 
+			       FROM tang_good_yakjae  subT1
+			      INNER JOIN  yakjae subT2 
+			       	ON subT1.yak_code = subT2.yak_code
+			      WHERE subT1.t_seqno = T1.seqno    
+			     ) yakjae_u
+			   ,'[ 상세보기 ]' as detail_view
+  		  FROM tang_good  T1
+		 WHERE T1.del_yn != 'y'
+		 <if test="param.m_view_yn == 'y'" >
+		    AND T1.view_yn = 'y'
+		 </if>
+		 <if test="param.search_value != null" >
+	    	<if test="param.search_value != ''" >
+    			AND 
+    			(     T1.tang_name like '%${param.search_value}%'
+    			  or  T1.p_contents like '%${param.search_value}%'
+    			 )
+       		</if>
+       	</if>
+		 ORDER by seqno desc limit ${param.start} , ${param.pageing}
+	</select>
+	
+	<select id="list_total" resultType="Integer">
+		SELECT count(seqno)
+		  FROM tang_good
+		 WHERE del_yn != 'y'
+		 <if test="param.m_view_yn == 'y'" >
+		    AND view_yn = 'y'
+		 </if>
+		 <if test="param.search_value != null" >
+	    	<if test="param.search_value != ''" >
+    			AND 
+    			(     tang_name like '%${param.search_value}%'
+    			  or  p_contents like '%${param.search_value}%'
+    			 )
+       		</if>
+       	</if>
+	</select>
+	
+	<insert id="add" parameterType="kr.co.hany.util.CommonMap">
+		insert into tang_good(
+			seqno                 ,tang_name          ,c_tang_type          ,c_chup_ea              ,c_chup_ea_price          ,
+			c_chup_g              ,c_pack_ml          ,c_pack_ea            ,c_pouch_type           ,c_box_type               ,
+			c_stpom_type          ,c_box_ea           ,price                ,view_yn                ,del_yn                   ,
+			main_yn               ,jo_from            ,sort_seq             ,delivery_price         ,image1                   ,
+			image2                ,image3             ,wdate                ,p_contents             ,c_tang_check
+		) VALUES (
+			#{param.seqno}        ,#{param.tang_name} ,#{param.c_tang_type} ,#{param.c_chup_ea}     ,#{param.c_chup_ea_price} ,
+			#{param.c_chup_g}     ,#{param.c_pack_ml} ,#{param.c_pack_ea}   ,#{param.c_pouch_type}  ,#{param.c_box_type}      ,
+			#{param.c_stpom_type} ,#{param.c_box_ea}  ,#{param.price}       ,#{param.view_yn}       ,'n'                      ,
+			#{param.main_yn}      ,#{param.jo_from}   ,#{param.sort_seq}    ,#{param.delivery_price},#{param.image1}          ,
+			#{param.image2}       ,#{param.image3}    ,now()                ,#{param.p_contents}    ,#{param.c_tang_check}
+		)
+	</insert>
+	
+	<select id="select_next_seqno" resultType="Integer">
+		SELECT IFNULL(max(seqno),0)+1 FROM tang_good		 
+	</select>
+	
+	
+	<insert id="add_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		insert into tang_good_yakjae(
+			t_seqno          ,p_joje                ,yak_code            ,wdate             ,p_from          ,
+			ea               ,total_yakjae          ,yak_price           ,p_danga            
+		) VALUES (
+			#{param.t_seqno} ,#{param.p_joje}       ,#{param.yak_code}   ,now()             ,#{param.p_from} ,
+			#{param.ea}      ,#{param.total_yakjae} ,#{param.yak_price}  ,#{param.p_danga}   
+		)
+	</insert>
+	
+	
+	<select id="view" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.*
+			  ,(SELECT box_name FROM box_table WHERE seqno = T1.c_box_type) as c_box_type_nm
+		      ,(SELECT pouch_name FROM pouch_table WHERE seqno = T1.c_pouch_type) as c_pouch_type_nm		      
+		      ,(SELECT sty_name   FROM sty_table WHERE seqno = T1.c_stpom_type) as c_stpom_type_nm 
+		  FROM tang_good T1
+		 WHERE T1.seqno = #{param.seqno} 
+	</select>
+	
+	
+	<select id="detail_yakjae" resultMap="boardMap" parameterType="kr.co.hany.util.CommonMap">
+		SELECT T1.p_joje as my_joje
+		      ,T2.seqno
+		      ,T2.yak_name
+		      ,T2.yak_code
+		      ,T2.yak_from
+		      ,T2.yak_price
+		      ,T2.yak_danga
+		      ,T2.yak_status
+		      ,T2.group_code
+		      ,ifnull((SELECT count(seqno) FROM yakjae WHERE group_code = T2.group_code),0) as group_cnt
+		      ,TRUNCATE(T2.yak_danga,0) as i_yak_danga
+			  ,TRUNCATE(T1.p_joje,0) * TRUNCATE(T2.yak_danga,0) as tot_yak_danga
+		  FROM tang_good_yakjae T1
+		 INNER JOIN yakjae T2 on T1.yak_code = T2.yak_code
+		 WHERE T1.t_seqno = #{param.seqno}
+		 ORDER by T2.yak_name
+	</select>
+	
+	
+	<delete id="del_yakjae" parameterType="kr.co.hany.util.CommonMap">
+		DELETE FROM tang_good_yakjae
+		 WHERE t_seqno = #{param.seqno}
+	</delete>
+	
+	<update id="mod" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE tang_good
+		  SET tang_name      = #{param.tang_name}
+		     ,c_tang_type    = #{param.c_tang_type}
+		     ,c_chup_ea      = #{param.c_chup_ea}
+		     ,c_chup_ea_price= #{param.c_chup_ea_price}
+		     ,c_chup_g       = #{param.c_chup_g}
+		     ,c_pack_ml      = #{param.c_pack_ml}
+		     ,c_pack_ea      = #{param.c_pack_ea}
+		     ,c_pouch_type   = #{param.c_pouch_type}
+		     ,c_box_type     = #{param.c_box_type}
+		     ,c_stpom_type   = #{param.c_stpom_type}
+		     ,c_box_ea       = #{param.c_box_ea}
+		     ,price          = #{param.price}
+		     ,view_yn        = #{param.view_yn}
+		     ,main_yn        = #{param.main_yn}
+		     ,jo_from        = #{param.jo_from}
+		     ,sort_seq       = #{param.sort_seq}
+		     ,delivery_price = #{param.delivery_price}
+		     ,p_contents     = #{param.p_contents}
+		     ,c_tang_check   = #{param.c_tang_check}
+		  <if test="param.image1 != '' and param.image1 != null " >
+	   	  	, image1            = #{param.image1}
+	   	  </if>
+	   	  <if test="param.image2 != '' and param.image2 != null " >
+	   	  	, image2           = #{param.image2}
+	   	  </if>
+	   	  <if test="param.image3 != '' and param.image3 != null " >
+	   	  	, image3           = #{param.image3}
+	   	  </if>
+		 WHERE seqno = #{param.seqno}
+	</update>
+	
+	
+	<update id="del" parameterType="kr.co.hany.util.CommonMap">
+		UPDATE tang_good
+		   SET del_yn = 'y'
+		 WHERE seqno in ( ${param.all_seqno} )
+	</update>
+	
+</mapper>
